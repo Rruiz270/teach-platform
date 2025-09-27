@@ -1,12 +1,15 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useAuth } from '@/contexts/AuthContext'
+import { AlertCircle } from 'lucide-react'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -14,27 +17,48 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: '',
+    role: 'TEACHER' as 'TEACHER' | 'STUDENT' | 'ADMIN',
     school: ''
   })
+  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  
+  const { register } = useAuth()
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError('')
     
     if (formData.password !== formData.confirmPassword) {
-      alert('As senhas não coincidem')
+      setError('As senhas não coincidem')
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres')
       setIsLoading(false)
       return
     }
     
-    // TODO: Implement registration logic
-    console.log('Registration attempt:', formData)
-    
-    setTimeout(() => {
+    try {
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        school: formData.school || undefined
+      }
+      
+      await register(userData)
+      router.push('/dashboard')
+    } catch (err: any) {
+      setError(err.message || 'Erro ao criar conta')
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -53,6 +77,13 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {error && (
+            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <span className="text-sm">{error}</span>
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nome Completo</Label>
@@ -80,15 +111,14 @@ export default function RegisterPage() {
             
             <div className="space-y-2">
               <Label htmlFor="role">Função</Label>
-              <Select onValueChange={(value) => handleInputChange('role', value)}>
+              <Select onValueChange={(value) => handleInputChange('role', value)} defaultValue="TEACHER">
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione sua função" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="teacher">Professor(a)</SelectItem>
-                  <SelectItem value="coordinator">Coordenador(a)</SelectItem>
-                  <SelectItem value="director">Diretor(a)</SelectItem>
-                  <SelectItem value="student">Estudante</SelectItem>
+                  <SelectItem value="TEACHER">Professor(a)</SelectItem>
+                  <SelectItem value="STUDENT">Estudante</SelectItem>
+                  <SelectItem value="ADMIN">Administrador(a)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -1,21 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { BookOpen, Users, Trophy, Clock, Star, ArrowRight } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function DashboardPage() {
-  const [user] = useState({
-    name: 'Professor João Silva',
+  const { user, isAuthenticated, logout, isLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/login')
+    }
+  }, [isAuthenticated, isLoading, router])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
+
+  // Mock data for demo - in production this would come from API
+  const userStats = {
     level: 'Explorer',
     progress: 65,
     badges: 8,
     studyHours: 24
-  })
+  }
 
   const modules = [
     {
@@ -75,7 +101,7 @@ export default function DashboardPage() {
             </Link>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">Olá, {user.name}</span>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={logout}>
                 Sair
               </Button>
             </div>
@@ -92,7 +118,7 @@ export default function DashboardPage() {
                 <Trophy className="h-8 w-8 text-yellow-500" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Nível Atual</p>
-                  <p className="text-2xl font-bold text-gray-900">{user.level}</p>
+                  <p className="text-2xl font-bold text-gray-900">{userStats.level}</p>
                 </div>
               </div>
             </CardContent>
@@ -104,7 +130,7 @@ export default function DashboardPage() {
                 <BookOpen className="h-8 w-8 text-blue-500" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Progresso Geral</p>
-                  <p className="text-2xl font-bold text-gray-900">{user.progress}%</p>
+                  <p className="text-2xl font-bold text-gray-900">{userStats.progress}%</p>
                 </div>
               </div>
             </CardContent>
@@ -116,7 +142,7 @@ export default function DashboardPage() {
                 <Star className="h-8 w-8 text-green-500" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Badges</p>
-                  <p className="text-2xl font-bold text-gray-900">{user.badges}</p>
+                  <p className="text-2xl font-bold text-gray-900">{userStats.badges}</p>
                 </div>
               </div>
             </CardContent>
@@ -128,7 +154,7 @@ export default function DashboardPage() {
                 <Clock className="h-8 w-8 text-purple-500" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Horas de Estudo</p>
-                  <p className="text-2xl font-bold text-gray-900">{user.studyHours}h</p>
+                  <p className="text-2xl font-bold text-gray-900">{userStats.studyHours}h</p>
                 </div>
               </div>
             </CardContent>
