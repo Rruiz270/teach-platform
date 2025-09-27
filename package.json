@@ -2,6 +2,11 @@
   "name": "teach-platform",
   "version": "1.0.0",
   "description": "TEACH Platform - AI Education Platform for Brazilian Teachers",
+  "main": "backend/dist/index.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "build": "cd backend && npm ci && npm run build",
     "start": "cd backend && npm run start:prod",
@@ -10,5 +15,8 @@
   "workspaces": [
     "backend",
     "frontend"
-  ]
+  ],
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
