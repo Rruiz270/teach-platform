@@ -51,24 +51,27 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
 @layer components {
   .teach-gradient {
-    @apply bg-gradient-to-r from-teach-blue-500 to-teach-green-500;
+    background: linear-gradient(to right, #3b82f6, #22c55e);
   }
   
   .teach-glass {
-    @apply backdrop-blur-md bg-white/10 border border-white/20;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
   
   .teach-shadow {
-    @apply shadow-lg shadow-blue-500/25;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.25);
   }
 }
 
