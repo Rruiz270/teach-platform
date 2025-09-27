@@ -1,0 +1,14 @@
+{
+  "name": "teach-platform",
+  "version": "1.0.0",
+  "description": "TEACH Platform - AI Education Platform for Brazilian Teachers",
+  "scripts": {
+    "build": "cd backend && npm ci && npm run build",
+    "start": "cd backend && npm run start:prod",
+    "dev": "cd backend && npm run dev"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
+}
