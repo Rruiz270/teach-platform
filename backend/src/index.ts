@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+  origin: process.env.CORS_ORIGIN?.split(',') || process.env.FRONTEND_URL?.split(',') || ['http://localhost:3000'],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -64,13 +64,21 @@ const startServer = async () => {
     await prisma.$connect();
     logger.info('Database connected successfully');
 
-    // Initialize Redis
-    await initializeRedis();
-    logger.info('Redis connected successfully');
+    // Initialize Redis (optional for development)
+    try {
+      await initializeRedis();
+      logger.info('Redis connected successfully');
+    } catch (error) {
+      logger.warn('Redis connection failed, continuing without cache:', error);
+    }
 
-    // Initialize job queues
-    await initializeQueues();
-    logger.info('Job queues initialized');
+    // Initialize job queues (optional for development)
+    try {
+      await initializeQueues();
+      logger.info('Job queues initialized');
+    } catch (error) {
+      logger.warn('Job queues initialization failed, continuing without queues:', error);
+    }
 
     httpServer.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT} in ${process.env.NODE_ENV} mode`);
