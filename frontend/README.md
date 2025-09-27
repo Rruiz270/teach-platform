@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TEACH Platform Frontend
+
+This is the frontend for the TEACH platform - Technology Education for Advanced Classroom Help.
+
+Built with [Next.js](https://nextjs.org) and optimized for [Vercel](https://vercel.com) deployment.
 
 ## Getting Started
 
