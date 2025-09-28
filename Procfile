@@ -1,0 +1,1 @@
+web: cd backend && npm install --production && npx prisma generate && node src/index.js

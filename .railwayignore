@@ -1,0 +1,7 @@
+frontend/
+*.md
+docker-compose.yml
+.git/
+.github/
+.vscode/
+*.log
