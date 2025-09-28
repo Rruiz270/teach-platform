@@ -1,0 +1,5 @@
+{
+  "providers": ["node"],
+  "buildCommand": "cd backend && npm install",
+  "startCommand": "cd backend && npx prisma generate && node start.js"
+}
