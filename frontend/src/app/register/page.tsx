@@ -17,8 +17,11 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'TEACHER' as 'TEACHER' | 'STUDENT' | 'ADMIN',
-    school: ''
+    teachingLevel: 'ELEMENTARY' as 'EARLY_YEARS' | 'ELEMENTARY' | 'JUNIOR_HIGH' | 'HIGH_SCHOOL' | 'UNIVERSITY',
+    subjects: [] as string[],
+    state: '',
+    city: '',
+    phone: ''
   })
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -37,8 +40,14 @@ export default function RegisterPage() {
       return
     }
 
-    if (formData.password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres')
+    if (formData.password.length < 8) {
+      setError('A senha deve ter pelo menos 8 caracteres com maiúscula, minúscula e número')
+      setIsLoading(false)
+      return
+    }
+
+    if (formData.subjects.length === 0) {
+      setError('Selecione pelo menos uma disciplina')
       setIsLoading(false)
       return
     }
@@ -48,8 +57,11 @@ export default function RegisterPage() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: formData.role,
-        school: formData.school || undefined
+        teachingLevel: formData.teachingLevel,
+        subjects: formData.subjects,
+        state: formData.state,
+        city: formData.city,
+        phone: formData.phone || undefined
       }
       
       await register(userData)
@@ -65,9 +77,30 @@ export default function RegisterPage() {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
+  const handleSubjectToggle = (subject: string) => {
+    setFormData(prev => ({
+      ...prev,
+      subjects: prev.subjects.includes(subject)
+        ? prev.subjects.filter(s => s !== subject)
+        : [...prev.subjects, subject]
+    }))
+  }
+
+  const subjects = [
+    'Matemática', 'Português', 'História', 'Geografia', 'Ciências',
+    'Física', 'Química', 'Biologia', 'Inglês', 'Educação Física',
+    'Artes', 'Música', 'Filosofia', 'Sociologia', 'Informática'
+  ]
+
+  const states = [
+    'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+    'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+    'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+  ]
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50 p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold teach-gradient bg-clip-text text-transparent">
             TEACH
@@ -110,27 +143,74 @@ export default function RegisterPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="role">Função</Label>
-              <Select onValueChange={(value) => handleInputChange('role', value)} defaultValue="TEACHER">
+              <Label htmlFor="teachingLevel">Nível de Ensino</Label>
+              <Select onValueChange={(value) => handleInputChange('teachingLevel', value)} defaultValue="ELEMENTARY">
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione sua função" />
+                  <SelectValue placeholder="Selecione o nível de ensino" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="TEACHER">Professor(a)</SelectItem>
-                  <SelectItem value="STUDENT">Estudante</SelectItem>
-                  <SelectItem value="ADMIN">Administrador(a)</SelectItem>
+                  <SelectItem value="EARLY_YEARS">Educação Infantil</SelectItem>
+                  <SelectItem value="ELEMENTARY">Ensino Fundamental</SelectItem>
+                  <SelectItem value="JUNIOR_HIGH">Ensino Fundamental II</SelectItem>
+                  <SelectItem value="HIGH_SCHOOL">Ensino Médio</SelectItem>
+                  <SelectItem value="UNIVERSITY">Ensino Superior</SelectItem>
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="space-y-2">
+              <Label>Disciplinas (selecione pelo menos uma)</Label>
+              <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+                {subjects.map((subject) => (
+                  <label key={subject} className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={formData.subjects.includes(subject)}
+                      onChange={() => handleSubjectToggle(subject)}
+                      className="w-4 h-4"
+                    />
+                    <span>{subject}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
+                <Label htmlFor="state">Estado</Label>
+                <Select onValueChange={(value) => handleInputChange('state', value)} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="UF" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {states.map((state) => (
+                      <SelectItem key={state} value={state}>{state}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="city">Cidade</Label>
+                <Input
+                  id="city"
+                  type="text"
+                  placeholder="Sua cidade"
+                  value={formData.city}
+                  onChange={(e) => handleInputChange('city', e.target.value)}
+                  required
+                />
+              </div>
+            </div>
             
             <div className="space-y-2">
-              <Label htmlFor="school">Escola (opcional)</Label>
+              <Label htmlFor="phone">Telefone (opcional)</Label>
               <Input
-                id="school"
-                type="text"
-                placeholder="Nome da sua escola"
-                value={formData.school}
-                onChange={(e) => handleInputChange('school', e.target.value)}
+                id="phone"
+                type="tel"
+                placeholder="(11) 99999-9999"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
               />
             </div>
             
