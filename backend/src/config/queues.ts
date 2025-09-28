@@ -1,6 +1,9 @@
 import Bull from 'bull';
 import { logger } from '../utils/logger';
 
+// Check if Redis is disabled
+const REDIS_DISABLED = process.env.REDIS_URL === 'disabled' || process.env.REDIS_URL === 'false';
+
 const redisConfig = {
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
@@ -9,11 +12,11 @@ const redisConfig = {
   },
 };
 
-// Define queues
-export const emailQueue = new Bull('email', redisConfig);
-export const videoProcessingQueue = new Bull('video-processing', redisConfig);
-export const notificationQueue = new Bull('notifications', redisConfig);
-export const analyticsQueue = new Bull('analytics', redisConfig);
+// Define queues only if Redis is enabled
+export const emailQueue = REDIS_DISABLED ? null : new Bull('email', redisConfig);
+export const videoProcessingQueue = REDIS_DISABLED ? null : new Bull('video-processing', redisConfig);
+export const notificationQueue = REDIS_DISABLED ? null : new Bull('notifications', redisConfig);
+export const analyticsQueue = REDIS_DISABLED ? null : new Bull('analytics', redisConfig);
 
 // Queue event handlers
 const setupQueueEvents = (queue: Bull.Queue, queueName: string) => {
@@ -36,37 +39,50 @@ const setupQueueEvents = (queue: Bull.Queue, queueName: string) => {
 
 // Initialize all queues
 export const initializeQueues = async () => {
+  if (REDIS_DISABLED) {
+    logger.info('Job queues are disabled via REDIS_URL environment variable');
+    return;
+  }
+
   const queues = [
     { queue: emailQueue, name: 'email' },
     { queue: videoProcessingQueue, name: 'video-processing' },
     { queue: notificationQueue, name: 'notifications' },
     { queue: analyticsQueue, name: 'analytics' },
-  ];
+  ].filter(({ queue }) => queue !== null);
 
   queues.forEach(({ queue, name }) => {
-    setupQueueEvents(queue, name);
+    if (queue) {
+      setupQueueEvents(queue, name);
+    }
   });
 
   // Process email jobs
-  emailQueue.process(async (job) => {
-    const { to, subject, template, data } = job.data;
-    // TODO: Implement email sending logic
-    logger.info(`Sending email to ${to} with subject: ${subject}`);
-  });
+  if (emailQueue) {
+    emailQueue.process(async (job) => {
+      const { to, subject, template, data } = job.data;
+      // TODO: Implement email sending logic
+      logger.info(`Sending email to ${to} with subject: ${subject}`);
+    });
+  }
 
   // Process notification jobs
-  notificationQueue.process(async (job) => {
-    const { userId, title, message, type } = job.data;
-    // TODO: Implement notification logic
-    logger.info(`Sending notification to user ${userId}: ${title}`);
-  });
+  if (notificationQueue) {
+    notificationQueue.process(async (job) => {
+      const { userId, title, message, type } = job.data;
+      // TODO: Implement notification logic
+      logger.info(`Sending notification to user ${userId}: ${title}`);
+    });
+  }
 
   // Process analytics jobs
-  analyticsQueue.process(async (job) => {
-    const { event, userId, data } = job.data;
-    // TODO: Implement analytics tracking
-    logger.info(`Tracking analytics event ${event} for user ${userId}`);
-  });
+  if (analyticsQueue) {
+    analyticsQueue.process(async (job) => {
+      const { event, userId, data } = job.data;
+      // TODO: Implement analytics tracking
+      logger.info(`Tracking analytics event ${event} for user ${userId}`);
+    });
+  }
 
   logger.info('All job queues initialized');
 };
