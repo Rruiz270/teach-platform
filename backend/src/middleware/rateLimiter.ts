@@ -2,6 +2,9 @@ import rateLimit from 'express-rate-limit';
 import { redis } from '../config/redis';
 import { Request, Response } from 'express';
 
+// Check if Redis is disabled
+const REDIS_DISABLED = process.env.REDIS_URL === 'disabled' || process.env.REDIS_URL === 'false';
+
 // Store for rate limiting using Redis
 class RedisStore {
   windowMs: number;
@@ -11,6 +14,14 @@ class RedisStore {
   }
 
   async increment(key: string): Promise<{ totalHits: number; resetTime: Date }> {
+    if (REDIS_DISABLED || !redis) {
+      // Return default values when Redis is disabled
+      return {
+        totalHits: 1,
+        resetTime: new Date(Date.now() + this.windowMs),
+      };
+    }
+
     const multi = redis.multi();
     const redisKey = `rate_limit:${key}`;
     
@@ -27,10 +38,16 @@ class RedisStore {
   }
 
   async decrement(key: string): Promise<void> {
+    if (REDIS_DISABLED || !redis) {
+      return;
+    }
     await redis.decr(`rate_limit:${key}`);
   }
 
   async resetKey(key: string): Promise<void> {
+    if (REDIS_DISABLED || !redis) {
+      return;
+    }
     await redis.del(`rate_limit:${key}`);
   }
 }
@@ -41,8 +58,8 @@ export const rateLimiter = rateLimit({
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'),
   standardHeaders: true,
   legacyHeaders: false,
-  // Use Redis store in production
-  ...(process.env.NODE_ENV === 'production' && {
+  // Use Redis store in production only if Redis is enabled
+  ...(process.env.NODE_ENV === 'production' && !REDIS_DISABLED && {
     store: new RedisStore(parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000')),
   }),
   handler: (req: Request, res: Response) => {
@@ -61,7 +78,7 @@ export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // 5 requests per window
   skipSuccessfulRequests: false,
-  ...(process.env.NODE_ENV === 'production' && {
+  ...(process.env.NODE_ENV === 'production' && !REDIS_DISABLED && {
     store: new RedisStore(15 * 60 * 1000),
   }),
   handler: (req: Request, res: Response) => {
@@ -76,7 +93,7 @@ export const aiApiRateLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 10, // 10 requests per minute
   skipSuccessfulRequests: false,
-  ...(process.env.NODE_ENV === 'production' && {
+  ...(process.env.NODE_ENV === 'production' && !REDIS_DISABLED && {
     store: new RedisStore(60 * 1000),
   }),
   handler: (req: Request, res: Response) => {
