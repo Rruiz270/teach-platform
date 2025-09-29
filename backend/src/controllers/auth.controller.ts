@@ -48,23 +48,31 @@ export const authController = {
     // Generate email verification token
     const verificationToken = generateEmailVerificationToken(email);
 
-    // Send verification email
-    await emailQueue.add('send-email', {
-      to: email,
-      subject: 'Verify your TEACH account',
-      template: 'email-verification',
-      data: {
-        name,
-        verificationUrl: `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`,
-      },
-    });
+    // Send verification email (only if queue is available)
+    if (emailQueue) {
+      await emailQueue.add('send-email', {
+        to: email,
+        subject: 'Verify your TEACH account',
+        template: 'email-verification',
+        data: {
+          name,
+          verificationUrl: `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`,
+        },
+      });
+    } else {
+      logger.info(`Email verification would be sent to ${email} (email queue disabled)`);
+    }
 
-    // Track registration
-    await analyticsQueue.add('track-event', {
-      event: 'user_registered',
-      userId: user.id,
-      data: { teachingLevel, state, city },
-    });
+    // Track registration (only if queue is available)
+    if (analyticsQueue) {
+      await analyticsQueue.add('track-event', {
+        event: 'user_registered',
+        userId: user.id,
+        data: { teachingLevel, state, city },
+      });
+    } else {
+      logger.info(`Registration tracked for user ${user.id} (analytics queue disabled)`);
+    }
 
     logger.info(`New user registered: ${email}`);
 
@@ -106,12 +114,14 @@ export const authController = {
     // Generate tokens
     const tokens = generateTokens(user);
 
-    // Track login
-    await analyticsQueue.add('track-event', {
-      event: 'user_login',
-      userId: user.id,
-      data: { method: 'email' },
-    });
+    // Track login (only if queue is available)
+    if (analyticsQueue) {
+      await analyticsQueue.add('track-event', {
+        event: 'user_login',
+        userId: user.id,
+        data: { method: 'email' },
+      });
+    }
 
     res.json({
       message: 'Login successful',
@@ -164,15 +174,17 @@ export const authController = {
 
     await userService.verifyEmail(user.id);
 
-    // Send welcome email
-    await emailQueue.add('send-email', {
-      to: email,
-      subject: 'Welcome to TEACH!',
-      template: 'welcome',
-      data: {
-        name: user.profile?.name || 'Teacher',
-      },
-    });
+    // Send welcome email (only if queue is available)
+    if (emailQueue) {
+      await emailQueue.add('send-email', {
+        to: email,
+        subject: 'Welcome to TEACH!',
+        template: 'welcome',
+        data: {
+          name: user.profile?.name || 'Teacher',
+          },
+      });
+    }
 
     res.json({ message: 'Email verified successfully' });
   }),
@@ -190,16 +202,18 @@ export const authController = {
 
     const resetToken = generatePasswordResetToken(user.id, email);
 
-    // Send reset email
-    await emailQueue.add('send-email', {
-      to: email,
-      subject: 'Reset your TEACH password',
-      template: 'password-reset',
-      data: {
-        name: user.profile?.name || 'Teacher',
-        resetUrl: `${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
-      },
-    });
+    // Send reset email (only if queue is available)
+    if (emailQueue) {
+      await emailQueue.add('send-email', {
+        to: email,
+        subject: 'Reset your TEACH password',
+        template: 'password-reset',
+        data: {
+          name: user.profile?.name || 'Teacher',
+          resetUrl: `${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
+        },
+      });
+    }
 
     res.json({ 
       message: 'If an account exists with this email, you will receive password reset instructions.' 
@@ -214,12 +228,14 @@ export const authController = {
     const hashedPassword = await bcrypt.hash(password, 12);
     await userService.updatePassword(userId, hashedPassword);
 
-    // Track password reset
-    await analyticsQueue.add('track-event', {
-      event: 'password_reset',
-      userId,
-      data: {},
-    });
+    // Track password reset (only if queue is available)
+    if (analyticsQueue) {
+      await analyticsQueue.add('track-event', {
+        event: 'password_reset',
+        userId,
+        data: {},
+      });
+    }
 
     res.json({ message: 'Password reset successful' });
   }),
@@ -247,11 +263,13 @@ export const authController = {
   logout: asyncHandler(async (req: Request, res: Response) => {
     // In a real implementation, you might want to blacklist the token
     // For now, we'll just log the logout event
-    await analyticsQueue.add('track-event', {
-      event: 'user_logout',
-      userId: req.user!.id,
-      data: {},
-    });
+    if (analyticsQueue) {
+      await analyticsQueue.add('track-event', {
+        event: 'user_logout',
+        userId: req.user!.id,
+        data: {},
+      });
+    }
 
     res.json({ message: 'Logged out successfully' });
   }),
