@@ -86,21 +86,30 @@ app.post('/create-tables-emergency', async (req, res) => {
     }
     
     // Create essential tables for auth to work
-    await prisma.$executeRaw`
-      CREATE TYPE IF NOT EXISTS "Role" AS ENUM ('TEACHER', 'ADMIN', 'PARENT', 'SUPER_ADMIN');
-    `;
+    // PostgreSQL doesn't support IF NOT EXISTS for types, so we'll handle errors
+    try {
+      await prisma.$executeRaw`
+        CREATE TYPE "Role" AS ENUM ('TEACHER', 'ADMIN', 'PARENT', 'SUPER_ADMIN');
+      `;
+    } catch (e) {}
     
-    await prisma.$executeRaw`
-      CREATE TYPE IF NOT EXISTS "TeachingLevel" AS ENUM ('EARLY_YEARS', 'ELEMENTARY', 'JUNIOR_HIGH', 'HIGH_SCHOOL', 'UNIVERSITY');
-    `;
+    try {
+      await prisma.$executeRaw`
+        CREATE TYPE "TeachingLevel" AS ENUM ('EARLY_YEARS', 'ELEMENTARY', 'JUNIOR_HIGH', 'HIGH_SCHOOL', 'UNIVERSITY');
+      `;
+    } catch (e) {}
     
-    await prisma.$executeRaw`
-      CREATE TYPE IF NOT EXISTS "SubscriptionType" AS ENUM ('FREE', 'INDIVIDUAL', 'SCHOOL', 'GOVERNMENT');
-    `;
+    try {
+      await prisma.$executeRaw`
+        CREATE TYPE "SubscriptionType" AS ENUM ('FREE', 'INDIVIDUAL', 'SCHOOL', 'GOVERNMENT');
+      `;
+    } catch (e) {}
     
-    await prisma.$executeRaw`
-      CREATE TYPE IF NOT EXISTS "SubscriptionPlan" AS ENUM ('STARTER', 'FULL', 'PREMIUM');
-    `;
+    try {
+      await prisma.$executeRaw`
+        CREATE TYPE "SubscriptionPlan" AS ENUM ('STARTER', 'FULL', 'PREMIUM');
+      `;
+    } catch (e) {}
     
     await prisma.$executeRaw`
       CREATE TABLE IF NOT EXISTS "User" (
