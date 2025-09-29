@@ -28,39 +28,49 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(rateLimiter);
 
 // Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV 
-  });
-});
-
-// Debug endpoint to test database and basic functionality
-app.post('/test-register', async (req, res) => {
+app.get('/health', async (req, res) => {
   try {
-    const { email } = req.body;
-    
-    // Test 1: Database connection
-    const dbTest = await prisma.$queryRaw`SELECT 1+1 as result`;
-    
-    // Test 2: Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: email || 'test@example.com' }
-    });
-    
-    res.json({
-      success: true,
-      dbConnected: true,
-      userExists: !!existingUser,
-      requestBody: req.body,
-      headers: req.headers.origin
+    // Try to count users in database
+    const userCount = await prisma.user.count();
+    res.json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      database: 'connected',
+      userCount
     });
   } catch (error: any) {
-    res.status(500).json({
+    res.json({ 
+      status: 'error', 
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      database: 'error',
+      error: error.message
+    });
+  }
+});
+
+// Migration status check
+app.get('/db-status', async (req, res) => {
+  try {
+    // Check if tables exist by listing them
+    const tables = await prisma.$queryRaw`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      ORDER BY table_name;
+    `;
+    
+    res.json({
+      databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
+      tables,
+      tableCount: Array.isArray(tables) ? tables.length : 0
+    });
+  } catch (error: any) {
+    res.json({
       error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-      type: error.constructor.name
+      code: error.code,
+      databaseUrl: process.env.DATABASE_URL ? 'SET' : 'NOT SET'
     });
   }
 });
