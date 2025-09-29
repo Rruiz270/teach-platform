@@ -124,7 +124,21 @@ class AuthService {
       return authData
     } catch (error: any) {
       console.error('Registration error:', error.response?.data || error.message)
-      throw new Error(error.response?.data?.message || 'Erro ao criar conta')
+      
+      // Preserve original error structure for better error handling
+      if (error.response?.data?.error?.message) {
+        const errorMessage = error.response.data.error.message
+        const newError = new Error(errorMessage)
+        ;(newError as any).response = error.response // Preserve response for detailed error handling
+        throw newError
+      } else if (error.response?.data?.details) {
+        // Validation errors
+        const newError = new Error('Validation failed')
+        ;(newError as any).response = error.response
+        throw newError
+      } else {
+        throw new Error(error.response?.data?.message || 'Erro ao criar conta')
+      }
     }
   }
 

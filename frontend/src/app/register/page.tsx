@@ -102,12 +102,17 @@ export default function RegisterPage() {
     } catch (err: any) {
       console.error('Registration error:', err)
       
-      // Handle validation errors from backend
+      // Handle different types of errors from backend
       if (err.response?.data?.details) {
+        // Validation errors (400)
         const validationErrors = err.response.data.details
         const firstError = validationErrors[0]
-        setError(`${firstError.field}: ${firstError.message}`)
+        setError(`Erro: ${firstError.message}`)
+      } else if (err.response?.data?.error?.message) {
+        // Other API errors (409, etc.)
+        setError(err.response.data.error.message)
       } else {
+        // Network or unknown errors
         setError(err.message || 'Erro ao criar conta')
       }
     } finally {
