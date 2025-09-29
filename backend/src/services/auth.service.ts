@@ -50,39 +50,39 @@ export const authService = {
           },
         });
 
-        // Create initial notification
-        await tx.notification.create({
-          data: {
-            userId: newUser.id,
-            title: 'Welcome to TEACH!',
-            message: 'Start your AI education journey by exploring the Starter module.',
-            type: 'WELCOME',
-          },
-        });
+        // TODO: Enable when Notification table exists
+        // await tx.notification.create({
+        //   data: {
+        //     userId: newUser.id,
+        //     title: 'Welcome to TEACH!',
+        //     message: 'Start your AI education journey by exploring the Starter module.',
+        //     type: 'WELCOME',
+        //   },
+        // });
 
-        // Award first badge
-        const welcomeBadge = await tx.badge.findFirst({
-          where: { name: 'AI Pioneer' },
-        });
+        // TODO: Enable when Badge tables exist
+        // const welcomeBadge = await tx.badge.findFirst({
+        //   where: { name: 'AI Pioneer' },
+        // });
 
-        if (welcomeBadge) {
-          await tx.userBadge.create({
-            data: {
-              userId: newUser.id,
-              badgeId: welcomeBadge.id,
-            },
-          });
+        // if (welcomeBadge) {
+        //   await tx.userBadge.create({
+        //     data: {
+        //       userId: newUser.id,
+        //       badgeId: welcomeBadge.id,
+        //     },
+        //   });
 
-          await tx.notification.create({
-            data: {
-              userId: newUser.id,
-              title: 'Badge Earned!',
-              message: 'You earned the AI Pioneer badge for joining TEACH!',
-              type: 'BADGE_EARNED',
-              data: { badgeId: welcomeBadge.id, badgeName: welcomeBadge.name },
-            },
-          });
-        }
+        //   await tx.notification.create({
+        //     data: {
+        //       userId: newUser.id,
+        //       title: 'Badge Earned!',
+        //       message: 'You earned the AI Pioneer badge for joining TEACH!',
+        //       type: 'BADGE_EARNED',
+        //       data: { badgeId: welcomeBadge.id, badgeName: welcomeBadge.name },
+        //     },
+        //   });
+        // }
 
         logger.info(`User created successfully: ${email}`);
         return newUser;
