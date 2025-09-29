@@ -19,10 +19,26 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || process.env.FRONTEND_URL?.split(',') || ['http://localhost:3000'],
+
+// Dynamic CORS configuration to accept all Vercel preview deployments
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || [];
+    
+    // Allow all teach-platform Vercel deployments
+    if (!origin || 
+        allowedOrigins.includes(origin) || 
+        origin.includes('teach-platform') && origin.includes('vercel.app') ||
+        origin.includes('localhost')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(rateLimiter);
