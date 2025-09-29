@@ -223,6 +223,35 @@ app.post('/test-simple-register', async (req, res) => {
   }
 });
 
+// Debug: List all users (TEMPORARY - REMOVE AFTER DEBUG)
+app.get('/debug-users', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        createdAt: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+    
+    res.json({ 
+      userCount: users.length,
+      users: users.map(u => ({
+        id: u.id.substring(0, 8) + '...',
+        email: u.email,
+        role: u.role,
+        created: u.createdAt
+      }))
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // API Routes
 setupRoutes(app);
 
