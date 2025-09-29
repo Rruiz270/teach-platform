@@ -33,14 +33,8 @@ export interface User {
 export interface AuthResponse {
   user: User
   tokens: {
-    access: {
-      token: string
-      expires: string
-    }
-    refresh: {
-      token: string
-      expires: string
-    }
+    accessToken: string
+    refreshToken: string
   }
 }
 
@@ -78,7 +72,7 @@ class AuthService {
 
           try {
             const newTokens = await this.refreshToken()
-            originalRequest.headers.Authorization = `Bearer ${newTokens.access.token}`
+            originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`
             return this.axiosInstance(originalRequest)
           } catch (refreshError) {
             this.logout()
@@ -200,16 +194,16 @@ class AuthService {
   }
 
   private setTokens(tokens: AuthResponse['tokens']): void {
-    // Set access token (shorter expiry)
-    Cookies.set('accessToken', tokens.access.token, {
-      expires: new Date(tokens.access.expires),
+    // Set access token (30 days expiry since backend doesn't provide expires time)
+    Cookies.set('accessToken', tokens.accessToken, {
+      expires: 30,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax'
     })
 
-    // Set refresh token (longer expiry)
-    Cookies.set('refreshToken', tokens.refresh.token, {
-      expires: new Date(tokens.refresh.expires),
+    // Set refresh token (90 days expiry)
+    Cookies.set('refreshToken', tokens.refreshToken, {
+      expires: 90,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax'
     })
