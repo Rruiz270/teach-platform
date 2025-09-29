@@ -166,10 +166,19 @@ export default function DashboardPage() {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Seus Módulos</CardTitle>
-                <CardDescription>
-                  Continue sua jornada de aprendizado em IA
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Seus Módulos</CardTitle>
+                    <CardDescription>
+                      Continue sua jornada de aprendizado em IA
+                    </CardDescription>
+                  </div>
+                  <Link href="/modules">
+                    <Button variant="outline" size="sm">
+                      Ver Todos
+                    </Button>
+                  </Link>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 {modules.map((module) => (
@@ -203,13 +212,15 @@ export default function DashboardPage() {
                     </div>
                     
                     {module.status !== 'locked' && (
-                      <Button 
-                        className="mt-3 w-full" 
-                        variant={module.status === 'completed' ? 'outline' : 'default'}
-                      >
-                        {module.status === 'completed' ? 'Revisar' : 'Continuar'}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+                      <Link href={`/modules/${module.id}`}>
+                        <Button 
+                          className="mt-3 w-full" 
+                          variant={module.status === 'completed' ? 'outline' : 'default'}
+                        >
+                          {module.status === 'completed' ? 'Revisar' : 'Continuar'}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
                     )}
                   </div>
                 ))}
@@ -240,18 +251,24 @@ export default function DashboardPage() {
                 <CardTitle>Ações Rápidas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full" variant="outline">
-                  <Users className="mr-2 h-4 w-4" />
-                  Fórum da Comunidade
-                </Button>
-                <Button className="w-full" variant="outline">
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  Biblioteca de Recursos
-                </Button>
-                <Button className="w-full teach-gradient text-white">
-                  <Trophy className="mr-2 h-4 w-4" />
-                  Ver Certificados
-                </Button>
+                <Link href="/forum">
+                  <Button className="w-full" variant="outline">
+                    <Users className="mr-2 h-4 w-4" />
+                    Fórum da Comunidade
+                  </Button>
+                </Link>
+                <Link href="/library">
+                  <Button className="w-full" variant="outline">
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Biblioteca de Recursos
+                  </Button>
+                </Link>
+                <Link href="/certificates">
+                  <Button className="w-full teach-gradient text-white">
+                    <Trophy className="mr-2 h-4 w-4" />
+                    Ver Certificados
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
