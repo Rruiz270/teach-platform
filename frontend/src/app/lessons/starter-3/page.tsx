@@ -103,7 +103,7 @@ Na vasta selva de ferramentas de IA disponíveis, **escolher as certas** faz tod
 #### Prompts Essenciais para Professores
 
 **🎯 Criação de Planos de Aula**
-\\`\\`\\`
+\`\`\`
 Você é um especialista em pedagogia brasileira. Crie um plano de aula de [DISCIPLINA] para [ANO/SÉRIE] sobre [TÓPICO].
 
 Inclua:
@@ -115,10 +115,10 @@ Inclua:
 - Adaptações para diferentes ritmos de aprendizagem
 
 Contexto: escola [pública/privada] em [cidade/região]
-\\`\\`\\`
+\`\`\`
 
 **📝 Geração de Exercícios**
-\\`\\`\\`
+\`\`\`
 Crie 10 exercícios de [DISCIPLINA] para [SÉRIE] sobre [CONTEÚDO]:
 
 Formato:
@@ -131,10 +131,10 @@ Cada questão deve:
 - Incluir situação-problema real
 - Variar tipos (múltipla escolha, discursiva, prática)
 - Indicar habilidade BNCC correspondente
-\\`\\`\\`
+\`\`\`
 
 **📖 Explicações Didáticas**
-\\`\\`\\`
+\`\`\`
 Explique [CONCEITO] para alunos de [IDADE/SÉRIE] usando:
 
 1. Linguagem adequada à faixa etária
@@ -144,7 +144,7 @@ Explique [CONCEITO] para alunos de [IDADE/SÉRIE] usando:
 5. Perguntas reflexivas ao final
 
 Foque na compreensão, não memorização.
-\\`\\`\\`
+\`\`\`
 
 #### Dicas Avançadas ChatGPT
 - **Role Definition**: Sempre defina o papel da IA ("Você é um professor experiente...")
@@ -162,7 +162,7 @@ Foque na compreensão, não memorização.
 
 #### Melhor Uso para Educadores
 **Correção de Redações**
-\\`\\`\\`
+\`\`\`
 Analise esta redação de um aluno do [ANO]:
 
 [TEXTO DO ALUNO]
@@ -175,7 +175,7 @@ Forneça:
 5. Feedback motivacional personalizado
 
 Critérios: estrutura textual, gramática, coerência, criatividade, atendimento ao tema
-\\`\\`\\`
+\`\`\`
 
 ### 🔍 Perplexity - Pesquisa Inteligente
 
@@ -187,7 +187,7 @@ Critérios: estrutura textual, gramática, coerência, criatividade, atendimento
 
 #### Uso Prático
 **Atualização de Conteúdo**
-\\`\\`\\`
+\`\`\`
 Pesquise as descobertas mais recentes sobre [TÓPICO] adequadas para ensino médio. 
 
 Inclua:
@@ -196,7 +196,7 @@ Inclua:
 - Aplicações práticas
 - Fontes acadêmicas citadas
 - Sugestões de experimentos/atividades
-\\`\\`\\`
+\`\`\`
 
 ### 📊 Google Bard - Integração Google
 
@@ -286,11 +286,11 @@ Inclua:
 - **Diagramas** científicos customizados
 
 #### Prompts Educacionais Eficazes
-\\`\\`\\`
+\`\`\`
 "Ilustração didática mostrando [CONCEITO] para crianças de [IDADE], estilo cartoon colorido, fundo simples, elementos educacionais claros"
 
 "Infográfico sobre [PROCESSO CIENTÍFICO], diagrama limpo, cores contrastantes, texto legível, apropriado para sala de aula"
-\\`\\`\\`
+\`\`\`
 
 ## 5. Ferramentas de Avaliação e Feedback
 
@@ -910,7 +910,7 @@ Dominar essas ferramentas não é mais opcional - é **essencial** para o educad
                       .replace(/### /g, '<h3>')
                       .replace(/## /g, '<h2>')
                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/```(.*?)```/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
+                      .replace(/\`\`\`(.*?)\`\`\`/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
                   }} />
                 </div>
                 

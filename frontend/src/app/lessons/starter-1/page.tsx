@@ -114,9 +114,9 @@ export default function StarterLesson1Page() {
 ## 3. Como a IA Funciona (Simplificado)
 
 ### Machine Learning (Aprendizado de Máquina)
-```
+\`\`\`
 DADOS → ALGORITMO → MODELO → PREDIÇÕES
-```
+\`\`\`
 
 **Exemplo Prático:**
 1. **Dados**: 10.000 redações de alunos com notas

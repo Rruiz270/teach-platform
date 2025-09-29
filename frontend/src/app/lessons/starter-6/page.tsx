@@ -133,7 +133,7 @@ Adicione toque pessoal:
 #### Escolha do Tópico
 Use este prompt para brainstorming:
 
-```
+\`\`\`
 Você é um especialista em engajamento estudantil e inovação pedagógica.
 
 CONTEXTO: Sou professor(a) de [SUA DISCIPLINA] para [SÉRIE/ANO] em [TIPO DE ESCOLA] em [SUA CIDADE]. Quero criar uma aula memorável que os alunos nunca esqueçam.
@@ -157,12 +157,12 @@ CRITÉRIOS:
 - Viabilidade prática
 - Oportunidade de usar IA criativamente
 - Relevância para a vida dos alunos
-```
+\`\`\`
 
 #### Definindo Objetivos
 Após escolher o tópico, use este template:
 
-```
+\`\`\`
 PROJETO: Plano de aula sobre [TÓPICO ESCOLHIDO]
 
 OBJETIVO GERAL (em 1 frase):
@@ -184,12 +184,12 @@ RESULTADOS ESPERADOS:
 - Conhecimento: [o que saberão]
 - Habilidades: [o que conseguirão fazer]
 - Atitudes: [como se comportarão]
-```
+\`\`\`
 
 ### Análise do Contexto
 
 #### Mapeamento da Turma
-```
+\`\`\`
 DIAGNÓSTICO DA TURMA:
 
 PERFIL ACADÊMICO:
@@ -212,14 +212,14 @@ RECURSOS DISPONÍVEIS:
 - Físicos: [espaço, materiais]
 - Temporais: [duração, frequência]
 - Humanos: [apoio, parcerias]
-```
+\`\`\`
 
 ## 4. Fase 2: Criação com IA (30 minutos)
 
 ### Estruturação do Plano
 
 #### Prompt Master para Plano Completo
-```
+\`\`\`
 Você é um pedagogo renomado especialista em metodologias ativas e uso estratégico de tecnologia na educação.
 
 PROJETO: Aula sobre [SEU TÓPICO] para [SUA TURMA]
@@ -267,12 +267,12 @@ DIFERENCIAIS OBRIGATÓRIOS:
 - Conexão com realidade dos alunos
 - Momentos de metacognição
 - Avaliação formativa contínua
-```
+\`\`\`
 
 ### Criação de Atividades Diferenciadas
 
 #### Prompt para Múltiplos Níveis
-```
+\`\`\`
 Agora, para a atividade principal da Estação 2 [Prática], crie 3 versões diferenciadas:
 
 **VERSÃO BÁSICA** (para alunos com mais dificuldade):
@@ -301,12 +301,12 @@ IMPORTANTE: Todas as versões devem:
 - Ser visualmente similares (sem constrangimento)
 - Permitir transição entre níveis
 - Levar ao mesmo produto final (adaptado)
-```
+\`\`\`
 
 ### Materiais Visuais com Canva
 
 #### Criando Visuais Profissionais
-```
+\`\`\`
 MATERIAIS VISUAIS NECESSÁRIOS:
 
 1. **SLIDE DE ABERTURA**
@@ -328,10 +328,10 @@ MATERIAIS VISUAIS NECESSÁRIOS:
    - Rubrica visual simples
    - Autoavaliação para alunos
    - Espaço para feedback do professor
-```
+\`\`\`
 
 **Prompt para Canva Magic Design:**
-```
+\`\`\`
 Crie slide de abertura para aula de [DISCIPLINA] sobre [TÓPICO] para alunos de [IDADE]. 
 
 Elementos obrigatórios:
@@ -342,14 +342,14 @@ Elementos obrigatórios:
 - Estilo: Moderno, educacional, engajante
 
 Tom: Entusiasmado mas sério, jovem mas respeitoso
-```
+\`\`\`
 
 ## 5. Fase 3: Refinamento e Humanização (20 minutos)
 
 ### Adicionando Sua Marca Pessoal
 
 #### Checklist de Humanização
-```
+\`\`\`
 ✅ CONEXÃO PESSOAL:
 - [ ] Inclui exemplo da minha experiência pessoal
 - [ ] Menciona referência que os alunos conhecem
@@ -373,10 +373,10 @@ Tom: Entusiasmado mas sério, jovem mas respeitoso
 - [ ] Inclui momentos de humor apropriado
 - [ ] Cria conexões inesperadas
 - [ ] Personaliza para meu estilo de ensino
-```
+\`\`\`
 
 ### Prompt de Refinamento Final
-```
+\`\`\`
 Agora vou compartilhar o plano que criei com IA. Por favor, ajude-me a refiná-lo considerando estas informações adicionais sobre mim e minha turma:
 
 SOBRE MIM COMO PROFESSOR:
@@ -399,14 +399,14 @@ TAREFA: Refine este plano adicionando:
 5. Estratégias para casos específicos que antecipo
 
 Mantenha a estrutura sólida, mas humanize completamente.
-```
+\`\`\`
 
 ## 6. Fase 4: Criação de Instrumentos de Avaliação (15 minutos)
 
 ### Avaliação Formativa Integrada
 
 #### Rubrica Visual Simplificada
-```
+\`\`\`
 Crie rubrica de avaliação para minha aula sobre [TÓPICO] seguindo este formato:
 
 **CRITÉRIO 1: [CONHECIMENTO]**
@@ -430,10 +430,10 @@ Crie rubrica de avaliação para minha aula sobre [TÓPICO] seguindo este format
 😐 PRECISA MELHORAR: [Encorajamento para arriscar]
 
 FORMATO: Visual, colorido, linguagem positiva, foco no crescimento
-```
+\`\`\`
 
 #### Autoavaliação dos Alunos
-```
+\`\`\`
 **MEU APRENDIZADO HOJE**
 
 🎯 OBJETIVO: Eu entendo [OBJETIVO DA AULA]?
@@ -456,12 +456,12 @@ FORMATO: Visual, colorido, linguagem positiva, foco no crescimento
 
 💌 RECADO PARA O PROFESSOR:
 [Espaço livre para feedback]
-```
+\`\`\`
 
 ### Google Forms Automatizado
 
 #### Prompt para Formulário de Feedback
-```
+\`\`\`
 Crie questionário no Google Forms para coletar feedback da minha aula sobre [TÓPICO]:
 
 **SEÇÃO 1: AUTOAVALIAÇÃO DO APRENDIZADO**
@@ -488,14 +488,14 @@ CONFIGURAÇÕES:
 - Obrigatório apenas perguntas essenciais
 - Design colorido e amigável
 - Tempo estimado: 3-5 minutos
-```
+\`\`\`
 
 ## 7. Fase 5: Implementação e Teste (10 minutos de preparação)
 
 ### Checklist Pré-Aplicação
 
 #### Preparação Técnica
-```
+\`\`\`
 ✅ RECURSOS DIGITAIS:
 - [ ] Slides carregados e testados
 - [ ] Vídeos funcionando
@@ -516,10 +516,10 @@ CONFIGURAÇÕES:
 - [ ] Instruções claras
 - [ ] Energia positiva
 - [ ] Flexibilidade mental
-```
+\`\`\`
 
 #### Estratégias de Implementação
-```
+\`\`\`
 **ANTES DA AULA:**
 - Chegar 10 minutos antes
 - Testar todos os equipamentos
@@ -540,14 +540,14 @@ CONFIGURAÇÕES:
 - Coletar materiais produzidos pelos alunos
 - Refletir sobre sucessos e desafios
 - Planejar ajustes para próxima aplicação
-```
+\`\`\`
 
 ## 8. Fase 6: Análise e Refinamento
 
 ### Coletando Evidências de Sucesso
 
 #### Métricas Quantitativas
-```
+\`\`\`
 DADOS OBJETIVOS:
 
 ENGAJAMENTO:
@@ -567,10 +567,10 @@ GESTÃO:
 - Número de interrupções/dúvidas: ___
 - Transições (suaves/atrapalhadas): ___
 - Uso efetivo do tempo: ___%
-```
+\`\`\`
 
 #### Métricas Qualitativas
-```
+\`\`\`
 OBSERVAÇÕES COMPORTAMENTAIS:
 
 MOMENTOS DE SUCESSO:
@@ -590,10 +590,10 @@ FEEDBACK DOS ALUNOS:
 - Sugestões de melhoria
 - Pedidos de repetição/continuação
 - Expressões não-verbais
-```
+\`\`\`
 
 ### Prompt de Análise Crítica
-```
+\`\`\`
 Análise minha primeira experiência com plano de aula criado com IA:
 
 CONTEXTO:
@@ -634,7 +634,7 @@ TAREFA: Como especialista em análise pedagógica, forneça:
    - Versão melhorada do plano original
    - Ajustes baseados na experiência real
    - Checklist personalizado
-```
+\`\`\`
 
 ## 9. Criando Seu Template Pessoal Definitivo
 
@@ -643,7 +643,7 @@ TAREFA: Como especialista em análise pedagógica, forneça:
 Com base na experiência real, agora você criará seu **Template Master** pessoal:
 
 #### Estrutura do Template Personalizado
-```
+\`\`\`
 # MEU TEMPLATE MASTER: PLANOS COM IA
 
 ## FASE 1: ANÁLISE DE CONTEXTO (5 min)
@@ -681,7 +681,7 @@ BANCO DE RECURSOS:
 - [Links de ferramentas favoritas]
 - [Prompts salvos]
 - [Templates visuais]
-```
+\`\`\`
 
 ## 10. Celebrando Sua Transformação
 
@@ -714,7 +714,7 @@ BANCO DE RECURSOS:
 
 ### Seu Certificado de Transformação
 
-```
+\`\`\`
 🏆 CERTIFICADO DE CONCLUSÃO 🏆
 
 TEACH PLATFORM - MÓDULO STARTER
@@ -740,7 +740,7 @@ um professor por vez."
 AI MAESTRO
 Especialista em IA Educacional
 TEACH Platform
-```
+\`\`\`
 
 ### Próximos Passos na Sua Jornada
 
@@ -1158,7 +1158,7 @@ Cada aula que você criar com IA não beneficia apenas seus alunos hoje, mas con
                       .replace(/### /g, '<h3>')
                       .replace(/## /g, '<h2>')
                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/```(.*?)```/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
+                      .replace(/\`\`\`(.*?)\`\`\`/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
                   }} />
                 </div>
                 

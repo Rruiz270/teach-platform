@@ -873,7 +873,7 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
                       .replace(/### /g, '<h3>')
                       .replace(/## /g, '<h2>')
                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/```(.*?)```/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
+                      .replace(/\`\`\`(.*?)\`\`\`/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
                   }} />
                 </div>
                 

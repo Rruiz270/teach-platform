@@ -81,13 +81,13 @@ A diferença entre um **prompt medíocre** e um **prompt extraordinário** pode 
 O ChatGPT não pensa como humanos - ele funciona através de **padrões estatísticos** em texto. Entender isso é fundamental:
 
 #### Como a IA Processa Seu Prompt
-```
+\`\`\`
 1. ANÁLISE → Quebra seu texto em tokens (palavras/partes)
 2. CONTEXTO → Busca padrões similares no treinamento 
 3. PROBABILIDADE → Calcula próximas palavras mais prováveis
 4. GERAÇÃO → Produz resposta baseada em estatísticas
 5. REFINAMENTO → Ajusta baseado no contexto completo
-```
+\`\`\`
 
 #### Implicações Práticas para Educadores
 - **Clareza** é mais importante que brevidade
@@ -109,9 +109,9 @@ Defina **exatamente** quem a IA deve ser:
 Forneça **contexto detalhado** da situação:
 
 ✅ **Contexto Rico:**
-```
+\`\`\`
 Contexto: Leciono para 35 alunos de 8º ano em escola pública de Recife. A turma tem perfil misto: 40% com dificuldade em operações básicas, 30% no nível adequado, 30% avançados. Tenho 50 minutos de aula, quadro branco, projetor básico e acesso limitado à internet.
-```
+\`\`\`
 
 #### **E** - Especificação da Tarefa
 Use **verbos de ação precisos**:
@@ -128,20 +128,20 @@ Use **verbos de ação precisos**:
 Estabeleça **padrões específicos**:
 
 ✅ **Critérios Claros:**
-```
+\`\`\`
 Critérios:
 - Linguagem adequada para 13-14 anos
 - Exemplos do cotidiano brasileiro
 - Alinhamento com habilidade BNCC EF08MA06
 - Progressão gradual de dificuldade
 - Inclusão de verificação de compreensão
-```
+\`\`\`
 
 #### **I** - Instruções de Formato
 Especifique **exatamente** como quer a resposta:
 
 ✅ **Formato Estruturado:**
-```
+\`\`\`
 Formato:
 1. Título da atividade
 2. Objetivo em 1 frase
@@ -150,33 +150,33 @@ Formato:
 5. Tempo estimado para cada etapa
 6. 3 perguntas de verificação
 7. Adaptação para alunos com dificuldade
-```
+\`\`\`
 
 #### **S** - Segmentação (se necessário)
 Para tarefas complexas, **quebre em etapas**:
 
 ✅ **Abordagem Segmentada:**
-```
+\`\`\`
 Primeira resposta: Foque apenas no planejamento geral
 Segunda resposta: Desenvolva a primeira atividade detalhadamente
 Terceira resposta: Crie material de apoio visual
-```
+\`\`\`
 
 #### **O** - Otimização Específica
 Adicione **instruções especiais** para seu contexto:
 
 ✅ **Otimizações Práticas:**
-```
+\`\`\`
 Considerações especiais:
 - Alguns alunos têm TDAH (incluir pausas)
 - Turma é agitada às 6ª aulas (atividade mais dinâmica)
 - Período pós-recreio (começar com ativação)
 - Preparar para alunos que terminam mais rápido
-```
+\`\`\`
 
 ### Template Master P.R.E.C.I.S.O
 
-```
+\`\`\`
 PAPEL: Você é um [especialista específico com características detalhadas]
 
 REALIDADE: [Contexto detalhado: onde, quando, com quem, que recursos, que limitações]
@@ -194,7 +194,7 @@ INSTRUÇÕES DE FORMATO:
 SEGMENTAÇÃO: [Se aplicável - dividir em etapas]
 
 OTIMIZAÇÃO: [Considerações especiais do seu contexto]
-```
+\`\`\`
 
 ## 3. Técnicas Avançadas de Prompt Engineering
 
@@ -214,7 +214,7 @@ Pedir para a IA **"mostrar o raciocínio"** passo a passo.
 "Crie uma sequência de 3 aulas sobre frações"
 
 ✅ **Com Chain of Thought:**
-```
+\`\`\`
 Crie uma sequência de 3 aulas sobre frações para 6º ano. 
 
 IMPORTANTE: Antes de criar as aulas, explique seu raciocínio:
@@ -224,7 +224,7 @@ IMPORTANTE: Antes de criar as aulas, explique seu raciocínio:
 4. Como cada aula prepara a próxima?
 
 Depois, baseado nesse raciocínio, desenvolva as 3 aulas detalhadamente.
-```
+\`\`\`
 
 ### Técnica 2: Few-Shot Learning (Aprender com Exemplos)
 
@@ -237,7 +237,7 @@ Mostrar **2-3 exemplos** do padrão que você quer.
 - Elimina **95%** das tentativas de ajuste
 
 #### Template Few-Shot:
-```
+\`\`\`
 Crie exercícios de [matéria] seguindo este padrão:
 
 EXEMPLO 1:
@@ -250,10 +250,10 @@ EXEMPLO 3:
 [Outra variação]
 
 Agora crie 5 exercícios seguindo exatamente este padrão para [contexto específico].
-```
+\`\`\`
 
 #### Caso Prático - Exercícios de História:
-```
+\`\`\`
 Crie questões de História seguindo este padrão:
 
 EXEMPLO 1:
@@ -269,7 +269,7 @@ NÍVEL: Síntese (Bloom)
 RESPOSTA ESPERADA: Industrialização, imigração, crescimento urbano, etc.
 
 Agora crie 5 questões neste mesmo padrão sobre a Era Vargas.
-```
+\`\`\`
 
 ### Técnica 3: Role-Playing Específico
 
@@ -277,11 +277,11 @@ Agora crie 5 questões neste mesmo padrão sobre a Era Vargas.
 Não apenas "você é um professor", mas **role-playing detalhado**:
 
 ✅ **Role-Playing Avançado:**
-```
+\`\`\`
 Você é Maria Silva, professora de português há 12 anos na EMEF Jardim Primavera em São Paulo. Você conhece bem os desafios de ensinar 35 alunos de 7º ano, muitos filhos de imigrantes bolivianos e haitianos. Sua especialidade é desenvolver leitura crítica usando metodologias ativas. Você sempre adapta o conteúdo para a realidade multicultural da sua turma.
 
 Como a professora Maria Silva, crie...
-```
+\`\`\`
 
 #### Por que Funciona?
 - IA "incorpora" experiências específicas
@@ -294,19 +294,19 @@ Como a professora Maria Silva, crie...
 #### Processo de 3 Etapas:
 
 **Etapa 1 - Brainstorming:**
-```
+\`\`\`
 Faça um brainstorm de 10 ideias para ensinar [tópico] de forma criativa para [contexto]
-```
+\`\`\`
 
 **Etapa 2 - Desenvolvimento:**
-```
+\`\`\`
 Pegue a ideia #3 da lista anterior e desenvolva completamente, incluindo [especificações]
-```
+\`\`\`
 
 **Etapa 3 - Otimização:**
-```
+\`\`\`
 Agora ajuste essa atividade considerando que alguns alunos têm [característica específica]
-```
+\`\`\`
 
 ### Técnica 5: Constraint-Based Prompting (Limitações Criativas)
 
@@ -314,12 +314,12 @@ Agora ajuste essa atividade considerando que alguns alunos têm [característica
 Dar **limitações específicas** que forçam criatividade.
 
 #### Exemplos Poderosos:
-```
+\`\`\`
 ✅ "Ensine sistema solar usando APENAS objetos da cozinha"
 ✅ "Explique democracia através de uma receita de bolo"
 ✅ "Crie exercício de matemática que funcione APENAS com celular"
 ✅ "Ensine fotossíntese como se fosse uma história de super-herói"
-```
+\`\`\`
 
 #### Por que Funciona?
 - Limitações estimulam **soluções criativas**
@@ -332,7 +332,7 @@ Dar **limitações específicas** que forçam criatividade.
 ### 📚 Português - Templates Comprovados
 
 #### Template 1: Análise Literária Engajante
-```
+\`\`\`
 PAPEL: Você é um professor de literatura especialista em conectar clássicos com a realidade dos adolescentes.
 
 REALIDADE: Ensino [obra] para [série] em [tipo de escola]. Meus alunos têm dificuldade para ver relevância nos clássicos e se sentem distantes da linguagem/época.
@@ -352,10 +352,10 @@ FORMATO:
 3. Atividade interativa (debate/encenação/criação)
 4. Fechamento reflexivo
 5. Avaliação da compreensão
-```
+\`\`\`
 
 #### Template 2: Produção Textual Contextualizada
-```
+\`\`\`
 Crie uma proposta de redação que:
 
 CONTEXTO: [Gênero textual] sobre [tema relevante] para [série]
@@ -370,12 +370,12 @@ ESTRUTURA OBRIGATÓRIA:
 DIFERENCIAL: A redação deve ter aplicação prática na vida dos alunos (será realmente enviada/publicada/usada).
 
 Exemplo: Carta para prefeito sobre problema real do bairro da escola.
-```
+\`\`\`
 
 ### 🔢 Matemática - Templates de Alta Performance
 
 #### Template 1: Problemas Contextualizados Brasileiros
-```
+\`\`\`
 PAPEL: Você é um especialista em contextualização matemática para a realidade brasileira.
 
 TAREFA: Crie [quantidade] problemas de [conteúdo] para [série] usando dados REAIS do Brasil.
@@ -396,10 +396,10 @@ FORMATO PARA CADA PROBLEMA:
 7. Possível discussão social/cidadã
 
 EXEMPLOS DE CONTEXTOS: Bolsa família, SUS, transporte público, energia elétrica, inflação, eleições, censo demográfico
-```
+\`\`\`
 
 #### Template 2: Sequência Didática Concreta-Abstrato
-```
+\`\`\`
 Crie sequência de 4 atividades para ensinar [conceito] seguindo progressão:
 
 ATIVIDADE 1 - CONCRETO: Manipulação física com objetos
@@ -414,12 +414,12 @@ PARA CADA ATIVIDADE:
 - Perguntas orientadoras
 - Possíveis dificuldades e soluções
 - Critério de "pronto para próxima etapa"
-```
+\`\`\`
 
 ### 🧪 Ciências - Templates de Investigação
 
 #### Template 1: Experimento Adaptado
-```
+\`\`\`
 PAPEL: Você é um professor de ciências especialista em experimentos com recursos limitados.
 
 DESAFIO: Adapte o experimento clássico de [conceito científico] para:
@@ -438,10 +438,10 @@ ENTREGUE:
 7. Variações para diferentes idades
 
 BÔNUS: Como transformar em competição saudável entre grupos
-```
+\`\`\`
 
 #### Template 2: Ciência e Problemas Locais
-```
+\`\`\`
 Conecte [conceito científico] com problema ambiental/social real de [sua região]:
 
 INVESTIGAÇÃO ORIENTADA:
@@ -454,12 +454,12 @@ INVESTIGAÇÃO ORIENTADA:
 7. Propostas de ação cidadã
 
 EXEMPLO: Poluição do ar + química atmosférica + medições na escola + propostas para secretaria de meio ambiente
-```
+\`\`\`
 
 ### 🌍 História/Geografia - Templates Críticos
 
 #### Template 1: Passado-Presente-Futuro
-```
+\`\`\`
 Crie aula sobre [evento/período histórico] usando estrutura:
 
 PARTE 1 - PASSADO (25%):
@@ -479,7 +479,7 @@ OBRIGATÓRIO:
 - Pensamento crítico estimulado
 
 PRODUTO FINAL: Alunos criam linha do tempo: passado → presente → cenários futuros
-```
+\`\`\`
 
 ## 5. Troubleshooting Avançado - Soluções para Problemas Reais
 
@@ -497,7 +497,7 @@ PRODUTO FINAL: Alunos criam linha do tempo: passado → presente → cenários f
 "Crie atividade para ensinar adição de frações"
 
 ✅ **Contexto Expandido:**
-```
+\`\`\`
 CONTEXTO ESPECÍFICO EXPANDIDO:
 
 ESCOLA: EMEF João da Silva, periferia de Salvador/BA
@@ -510,13 +510,13 @@ DESAFIOS: 8 alunos com defasagem em multiplicação básica
 OPORTUNIDADES: Turma colaborativa, gosta de competições
 
 Crie atividade para ensinar adição de frações com denominadores diferentes considerando TODOS esses aspectos.
-```
+\`\`\`
 
 ### 🚫 Problema: "Respostas Muito Longas ou Muito Curtas"
 
 #### Controle Preciso de Extensão:
 
-```
+\`\`\`
 ✅ Para respostas concisas:
 "Em exatamente 3 parágrafos"
 "Máximo 200 palavras"
@@ -531,13 +531,13 @@ Crie atividade para ensinar adição de frações com denominadores diferentes c
 "Em forma de checklist numerado"
 "Como conversa entre professor e aluno"
 "Formato de roteiro de aula passo a passo"
-```
+\`\`\`
 
 ### 🚫 Problema: "IA Sugere Recursos que Não Tenho"
 
 #### Solução: Limitação Prévia de Recursos
 
-```
+\`\`\`
 ✅ Especificação de Recursos:
 "Usando APENAS: quadro branco, papel sulfite, lápis colorido"
 "Sem acesso à internet durante a aula"
@@ -549,13 +549,13 @@ Crie atividade para ensinar adição de frações com denominadores diferentes c
 "Orçamento total: R$30 para 35 alunos"
 "Sem custo adicional para escola"
 "Materiais que alunos têm em casa"
-```
+\`\`\`
 
 ### 🚫 Problema: "Linguagem Inadequada para Minha Turma"
 
 #### Calibração Precisa de Linguagem:
 
-```
+\`\`\`
 ✅ Para Alunos:
 "Linguagem de adolescente de 14 anos da periferia de São Paulo"
 "Como você explicaria para seu irmão mais novo"
@@ -566,13 +566,13 @@ Crie atividade para ensinar adição de frações com denominadores diferentes c
 "Nível técnico de coordenação pedagógica"
 "Como em artigo de revista Nova Escola"
 "Linguagem de formação continuada do MEC"
-```
+\`\`\`
 
 ### 🚫 Problema: "Não Alinha com BNCC"
 
 #### Template BNCC-Compliance:
 
-```
+\`\`\`
 OBRIGATÓRIO - ALINHAMENTO BNCC:
 
 Habilidade específica: [Código BNCC]
@@ -587,7 +587,7 @@ Para cada atividade criada, explicite:
 5. Progressão esperada do aluno
 
 Modelo: "Esta atividade desenvolve EF07MA09 ao exigir que alunos [ação específica], contribuindo para competência geral 2 [raciocínio lógico] através de [metodologia específica]"
-```
+\`\`\`
 
 ## 6. Criando Seu Arsenal Pessoal de Templates
 
@@ -630,7 +630,7 @@ Documente:
 
 ### Template para Criar Templates
 
-```
+\`\`\`
 NOME DO TEMPLATE: [Título descritivo]
 
 QUANDO USAR:
@@ -654,14 +654,14 @@ RESULTADOS HISTÓRICOS:
 
 MELHORIAS POSSÍVEIS:
 [Lista de ajustes para testar]
-```
+\`\`\`
 
 ## 7. Prompts Avançados para Situações Específicas
 
 ### Categoria: Diferenciação Pedagógica
 
 #### Template para Múltiplos Níveis
-```
+\`\`\`
 DESAFIO DIFERENCIAÇÃO:
 
 Turma: [descrição]
@@ -681,12 +681,12 @@ REQUISITOS:
 - Possibilidade de colaboração entre grupos
 - Critérios de avaliação adaptados
 - Transição possível entre níveis durante atividade
-```
+\`\`\`
 
 ### Categoria: Gestão de Sala
 
 #### Template para Turmas Desafiadoras
-```
+\`\`\`
 PERFIL DA TURMA DESAFIADORA:
 [Descreva comportamentos específicos]
 
@@ -705,12 +705,12 @@ CRIE ESTRATÉGIA que inclua:
 6. Fechamento memorável (últimos 5 min)
 
 BACKUP PLANS: 3 estratégias se a turma não colaborar
-```
+\`\`\`
 
 ### Categoria: Inclusão e Acessibilidade
 
 #### Template Universal Design
-```
+\`\`\`
 CRIAÇÃO INCLUSIVA:
 
 Inclua automaticamente:
@@ -732,12 +732,12 @@ DIVERSIDADE SOCIOCULTURAL:
 - Diversidade cultural: [exemplos inclusivos]
 
 PRODUTO FINAL: Atividade naturalmente acessível a todos, sem segregação
-```
+\`\`\`
 
 ### Categoria: Avaliação Formativa
 
 #### Template para Feedback Contínuo
-```
+\`\`\`
 SISTEMA DE AVALIAÇÃO CONTÍNUA:
 
 Crie 5 pontos de verificação durante a aula:
@@ -755,13 +755,13 @@ PARA CADA CHECKPOINT:
 - Ajuste possível na aula
 
 OBJETIVO: Nunca chegar ao fim sem saber se aprenderam
-```
+\`\`\`
 
 ## 8. Prompts para Colaboração e Interdisciplinaridade
 
 ### Template para Projetos Interdisciplinares
 
-```
+\`\`\`
 PROJETO INTERDISCIPLINAR:
 
 TEMA CENTRAL: [Problema real/atual]
@@ -785,11 +785,11 @@ CONEXÃO REAL:
 - Possibilidade de impacto real
 - Parceiros externos (se possível)
 - Documentação do processo
-```
+\`\`\`
 
 ### Template para Trabalho em Equipe
 
-```
+\`\`\`
 FORMAÇÃO DE GRUPOS ESTRATÉGICA:
 
 CRITÉRIO DE AGRUPAMENTO: [heterogêneo/homogêneo por habilidade/interesse/aleatório]
@@ -809,7 +809,7 @@ PRESTAÇÃO DE CONTAS:
 - Autoavaliação: [critérios]
 
 CONFLITOS: Protocolo para resolução de problemas
-```
+\`\`\`
 
 ## 9. Ética Avançada em Prompting
 
@@ -846,7 +846,7 @@ CONFLITOS: Protocolo para resolução de problemas
 ### Transparência com Alunos
 
 #### Template para Explicar IA aos Alunos:
-```
+\`\`\`
 CONVERSA SOBRE IA:
 
 "Pessoal, vou explicar como uso inteligência artificial para melhorar nossas aulas:
@@ -867,7 +867,7 @@ VOCÊS PODEM:
 - Me ajudar a melhorar materiais criados
 
 IMPORTANTE: IA é ferramenta, professor é quem ensina"
-```
+\`\`\`
 
 ## 10. Medindo o Sucesso dos Seus Prompts
 
@@ -891,7 +891,7 @@ IMPORTANTE: IA é ferramenta, professor é quem ensina"
 
 ### Dashboard Pessoal de Prompts
 
-```
+\`\`\`
 TEMPLATE DE AVALIAÇÃO:
 
 PROMPT USADO: [copiar prompt completo]
@@ -912,7 +912,7 @@ STATUS:
 
 MELHORIAS IDENTIFICADAS:
 [Lista de ajustes para próxima vez]
-```
+\`\`\`
 
 ## Conclusão: Dominando a Arte dos Prompts Transformadores
 
@@ -1307,7 +1307,7 @@ Você não está apenas aprendendo uma nova ferramenta - você está se tornando
                       .replace(/### /g, '<h3>')
                       .replace(/## /g, '<h2>')
                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/```(.*?)```/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
+                      .replace(/\`\`\`(.*?)\`\`\`/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
                   }} />
                 </div>
                 

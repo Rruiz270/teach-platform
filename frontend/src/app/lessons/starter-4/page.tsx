@@ -126,7 +126,7 @@ O **ChatGPT** (Chat Generative Pre-trained Transformer) é um assistente de IA c
 ## 3. Explorando a Interface
 
 ### Layout Principal
-```
+\`\`\`
 ┌─────────────────────────────────────────┐
 │ [☰] Nova Conversa        [⚙️] Configurações│
 ├─────────────────────────────────────────┤
@@ -147,7 +147,7 @@ O **ChatGPT** (Chat Generative Pre-trained Transformer) é um assistente de IA c
 │ │                            [Enviar] │ │
 │ └─────────────────────────────────────┘ │
 └─────────────────────────────────────────┘
-```
+\`\`\`
 
 ### Elementos Principais
 
@@ -199,19 +199,19 @@ O **ChatGPT** (Chat Generative Pre-trained Transformer) é um assistente de IA c
 
 #### Template PAPEL-CONTEXTO-TAREFA-FORMATO
 
-```
+\`\`\`
 PAPEL: Você é um [especialista em X]
 CONTEXTO: Para [público-alvo] em [situação]
 TAREFA: [Ação específica que deseja]
 FORMATO: [Como quer a resposta organizada]
-```
+\`\`\`
 
 #### Exemplo Prático
 **Prompt Básico (Ineficaz):**
 "Crie exercícios de matemática"
 
 **Prompt Avançado (Eficaz):**
-```
+\`\`\`
 Você é um professor de matemática especialista em ensino fundamental.
 
 Contexto: Preciso de exercícios para alunos do 7º ano sobre equações do 1º grau, considerando que 40% da turma tem dificuldade com operações básicas.
@@ -223,7 +223,7 @@ Formato: Para cada exercício inclua:
 - Nível de dificuldade
 - Habilidade BNCC correspondente
 - Gabarito com resolução passo a passo
-```
+\`\`\`
 
 ### Elementos de um Prompt Poderoso
 
@@ -243,9 +243,9 @@ Formato: Para cada exercício inclua:
 - **Limitações**: Recursos, tempo, dificuldades
 
 **Exemplo Completo:**
-```
+\`\`\`
 Para alunos de 8º ano de escola pública em Fortaleza, que terão aula de 50 minutos, com acesso limitado à internet, sendo que 30% têm dificuldade de concentração.
-```
+\`\`\`
 
 #### 3. Tarefa Clara e Específica
 - **Verbo de ação**: Crie, analise, explique, compare
@@ -265,20 +265,20 @@ Para alunos de 8º ano de escola pública em Fortaleza, que terão aula de 50 mi
 - **Seções**: Dividir resposta em partes lógicas
 
 **Formatos Úteis:**
-```
+\`\`\`
 - Lista numerada com subitens
 - Tabela com colunas específicas
 - Template preenchível
 - Passo a passo detalhado
 - Checklist para implementação
-```
+\`\`\`
 
 ## 5. Prompts Essenciais para Educadores
 
 ### 🎯 Categoria 1: Planejamento de Aulas
 
 #### Prompt: Plano de Aula Completo
-```
+\`\`\`
 Você é um pedagogo especialista em planejamento educacional brasileiro.
 
 Contexto: Preciso de um plano de aula para [DISCIPLINA] para [SÉRIE] sobre [TÓPICO], considerando turma de [X] alunos em escola [pública/privada] de [CIDADE/REGIÃO].
@@ -293,7 +293,7 @@ Formato:
 5. Avaliação Formativa (como medir aprendizagem)
 6. Dever de Casa (conectado ao conteúdo)
 7. Adaptações para Alunos com Dificuldades
-```
+\`\`\`
 
 #### Exemplo de Uso Real:
 **Input:**
@@ -304,7 +304,7 @@ Formato:
 ### 📝 Categoria 2: Criação de Exercícios
 
 #### Prompt: Banco de Questões Personalizadas
-```
+\`\`\`
 Você é um especialista em avaliação educacional.
 
 Contexto: Leciono [DISCIPLINA] para [SÉRIE] e preciso de questões sobre [CONTEÚDO ESPECÍFICO]. Meus alunos têm perfil [DESCREVER: socioeconômico, dificuldades comuns, pontos fortes].
@@ -318,12 +318,12 @@ Formato para cada questão:
 - Habilidade BNCC correspondente
 - Gabarito fundamentado
 - Tempo estimado de resolução
-```
+\`\`\`
 
 ### 🔍 Categoria 3: Explicações Didáticas
 
 #### Prompt: Simplificação de Conceitos
-```
+\`\`\`
 Você é um especialista em comunicação didática.
 
 Contexto: Preciso explicar [CONCEITO] para alunos de [IDADE/SÉRIE] que [DESCREVER DIFICULDADES/CONHECIMENTOS PRÉVIOS].
@@ -338,12 +338,12 @@ Formato:
 5. Exercício mental para fixação
 6. Perguntas reflexivas para discussão
 7. Conexões com outros conteúdos
-```
+\`\`\`
 
 ### 📊 Categoria 4: Análise e Feedback
 
 #### Prompt: Correção Inteligente
-```
+\`\`\`
 Você é um professor experiente em avaliação formativa.
 
 Contexto: Vou compartilhar [TIPO DE TRABALHO] de um aluno de [SÉRIE] sobre [TEMA]. Quero feedback construtivo que motive e oriente melhorias.
@@ -357,12 +357,12 @@ Formato:
 4. 1 orientação para próximo trabalho
 5. Comentário motivacional personalizado
 6. Recursos recomendados para aprofundamento
-```
+\`\`\`
 
 ### 🎨 Categoria 5: Recursos Criativos
 
 #### Prompt: Atividades Lúdicas
-```
+\`\`\`
 Você é um especialista em gamificação educacional.
 
 Contexto: Ensino [DISCIPLINA] para [SÉRIE] e quero tornar o conteúdo [TÓPICO] mais envolvente e divertido, usando recursos [DISPONÍVEIS: tecnológicos/básicos].
@@ -377,7 +377,7 @@ Formato para cada atividade:
 - Passo a passo detalhado (15-20 min)
 - Variações para diferentes perfis de aluno
 - Como avaliar participação e aprendizagem
-```
+\`\`\`
 
 ## 6. Casos Práticos por Disciplina
 
@@ -387,7 +387,7 @@ Formato para cada atividade:
 **Problema:** Alunos do 3º ano têm dificuldade para estruturar introdução
 
 **Prompt Eficaz:**
-```
+\`\`\`
 Você é um especialista em redação ENEM com 10 anos de experiência.
 
 Contexto: Meus alunos de 3º ano de escola pública em Salvador têm muita dificuldade para escrever introduções de redação dissertativa. Eles sabem o tema mas não conseguem começar.
@@ -401,15 +401,15 @@ Formato:
 4. Exercício prático progressivo
 5. Checklist para autoavaliação
 6. Dicas para superar bloqueio criativo
-```
+\`\`\`
 
 **Resultado:** Método estruturado, exemplos práticos, aplicação imediata.
 
 #### Aplicação: Análise Literária Criativa
 **Prompt para Modernizar Literatura:**
-```
+\`\`\`
 Transforme a análise de [OBRA CLÁSSICA] em experiência relevante para adolescentes de 2024. Crie 3 atividades que conectem os temas da obra com questões atuais (redes sociais, sustentabilidade, diversidade) sem perder a essência literária.
-```
+\`\`\`
 
 ### 🔢 Matemática - Contextualizando Conceitos
 
@@ -417,7 +417,7 @@ Transforme a análise de [OBRA CLÁSSICA] em experiência relevante para adolesc
 **Problema:** Alunos do 1º ano não veem utilidade prática de funções
 
 **Prompt Estratégico:**
-```
+\`\`\`
 Você é um professor de matemática especialista em contextualização.
 
 Contexto: Ensino funções para 1º ano do ensino médio em Recife. Alunos sempre perguntam "onde vou usar isso?". Preciso mostrar aplicações reais e interessantes.
@@ -430,7 +430,7 @@ Critérios:
 - Resolução que mostra claramente o poder das funções
 - Conexão com carreira/profissão
 - Nível adequado para iniciantes em função
-```
+\`\`\`
 
 **Resultado:** Problemas envolventes: Uber/delivery, investimentos, crescimento de seguidores, consumo de dados, etc.
 
@@ -438,16 +438,16 @@ Critérios:
 
 #### Situação: Laboratório Limitado
 **Prompt para Experimentos Caseiros:**
-```
+\`\`\`
 Crie 3 experimentos de [TÓPICO CIENTÍFICO] que posso fazer com alunos de [SÉRIE] usando apenas materiais encontrados em casa brasileira típica. Cada experimento deve ter hipótese clara, método seguro, resultados esperados e explicação científica acessível.
-```
+\`\`\`
 
 ### 🌍 História - Conectando Épocas
 
 #### Prompt: História Brasileira Relevante
-```
+\`\`\`
 Estabeleça 5 paralelos entre [PERÍODO HISTÓRICO] e Brasil atual que mostram como história se repete ou evolui. Use exemplos que adolescentes reconheçam: política, economia, cultura, tecnologia, sociedade.
-```
+\`\`\`
 
 ## 7. Troubleshooting - Resolvendo Problemas Comuns
 
@@ -458,11 +458,11 @@ Estabeleça 5 paralelos entre [PERÍODO HISTÓRICO] e Brasil atual que mostram c
 **Causa:** Prompt muito vago ou sem contexto suficiente.
 
 **Solução:**
-```
+\`\`\`
 ❌ Prompt Vago: "Crie exercícios de matemática"
 
 ✅ Prompt Específico: "Você é professor de matemática de 7º ano em escola pública de Belo Horizonte. Crie 5 exercícios de equações do 1º grau contextualizados com situações que meus alunos conhecem: transporte público, compras no mercado, economia doméstica. Inclua resolução passo a passo."
-```
+\`\`\`
 
 ### ❌ Problema 2: Não Entende o Sistema Educacional Brasileiro
 
@@ -479,30 +479,30 @@ Estabeleça 5 paralelos entre [PERÍODO HISTÓRICO] e Brasil atual que mostram c
 **Sintoma:** Texto muito complexo para alunos ou muito simples para o professor.
 
 **Solução:**
-```
+\`\`\`
 Para alunos: "Use linguagem adequada para [IDADE] anos"
 Para professores: "Responda em nível técnico adequado para educador"
-```
+\`\`\`
 
 ### ❌ Problema 4: Resposta Muito Longa ou Muito Curta
 
 **Controle de Extensão:**
-```
+\`\`\`
 Para respostas concisas: "Em no máximo 200 palavras"
 Para respostas detalhadas: "Desenvolva cada ponto com exemplos"
 Para formato específico: "Em forma de lista com 5 itens"
-```
+\`\`\`
 
 ### ❌ Problema 5: Não Considera Recursos Limitados
 
 **Solução:**
-```
+\`\`\`
 Sempre especifique recursos disponíveis:
 "Considerando escola pública com recursos limitados"
 "Usando apenas papel, lápis e criatividade"
 "Com acesso limitado à internet"
 "Para turma de 35 alunos"
-```
+\`\`\`
 
 ## 8. Ética e Limitações - Uso Responsável
 
@@ -1063,7 +1063,7 @@ A educação brasileira precisa de professores como você - **corajosos, inovado
                       .replace(/### /g, '<h3>')
                       .replace(/## /g, '<h2>')
                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/```(.*?)```/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
+                      .replace(/\`\`\`(.*?)\`\`\`/gs, '<pre style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;"><code>$1</code></pre>')
                   }} />
                 </div>
                 
