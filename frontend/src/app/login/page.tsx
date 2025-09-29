@@ -26,7 +26,23 @@ export default function LoginPage() {
     
     try {
       await login({ email, password })
-      router.push('/dashboard')
+      
+      // Get user role from localStorage and redirect accordingly
+      const userData = JSON.parse(localStorage.getItem('user') || '{}')
+      const userRole = userData.role
+      
+      switch (userRole) {
+        case 'ADMIN':
+        case 'SUPER_ADMIN':
+          router.push('/admin')
+          break
+        case 'AI_MAESTRO':
+          router.push('/maestro-dashboard')
+          break
+        case 'TEACHER':
+        default:
+          router.push('/dashboard')
+      }
     } catch (err: any) {
       setError(err.message || 'Erro ao fazer login')
     } finally {

@@ -17,7 +17,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'TEACHER' as 'TEACHER' | 'ADMIN' | 'PARENT',
+    role: 'TEACHER' as 'TEACHER' | 'ADMIN' | 'PARENT' | 'AI_MAESTRO',
     teachingLevel: 'ELEMENTARY' as 'EARLY_YEARS' | 'ELEMENTARY' | 'JUNIOR_HIGH' | 'HIGH_SCHOOL' | 'UNIVERSITY',
     subjects: [] as string[],
     state: '',
@@ -98,7 +98,22 @@ export default function RegisterPage() {
       }
       
       await register(userData)
-      router.push('/dashboard')
+      
+      // Redirect based on user role
+      const userRole = formData.role
+      
+      switch (userRole) {
+        case 'ADMIN':
+        case 'SUPER_ADMIN':
+          router.push('/admin')
+          break
+        case 'AI_MAESTRO':
+          router.push('/maestro-dashboard')
+          break
+        case 'TEACHER':
+        default:
+          router.push('/dashboard')
+      }
     } catch (err: any) {
       console.error('Registration error:', err)
       
@@ -198,6 +213,7 @@ export default function RegisterPage() {
                 <SelectContent>
                   <SelectItem value="TEACHER">Professor(a)</SelectItem>
                   <SelectItem value="ADMIN">Administrador(a) Escolar</SelectItem>
+                  <SelectItem value="AI_MAESTRO">AI MAESTRO</SelectItem>
                   <SelectItem value="PARENT">Pai/Mãe/Responsável</SelectItem>
                 </SelectContent>
               </Select>

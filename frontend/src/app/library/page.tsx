@@ -14,6 +14,8 @@ export default function LibraryPage() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('Todos')
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -139,10 +141,30 @@ export default function LibraryPage() {
     'Projetos'
   ]
 
-  const filteredResources = resources.filter(resource =>
-    resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    resource.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filter resources by search term and category
+  const filteredResources = resources.filter(resource => {
+    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         resource.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = selectedCategory === 'Todos' || resource.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
+
+  // Handler functions
+  const handleDownload = (resourceId: number, resourceTitle: string) => {
+    // Simulate download
+    alert(`Iniciando download: ${resourceTitle}`)
+    // In a real app, this would trigger an actual download
+  }
+
+  const handleAccess = (resourceId: number, resourceTitle: string) => {
+    // Simulate external link access
+    alert(`Abrindo recurso: ${resourceTitle}`)
+    // In a real app, this would open an external link
+  }
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
@@ -193,7 +215,11 @@ export default function LibraryPage() {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline" className="md:w-auto">
+            <Button 
+              variant="outline" 
+              className="md:w-auto"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+            >
               <Filter className="mr-2 h-4 w-4" />
               Filtrar
             </Button>
@@ -203,9 +229,10 @@ export default function LibraryPage() {
             {categories.map((category, index) => (
               <Button
                 key={index}
-                variant={index === 0 ? "default" : "outline"}
+                variant={selectedCategory === category ? "default" : "outline"}
                 size="sm"
                 className="text-xs"
+                onClick={() => handleCategoryChange(category)}
               >
                 {category}
               </Button>
@@ -242,7 +269,11 @@ export default function LibraryPage() {
                   <div className="flex justify-between text-xs text-gray-500">
                     <span>{resource.downloads} downloads</span>
                   </div>
-                  <Button size="sm" className="w-full">
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => resource.type === 'Link' ? handleAccess(resource.id, resource.title) : handleDownload(resource.id, resource.title)}
+                  >
                     {resource.type === 'Link' ? (
                       <><ExternalLink className="mr-2 h-3 w-3" /> Acessar</>
                     ) : (
@@ -288,7 +319,10 @@ export default function LibraryPage() {
                     {resource.downloads} downloads
                   </div>
                   
-                  <Button className="w-full">
+                  <Button 
+                    className="w-full"
+                    onClick={() => resource.type === 'Link' ? handleAccess(resource.id, resource.title) : handleDownload(resource.id, resource.title)}
+                  >
                     {resource.type === 'Link' ? (
                       <><ExternalLink className="mr-2 h-4 w-4" /> Acessar Recurso</>
                     ) : (

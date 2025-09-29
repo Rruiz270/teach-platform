@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,24 @@ import { useAuth } from '@/contexts/AuthContext'
 export default function ForumPage() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
   const router = useRouter()
+  const [selectedCategory, setSelectedCategory] = useState('Todas as Categorias')
+  const [visiblePosts, setVisiblePosts] = useState(6)
+
+  // Handler functions
+  const handleNewDiscussion = () => {
+    alert('Abrindo formulário para nova discussão...')
+    // In a real app, this would open a modal or navigate to new discussion page
+  }
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category)
+    // In a real app, this would filter posts by category
+  }
+
+  const handleLoadMore = () => {
+    setVisiblePosts(prev => prev + 6)
+    // In a real app, this would load more posts from API
+  }
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -126,7 +144,10 @@ export default function ForumPage() {
               Conecte-se com outros educadores e compartilhe experiências sobre IA
             </p>
           </div>
-          <Button className="teach-gradient text-white">
+          <Button 
+            className="teach-gradient text-white"
+            onClick={handleNewDiscussion}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Nova Discussão
           </Button>
@@ -146,9 +167,10 @@ export default function ForumPage() {
                 {categories.map((category, index) => (
                   <Button
                     key={index}
-                    variant={index === 0 ? "default" : "ghost"}
+                    variant={selectedCategory === category ? "default" : "ghost"}
                     className="w-full justify-start text-sm"
                     size="sm"
+                    onClick={() => handleCategorySelect(category)}
                   >
                     {category}
                   </Button>
@@ -233,7 +255,11 @@ export default function ForumPage() {
             
             {/* Load More */}
             <div className="text-center pt-6">
-              <Button variant="outline" className="px-8">
+              <Button 
+                variant="outline" 
+                className="px-8"
+                onClick={handleLoadMore}
+              >
                 Carregar Mais Discussões
               </Button>
             </div>

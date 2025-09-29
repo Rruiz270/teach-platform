@@ -243,7 +243,7 @@ export default function ModuleDetailPage() {
                       <Badge variant="secondary" className="text-green-700 bg-green-100">
                         Concluída
                       </Badge>
-                      <Link href={`/lessons/${lesson.id}`}>
+                      <Link href={`/lessons/${moduleId === '1' ? 'starter-' : moduleId === '2' ? 'survivor-' : moduleId === '3' ? 'explorer-' : 'expert-'}${lesson.id}`}>
                         <Button size="sm" variant="outline">
                           Revisar
                         </Button>
@@ -254,7 +254,7 @@ export default function ModuleDetailPage() {
                       <Badge variant="default">
                         Atual
                       </Badge>
-                      <Link href={`/lessons/${lesson.id}`}>
+                      <Link href={`/lessons/${moduleId === '1' ? 'starter-' : moduleId === '2' ? 'survivor-' : moduleId === '3' ? 'explorer-' : 'expert-'}${lesson.id}`}>
                         <Button size="sm">
                           Continuar
                         </Button>
