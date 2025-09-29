@@ -13,6 +13,7 @@ enum Role {
   TEACHER
   ADMIN
   PARENT
+  AI_MAESTRO
   SUPER_ADMIN
 }
 
