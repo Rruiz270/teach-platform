@@ -41,14 +41,45 @@ export default function RegisterPage() {
       return
     }
 
+    // Validate password requirements
     if (formData.password.length < 8) {
-      setError('A senha deve ter pelo menos 8 caracteres com maiúscula, minúscula e número')
+      setError('A senha deve ter pelo menos 8 caracteres')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!/[A-Z]/.test(formData.password)) {
+      setError('A senha deve conter pelo menos uma letra maiúscula')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!/[a-z]/.test(formData.password)) {
+      setError('A senha deve conter pelo menos uma letra minúscula')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!/[0-9]/.test(formData.password)) {
+      setError('A senha deve conter pelo menos um número')
       setIsLoading(false)
       return
     }
 
     if (formData.subjects.length === 0) {
       setError('Selecione pelo menos uma disciplina')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!formData.state) {
+      setError('Selecione o estado')
+      setIsLoading(false)
+      return
+    }
+    
+    if (!formData.city.trim()) {
+      setError('Digite o nome da cidade')
       setIsLoading(false)
       return
     }
@@ -69,7 +100,16 @@ export default function RegisterPage() {
       await register(userData)
       router.push('/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Erro ao criar conta')
+      console.error('Registration error:', err)
+      
+      // Handle validation errors from backend
+      if (err.response?.data?.details) {
+        const validationErrors = err.response.data.details
+        const firstError = validationErrors[0]
+        setError(`${firstError.field}: ${firstError.message}`)
+      } else {
+        setError(err.message || 'Erro ao criar conta')
+      }
     } finally {
       setIsLoading(false)
     }
