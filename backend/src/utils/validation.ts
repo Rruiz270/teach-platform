@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TeachingLevel } from '@prisma/client';
+import { TeachingLevel, Role } from '@prisma/client';
 
 // Auth schemas
 export const registerSchema = z.object({
@@ -11,6 +11,7 @@ export const registerSchema = z.object({
       .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
       .regex(/[0-9]/, 'Password must contain at least one number'),
     name: z.string().min(2, 'Name must be at least 2 characters'),
+    role: z.nativeEnum(Role).optional(),
     schoolId: z.string().optional(),
     teachingLevel: z.nativeEnum(TeachingLevel),
     subjects: z.array(z.string()).min(1, 'At least one subject is required'),

@@ -18,7 +18,7 @@ import { analyticsQueue } from '../config/queues';
 
 export const authController = {
   register: asyncHandler(async (req: Request, res: Response) => {
-    const { email, password, name, schoolId, teachingLevel, subjects, state, city, phone } = req.body;
+    const { email, password, name, role, schoolId, teachingLevel, subjects, state, city, phone } = req.body;
 
     // Check if user exists
     const existingUser = await userService.findByEmail(email);
@@ -34,6 +34,7 @@ export const authController = {
       email,
       password: hashedPassword,
       name,
+      role,
       schoolId,
       teachingLevel,
       subjects,

@@ -12,6 +12,7 @@ export interface RegisterData {
   name: string
   email: string
   password: string
+  role: 'TEACHER' | 'ADMIN' | 'PARENT'
   teachingLevel: 'EARLY_YEARS' | 'ELEMENTARY' | 'JUNIOR_HIGH' | 'HIGH_SCHOOL' | 'UNIVERSITY'
   subjects: string[]
   state: string

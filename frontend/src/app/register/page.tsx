@@ -17,6 +17,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'TEACHER' as 'TEACHER' | 'ADMIN' | 'PARENT',
     teachingLevel: 'ELEMENTARY' as 'EARLY_YEARS' | 'ELEMENTARY' | 'JUNIOR_HIGH' | 'HIGH_SCHOOL' | 'UNIVERSITY',
     subjects: [] as string[],
     state: '',
@@ -57,6 +58,7 @@ export default function RegisterPage() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        role: formData.role,
         teachingLevel: formData.teachingLevel,
         subjects: formData.subjects,
         state: formData.state,
@@ -140,6 +142,20 @@ export default function RegisterPage() {
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 required
               />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="role">Tipo de Conta</Label>
+              <Select onValueChange={(value) => handleInputChange('role', value)} defaultValue="TEACHER">
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo de conta" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="TEACHER">Professor(a)</SelectItem>
+                  <SelectItem value="ADMIN">Administrador(a) Escolar</SelectItem>
+                  <SelectItem value="PARENT">Pai/Mãe/Responsável</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
             <div className="space-y-2">

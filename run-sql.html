@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create TEACH Database Tables</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        button { background: #5865F2; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #4752C4; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { background: #f0f0f0; padding: 10px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Create TEACH Platform Database Tables</h1>
+    <p>Click the button below to create the necessary database tables:</p>
+    
+    <button onclick="createTables()">Create Database Tables</button>
+    
+    <div id="status"></div>
+    
+    <script>
+        async function createTables() {
+            const status = document.getElementById('status');
+            status.innerHTML = '<p class="info">Creating tables...</p>';
+            
+            try {
+                const response = await fetch('https://teach-platform-production.up.railway.app/create-tables-emergency', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        secretKey: 'teach-platform-setup-2025'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    status.innerHTML = '<p class="success">✓ Tables created successfully! You can now register on the TEACH platform.</p>';
+                } else {
+                    status.innerHTML = `<p class="error">Error: ${data.error || 'Failed to create tables'}</p>`;
+                }
+            } catch (error) {
+                status.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

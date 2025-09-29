@@ -6,6 +6,7 @@ interface CreateUserData {
   email: string;
   password: string;
   name: string;
+  role?: string;
   schoolId?: string;
   teachingLevel: TeachingLevel;
   subjects: string[];
@@ -16,7 +17,7 @@ interface CreateUserData {
 
 export const authService = {
   createUserWithProfile: async (data: CreateUserData) => {
-    const { email, password, name, schoolId, teachingLevel, subjects, state, city, phone } = data;
+    const { email, password, name, role, schoolId, teachingLevel, subjects, state, city, phone } = data;
 
     try {
       const user = await prisma.$transaction(async (tx) => {
@@ -25,6 +26,7 @@ export const authService = {
           data: {
             email,
             password,
+            ...(role && { role: role as any }),
             profile: {
               create: {
                 name,
