@@ -104,8 +104,8 @@ export const authController = {
       throw new AppError('Invalid credentials', 401);
     }
 
-    // Check if email is verified
-    if (!user.isEmailVerified) {
+    // Check if email is verified (skip if email queue is disabled)
+    if (!user.isEmailVerified && emailQueue) {
       throw new AppError('Please verify your email before logging in', 403);
     }
 
