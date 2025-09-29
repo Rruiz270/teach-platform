@@ -239,21 +239,37 @@ export default function ModuleDetailPage() {
                 
                 <div className="flex items-center space-x-2">
                   {lesson.completed ? (
-                    <Badge variant="secondary" className="text-green-700 bg-green-100">
-                      Concluída
-                    </Badge>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="secondary" className="text-green-700 bg-green-100">
+                        Concluída
+                      </Badge>
+                      <Link href={`/lessons/${lesson.id}`}>
+                        <Button size="sm" variant="outline">
+                          Revisar
+                        </Button>
+                      </Link>
+                    </div>
                   ) : lesson.current ? (
-                    <Badge variant="default">
-                      Atual
-                    </Badge>
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="default">
+                        Atual
+                      </Badge>
+                      <Link href={`/lessons/${lesson.id}`}>
+                        <Button size="sm">
+                          Continuar
+                        </Button>
+                      </Link>
+                    </div>
                   ) : module.status === 'locked' ? (
                     <Badge variant="outline" className="text-gray-500">
                       Bloqueada
                     </Badge>
                   ) : (
-                    <Button size="sm" variant="outline">
-                      {lesson.completed ? 'Revisar' : 'Iniciar'}
-                    </Button>
+                    <Link href={`/lessons/${lesson.id}`}>
+                      <Button size="sm" variant="outline">
+                        Iniciar
+                      </Button>
+                    </Link>
                   )}
                 </div>
               </div>
