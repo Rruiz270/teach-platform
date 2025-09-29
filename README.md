@@ -198,4 +198,4 @@ For questions or support:
 
 ---
 
-**TEACH** - Transforming Brazilian education through AI empowerment 🇧🇷
+**TEACH** - Transforming Brazilian education through AI empowerment 🇧🇷 
