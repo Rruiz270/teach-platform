@@ -75,6 +75,107 @@ app.get('/db-status', async (req, res) => {
   }
 });
 
+// Create essential tables manually (TEMPORARY - REMOVE AFTER USE)
+app.post('/create-tables-emergency', async (req, res) => {
+  try {
+    const { secretKey } = req.body;
+    
+    // Simple security check
+    if (secretKey !== 'teach-platform-setup-2025') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    
+    // Create essential tables for auth to work
+    await prisma.$executeRaw`
+      CREATE TYPE IF NOT EXISTS "Role" AS ENUM ('TEACHER', 'ADMIN', 'PARENT', 'SUPER_ADMIN');
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TYPE IF NOT EXISTS "TeachingLevel" AS ENUM ('EARLY_YEARS', 'ELEMENTARY', 'JUNIOR_HIGH', 'HIGH_SCHOOL', 'UNIVERSITY');
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TYPE IF NOT EXISTS "SubscriptionType" AS ENUM ('FREE', 'INDIVIDUAL', 'SCHOOL', 'GOVERNMENT');
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TYPE IF NOT EXISTS "SubscriptionPlan" AS ENUM ('STARTER', 'FULL', 'PREMIUM');
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "User" (
+        "id" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
+        "email" TEXT NOT NULL,
+        "password" TEXT NOT NULL,
+        "role" "Role" NOT NULL DEFAULT 'TEACHER',
+        "isEmailVerified" BOOLEAN NOT NULL DEFAULT false,
+        "emailVerifiedAt" TIMESTAMP(3),
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "lastLoginAt" TIMESTAMP(3),
+        CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+      );
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "Profile" (
+        "id" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
+        "userId" TEXT NOT NULL,
+        "name" TEXT NOT NULL,
+        "phone" TEXT,
+        "photoUrl" TEXT,
+        "schoolId" TEXT,
+        "teachingLevel" "TeachingLevel" NOT NULL,
+        "subjects" TEXT[],
+        "state" TEXT NOT NULL,
+        "city" TEXT NOT NULL,
+        "bio" TEXT,
+        "yearsTeaching" INTEGER,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "Profile_pkey" PRIMARY KEY ("id"),
+        CONSTRAINT "Profile_userId_key" UNIQUE ("userId"),
+        CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "Subscription" (
+        "id" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
+        "userId" TEXT NOT NULL,
+        "schoolId" TEXT,
+        "type" "SubscriptionType" NOT NULL,
+        "plan" "SubscriptionPlan" NOT NULL,
+        "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "endDate" TIMESTAMP(3) NOT NULL,
+        "isActive" BOOLEAN NOT NULL DEFAULT true,
+        "autoRenew" BOOLEAN NOT NULL DEFAULT true,
+        "paymentMethod" TEXT,
+        "amount" DECIMAL(65,30),
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "Subscription_pkey" PRIMARY KEY ("id"),
+        CONSTRAINT "Subscription_userId_key" UNIQUE ("userId"),
+        CONSTRAINT "Subscription_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `;
+    
+    res.json({
+      success: true,
+      message: 'Essential tables created successfully!'
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message,
+      detail: error.detail || error.hint
+    });
+  }
+});
+
 // API Routes
 setupRoutes(app);
 
