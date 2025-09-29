@@ -105,7 +105,7 @@ app.post('/create-tables-emergency', async (req, res) => {
     // PostgreSQL doesn't support IF NOT EXISTS for types, so we'll handle errors
     try {
       await prisma.$executeRaw`
-        CREATE TYPE "Role" AS ENUM ('TEACHER', 'ADMIN', 'PARENT', 'SUPER_ADMIN');
+        CREATE TYPE "Role" AS ENUM ('TEACHER', 'ADMIN', 'PARENT', 'AI_MAESTRO', 'SUPER_ADMIN');
       `;
     } catch (e) {}
     
@@ -249,6 +249,29 @@ app.get('/debug-users', async (req, res) => {
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// EMERGENCY: Migrate Role enum to add AI_MAESTRO (TEMPORARY - REMOVE AFTER USE)
+app.post('/emergency-migrate-role', async (req, res) => {
+  try {
+    // Add AI_MAESTRO to the Role enum
+    await prisma.$executeRaw`
+      ALTER TYPE "public"."Role" ADD VALUE IF NOT EXISTS 'AI_MAESTRO';
+    `;
+    
+    res.json({ 
+      success: true, 
+      message: 'AI_MAESTRO role added to enum successfully' 
+    });
+  } catch (error: any) {
+    console.error('Migration error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      code: error.code,
+      detail: error.detail || 'No detail'
+    });
   }
 });
 
