@@ -185,6 +185,28 @@ app.post('/create-tables-emergency', async (req, res) => {
   }
 });
 
+// Test registration endpoint (TEMPORARY)
+app.post('/test-simple-register', async (req, res) => {
+  try {
+    // Create a basic user
+    const user = await prisma.user.create({
+      data: {
+        email: 'test' + Date.now() + '@example.com',
+        password: 'hashedpassword',
+        role: 'TEACHER'
+      }
+    });
+    
+    res.json({ success: true, userId: user.id });
+  } catch (error: any) {
+    res.status(500).json({ 
+      error: error.message,
+      code: error.code,
+      detail: error.detail || 'No detail'
+    });
+  }
+});
+
 // API Routes
 setupRoutes(app);
 
