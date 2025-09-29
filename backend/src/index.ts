@@ -36,6 +36,35 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Debug endpoint to test database and basic functionality
+app.post('/test-register', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    // Test 1: Database connection
+    const dbTest = await prisma.$queryRaw`SELECT 1+1 as result`;
+    
+    // Test 2: Check if user exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email || 'test@example.com' }
+    });
+    
+    res.json({
+      success: true,
+      dbConnected: true,
+      userExists: !!existingUser,
+      requestBody: req.body,
+      headers: req.headers.origin
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      type: error.constructor.name
+    });
+  }
+});
+
 // API Routes
 setupRoutes(app);
 
