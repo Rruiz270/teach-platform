@@ -1,5 +1,5 @@
 {
   "providers": ["node"],
   "buildCommand": "cd backend && npm install && npx prisma generate",
-  "startCommand": "cd backend && npm run start:railway"
+  "startCommand": "cd backend && node start.js"
 }
