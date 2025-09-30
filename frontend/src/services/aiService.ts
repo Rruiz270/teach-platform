@@ -74,7 +74,10 @@ class AIService {
   private async makeRequest<T>(endpoint: string, data: any): Promise<T> {
     const token = localStorage.getItem('token')
     
-    const response = await fetch(`${API_BASE_URL}/api/v1/ai-assistant${endpoint}`, {
+    // Handle both cases: API_BASE_URL with or without /api/v1
+    const baseUrl = API_BASE_URL.endsWith('/api/v1') ? API_BASE_URL : `${API_BASE_URL}/api/v1`
+    
+    const response = await fetch(`${baseUrl}/ai-assistant${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
