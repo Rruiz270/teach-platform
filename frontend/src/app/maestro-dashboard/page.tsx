@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Brain, Calendar, Users, Video, BookOpen, MessageSquare, Clock, Play, FileText, Award, TrendingUp, Plus, X } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import MaterialViewer from '@/components/MaterialViewer'
 
 export default function MaestroDashboard() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -26,6 +27,8 @@ export default function MaestroDashboard() {
   const [isEditMaterialModalOpen, setIsEditMaterialModalOpen] = useState(false)
   const [isRecordVideoModalOpen, setIsRecordVideoModalOpen] = useState(false)
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
+  const [isMaterialViewerOpen, setIsMaterialViewerOpen] = useState(false)
+  const [selectedLessonData, setSelectedLessonData] = useState(null)
   
   // Form states
   const [scheduleForm, setScheduleForm] = useState({
@@ -75,8 +78,110 @@ export default function MaestroDashboard() {
   }
 
   const handleAccessMaterial = (classId: number) => {
-    alert(`Acessando material da aula ${classId}...`)
-    // In real app: open material viewer/editor
+    // Find the lesson data
+    const lesson = upcomingClasses.find(c => c.id === classId)
+    if (lesson) {
+      // Create comprehensive lesson data for the material viewer
+      const lessonData = {
+        id: lesson.id,
+        title: lesson.title,
+        module: lesson.module,
+        duration: lesson.duration,
+        attendees: lesson.attendees,
+        description: getLessonDescription(lesson.title),
+        objectives: getLessonObjectives(lesson.title),
+        materials: getLessonMaterials(lesson.title)
+      }
+      setSelectedLessonData(lessonData)
+      setIsMaterialViewerOpen(true)
+    }
+  }
+
+  // Helper functions to generate lesson content
+  const getLessonDescription = (title: string) => {
+    const descriptions = {
+      'Introdução à IA na Educação': 'Esta aula apresenta os conceitos fundamentais de Inteligência Artificial aplicada à educação. Os professores aprenderão sobre as principais ferramentas de IA disponíveis, como integrar tecnologia em suas práticas pedagógicas e os benefícios da personalização do ensino através da IA.',
+      'Workshop: Ferramentas de IA': 'Workshop prático onde os professores terão hands-on com as principais ferramentas de IA para educação, incluindo ChatGPT, Claude, e ferramentas de criação de conteúdo. Aprenderão a criar prompts efetivos e automatizar tarefas administrativas.',
+      'Avaliação Automatizada': 'Explore como a IA pode revolucionar os processos de avaliação, desde a criação de questões até a correção automatizada. Os professores aprenderão a usar ferramentas de avaliação inteligente e implementar feedback personalizado em larga escala.'
+    }
+    return descriptions[title] || 'Aula focada em aspectos avançados de IA aplicada à educação, com exemplos práticos e exercícios hands-on para implementação imediata em sala de aula.'
+  }
+
+  const getLessonObjectives = (title: string) => {
+    const objectives = {
+      'Introdução à IA na Educação': [
+        'Compreender os conceitos básicos de Inteligência Artificial na educação',
+        'Identificar oportunidades de aplicação de IA em diferentes contextos educacionais',
+        'Conhecer as principais ferramentas de IA disponíveis para educadores',
+        'Desenvolver um plano básico para implementação de IA na prática pedagógica'
+      ],
+      'Workshop: Ferramentas de IA': [
+        'Dominar o uso do ChatGPT para criação de conteúdo educacional',
+        'Aprender técnicas avançadas de prompt engineering',
+        'Automatizar tarefas administrativas com IA',
+        'Criar materiais didáticos personalizados usando ferramentas de IA'
+      ],
+      'Avaliação Automatizada': [
+        'Implementar sistemas de avaliação automatizada',
+        'Criar bancos de questões inteligentes',
+        'Desenvolver feedback personalizado e construtivo',
+        'Analisar dados de aprendizagem para melhorar o ensino'
+      ]
+    }
+    return objectives[title] || [
+      'Aplicar conceitos de IA em contextos educacionais específicos',
+      'Desenvolver competências técnicas para uso de ferramentas de IA',
+      'Criar estratégias de implementação para sua realidade escolar',
+      'Avaliar o impacto da IA no processo de ensino-aprendizagem'
+    ]
+  }
+
+  const getLessonMaterials = (title: string) => {
+    const baseMaterials = [
+      {
+        id: 1,
+        type: 'slide',
+        title: 'Introdução e Conceitos',
+        content: 'Slide introdutório explicando os fundamentos da IA na educação com exemplos práticos e cases de sucesso.'
+      },
+      {
+        id: 2,
+        type: 'slide',
+        title: 'Ferramentas Principais',
+        content: 'Apresentação das principais ferramentas de IA disponíveis para educadores, com foco em usabilidade e aplicabilidade.'
+      },
+      {
+        id: 3,
+        type: 'slide',
+        title: 'Casos Práticos',
+        content: 'Exemplos reais de implementação de IA em escolas brasileiras, com resultados mensuráveis e lições aprendidas.'
+      },
+      {
+        id: 4,
+        type: 'video',
+        title: 'Demonstração Prática',
+        description: 'Vídeo demonstrando passo a passo como usar ChatGPT para criar planos de aula',
+        content: 'Demonstração prática das ferramentas',
+        duration: '15 min'
+      },
+      {
+        id: 5,
+        type: 'document',
+        title: 'Guia de Implementação',
+        description: 'PDF com roadmap completo para implementação de IA na escola',
+        content: 'Documento prático com checklist e templates'
+      },
+      {
+        id: 6,
+        type: 'interactive',
+        title: 'Exercício Prático',
+        description: 'Atividade hands-on para criar seu primeiro prompt educacional',
+        content: 'Atividade interativa',
+        duration: '20 min'
+      }
+    ]
+
+    return baseMaterials
   }
 
   const handleCreateLesson = () => {
@@ -958,6 +1063,15 @@ export default function MaestroDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Material Viewer Modal */}
+      {selectedLessonData && (
+        <MaterialViewer
+          isOpen={isMaterialViewerOpen}
+          onClose={() => setIsMaterialViewerOpen(false)}
+          lessonData={selectedLessonData}
+        />
+      )}
     </div>
   )
 }

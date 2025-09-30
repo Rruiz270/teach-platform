@@ -6,10 +6,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuth } from '@/contexts/AuthContext'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Clock, Award, Users } from 'lucide-react'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -22,7 +23,25 @@ export default function RegisterPage() {
     subjects: [] as string[],
     state: '',
     city: '',
-    phone: ''
+    phone: '',
+    // AI MAESTRO specific fields
+    bio: '',
+    yearsExperience: '',
+    qualifications: [] as string[],
+    specializations: [] as string[],
+    availability: {
+      monday: [],
+      tuesday: [],
+      wednesday: [],
+      thursday: [],
+      friday: [],
+      saturday: [],
+      sunday: []
+    } as Record<string, string[]>,
+    hourlyRate: '',
+    maxStudentsPerSession: '50',
+    languagesSpoken: [] as string[],
+    certifications: [] as string[]
   })
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -148,6 +167,27 @@ export default function RegisterPage() {
     }))
   }
 
+  const handleArrayFieldToggle = (field: 'qualifications' | 'specializations' | 'languagesSpoken' | 'certifications', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter(item => item !== value)
+        : [...prev[field], value]
+    }))
+  }
+
+  const handleAvailabilityToggle = (day: string, timeSlot: string) => {
+    setFormData(prev => ({
+      ...prev,
+      availability: {
+        ...prev.availability,
+        [day]: prev.availability[day].includes(timeSlot)
+          ? prev.availability[day].filter(slot => slot !== timeSlot)
+          : [...prev.availability[day], timeSlot]
+      }
+    }))
+  }
+
   const subjects = [
     'Matemática', 'Português', 'História', 'Geografia', 'Ciências',
     'Física', 'Química', 'Biologia', 'Inglês', 'Educação Física',
@@ -160,9 +200,53 @@ export default function RegisterPage() {
     'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
   ]
 
+  // AI MAESTRO specific data
+  const qualifications = [
+    'Doutorado em Educação', 'Mestrado em Educação', 'Especialização em Tecnologia Educacional',
+    'Graduação em Pedagogia', 'Graduação em Letras', 'MBA em Gestão Educacional',
+    'Certificação Google for Education', 'Certificação Microsoft Educator', 'Certificação Apple Teacher',
+    'Especialização em IA', 'Curso de Machine Learning', 'Certificação em Data Science'
+  ]
+
+  const specializations = [
+    'Implementação de IA na Educação', 'Ferramentas de IA para Professores', 'ChatGPT para Educadores',
+    'Automação de Tarefas Educacionais', 'Avaliação Automatizada', 'Personalização do Ensino',
+    'Criação de Conteúdo com IA', 'Gamificação com IA', 'Análise de Dados Educacionais',
+    'Desenvolvimento de Chatbots Educacionais', 'IA para Educação Inclusiva', 'Ética em IA Educacional'
+  ]
+
+  const languagesSpoken = [
+    'Português (Nativo)', 'Inglês (Fluente)', 'Inglês (Intermediário)', 'Inglês (Básico)',
+    'Espanhol (Fluente)', 'Espanhol (Intermediário)', 'Francês (Intermediário)',
+    'Alemão (Básico)', 'Italiano (Básico)', 'Mandarim (Básico)'
+  ]
+
+  const certificationsList = [
+    'Certificação AWS Cloud Practitioner', 'Google Cloud Digital Leader', 'Microsoft Azure Fundamentals',
+    'OpenAI API Certification', 'Coursera AI for Everyone', 'edX MIT Introduction to AI',
+    'Stanford CS229 Machine Learning', 'Deep Learning Specialization', 'TensorFlow Developer Certificate',
+    'Certified Ethical Hacker (CEH)', 'Project Management Professional (PMP)', 'Scrum Master Certified'
+  ]
+
+  const timeSlots = [
+    '07:00-08:00', '08:00-09:00', '09:00-10:00', '10:00-11:00', '11:00-12:00',
+    '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00',
+    '17:00-18:00', '18:00-19:00', '19:00-20:00', '20:00-21:00', '21:00-22:00'
+  ]
+
+  const weekDays = [
+    { key: 'monday', label: 'Segunda-feira' },
+    { key: 'tuesday', label: 'Terça-feira' },
+    { key: 'wednesday', label: 'Quarta-feira' },
+    { key: 'thursday', label: 'Quinta-feira' },
+    { key: 'friday', label: 'Sexta-feira' },
+    { key: 'saturday', label: 'Sábado' },
+    { key: 'sunday', label: 'Domingo' }
+  ]
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50 p-4">
-      <Card className="w-full max-w-lg">
+      <Card className={`w-full ${formData.role === 'AI_MAESTRO' ? 'max-w-4xl' : 'max-w-lg'}`}>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold teach-gradient bg-clip-text text-transparent">
             TEACH
@@ -235,22 +319,190 @@ export default function RegisterPage() {
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label>Disciplinas (selecione pelo menos uma)</Label>
-              <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded p-2">
-                {subjects.map((subject) => (
-                  <label key={subject} className="flex items-center space-x-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={formData.subjects.includes(subject)}
-                      onChange={() => handleSubjectToggle(subject)}
-                      className="w-4 h-4"
-                    />
-                    <span>{subject}</span>
-                  </label>
-                ))}
+            {formData.role !== 'AI_MAESTRO' && (
+              <div className="space-y-2">
+                <Label>Disciplinas (selecione pelo menos uma)</Label>
+                <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+                  {subjects.map((subject) => (
+                    <label key={subject} className="flex items-center space-x-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={formData.subjects.includes(subject)}
+                        onChange={() => handleSubjectToggle(subject)}
+                        className="w-4 h-4"
+                      />
+                      <span>{subject}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* AI MAESTRO Specific Fields */}
+            {formData.role === 'AI_MAESTRO' && (
+              <div className="space-y-6 border-t pt-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-blue-600 flex items-center justify-center space-x-2">
+                    <Award className="h-5 w-5" />
+                    <span>Informações do AI MAESTRO</span>
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">Complete seu perfil profissional para ministrar aulas aos professores</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Biografia Profissional</Label>
+                  <Textarea
+                    id="bio"
+                    placeholder="Descreva sua experiência, formação e expertise em IA aplicada à educação..."
+                    value={formData.bio}
+                    onChange={(e) => handleInputChange('bio', e.target.value)}
+                    rows={4}
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="yearsExperience">Anos de Experiência</Label>
+                    <Input
+                      id="yearsExperience"
+                      type="number"
+                      placeholder="5"
+                      value={formData.yearsExperience}
+                      onChange={(e) => handleInputChange('yearsExperience', e.target.value)}
+                      min="0"
+                      max="50"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="hourlyRate">Taxa por Hora (R$)</Label>
+                    <Input
+                      id="hourlyRate"
+                      type="number"
+                      placeholder="150"
+                      value={formData.hourlyRate}
+                      onChange={(e) => handleInputChange('hourlyRate', e.target.value)}
+                      min="50"
+                      max="1000"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="maxStudentsPerSession">Máximo de Professores por Sessão</Label>
+                  <Select onValueChange={(value) => handleInputChange('maxStudentsPerSession', value)} defaultValue="50">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o limite" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="20">20 professores</SelectItem>
+                      <SelectItem value="30">30 professores</SelectItem>
+                      <SelectItem value="50">50 professores</SelectItem>
+                      <SelectItem value="100">100 professores</SelectItem>
+                      <SelectItem value="200">200 professores</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Qualificações Acadêmicas (selecione todas que se aplicam)</Label>
+                  <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+                    {qualifications.map((qualification) => (
+                      <label key={qualification} className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={formData.qualifications.includes(qualification)}
+                          onChange={() => handleArrayFieldToggle('qualifications', qualification)}
+                          className="w-4 h-4"
+                        />
+                        <span>{qualification}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Especializações em IA (selecione suas áreas de expertise)</Label>
+                  <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+                    {specializations.map((specialization) => (
+                      <label key={specialization} className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={formData.specializations.includes(specialization)}
+                          onChange={() => handleArrayFieldToggle('specializations', specialization)}
+                          className="w-4 h-4"
+                        />
+                        <span>{specialization}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Idiomas Falados</Label>
+                  <div className="grid grid-cols-2 gap-2 max-h-24 overflow-y-auto border rounded p-2">
+                    {languagesSpoken.map((language) => (
+                      <label key={language} className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={formData.languagesSpoken.includes(language)}
+                          onChange={() => handleArrayFieldToggle('languagesSpoken', language)}
+                          className="w-4 h-4"
+                        />
+                        <span>{language}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Certificações Técnicas</Label>
+                  <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+                    {certificationsList.map((certification) => (
+                      <label key={certification} className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={formData.certifications.includes(certification)}
+                          onChange={() => handleArrayFieldToggle('certifications', certification)}
+                          className="w-4 h-4"
+                        />
+                        <span>{certification}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4" />
+                    <span>Disponibilidade por Semana</span>
+                  </Label>
+                  <div className="space-y-3 border rounded p-3 bg-gray-50">
+                    {weekDays.map((day) => (
+                      <div key={day.key} className="space-y-2">
+                        <Label className="text-sm font-medium">{day.label}</Label>
+                        <div className="grid grid-cols-3 gap-1">
+                          {timeSlots.map((slot) => (
+                            <label key={`${day.key}-${slot}`} className="flex items-center space-x-1 text-xs">
+                              <input
+                                type="checkbox"
+                                checked={formData.availability[day.key].includes(slot)}
+                                onChange={() => handleAvailabilityToggle(day.key, slot)}
+                                className="w-3 h-3"
+                              />
+                              <span>{slot}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
