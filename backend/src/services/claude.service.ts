@@ -22,17 +22,20 @@ interface ConversationContext {
 }
 
 class ClaudeService {
-  private client: Anthropic;
+  private client: Anthropic | null = null;
 
-  constructor() {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      throw new Error('ANTHROPIC_API_KEY is not configured');
+  private initializeClient(): Anthropic {
+    if (!this.client) {
+      const apiKey = process.env.ANTHROPIC_API_KEY;
+      if (!apiKey) {
+        throw new AppError('ANTHROPIC_API_KEY is not configured. Please set up the API key in your environment variables.', 500);
+      }
+      
+      this.client = new Anthropic({
+        apiKey: apiKey,
+      });
     }
-    
-    this.client = new Anthropic({
-      apiKey: apiKey,
-    });
+    return this.client;
   }
 
   /**
@@ -43,6 +46,7 @@ class ClaudeService {
     context: ConversationContext
   ): Promise<AIResponse> {
     try {
+      const client = this.initializeClient();
       const systemPrompt = this.buildTeachingAssistantPrompt(context);
       
       const messages = [
@@ -50,7 +54,7 @@ class ClaudeService {
         { role: 'user' as const, content: userMessage }
       ];
 
-      const response = await this.client.messages.create({
+      const response = await client.messages.create({
         model: 'claude-3-sonnet-20240229',
         max_tokens: 1000,
         temperature: 0.7,
@@ -85,6 +89,7 @@ class ClaudeService {
     questionTypes: string[] = ['multiple_choice', 'true_false', 'short_answer']
   ): Promise<any> {
     try {
+      const client = this.initializeClient();
       const prompt = `You are an expert educational assessment creator. Create ${questionCount} assessment questions about "${topic}" for ${level} level students.
 
 Question types to include: ${questionTypes.join(', ')}
@@ -100,7 +105,7 @@ For each question, provide:
 
 Format the response as a JSON array of questions.`;
 
-      const response = await this.client.messages.create({
+      const response = await client.messages.create({
         model: 'claude-3-sonnet-20240229',
         max_tokens: 2000,
         temperature: 0.8,
@@ -162,7 +167,8 @@ Provide:
 
 Format as JSON.`;
 
-      const response = await this.client.messages.create({
+      const client = this.initializeClient();
+      const response = await client.messages.create({
         model: 'claude-3-sonnet-20240229',
         max_tokens: 1500,
         temperature: 0.7,
@@ -215,7 +221,8 @@ Provide:
 
 Format as structured JSON.`;
 
-      const response = await this.client.messages.create({
+      const client = this.initializeClient();
+      const response = await client.messages.create({
         model: 'claude-3-sonnet-20240229',
         max_tokens: 2500,
         temperature: 0.8,
