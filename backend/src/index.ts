@@ -17,6 +17,11 @@ const app: Application = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy for Railway
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', true);
+}
+
 // Middleware
 app.use(helmet());
 
