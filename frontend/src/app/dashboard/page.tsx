@@ -1,18 +1,28 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, Users, Trophy, Clock, Star, ArrowRight } from 'lucide-react'
+import { BookOpen, Users, Trophy, Clock, Star, ArrowRight, Bot, Target, Gamepad2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import AITeachingAssistant from '@/components/AITeachingAssistant'
+import PersonalizedLearningPath from '@/components/PersonalizedLearningPath'
+import GamificationSystem from '@/components/GamificationSystem'
 
 export default function DashboardPage() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
   const router = useRouter()
+  
+  // New feature states
+  const [showAIAssistant, setShowAIAssistant] = useState(false)
+  const [isAIAssistantMinimized, setIsAIAssistantMinimized] = useState(false)
+  const [showLearningPath, setShowLearningPath] = useState(false)
+  const [showGamification, setShowGamification] = useState(false)
+  const [currentLesson, setCurrentLesson] = useState(null)
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -41,6 +51,25 @@ export default function DashboardPage() {
     progress: 65,
     badges: 8,
     studyHours: 24
+  }
+
+  // Mock user data for new features
+  const mockUser = {
+    id: user.id || '1',
+    name: user.name || 'Professor Demo',
+    school: 'E.E. Dom Pedro II',
+    region: 'São Paulo',
+    currentLevel: 'Explorer',
+    skillLevels: [
+      { skill: 'ChatGPT', level: 75, category: 'intermediate' as const, lastAssessed: new Date(), confidence: 80 },
+      { skill: 'Prompts Eficazes', level: 60, category: 'intermediate' as const, lastAssessed: new Date(), confidence: 70 },
+      { skill: 'IA na Educação', level: 45, category: 'beginner' as const, lastAssessed: new Date(), confidence: 65 },
+      { skill: 'Avaliação com IA', level: 30, category: 'beginner' as const, lastAssessed: new Date(), confidence: 50 }
+    ],
+    learningSpeed: 'normal' as const,
+    preferredLearningStyle: 'visual' as const,
+    availableTime: '3-5 horas/semana',
+    goals: ['ChatGPT', 'Criação de Conteúdo', 'Avaliação Automatizada']
   }
 
   const modules = [
@@ -161,6 +190,54 @@ export default function DashboardPage() {
           </Card>
         </div>
 
+        {/* New Features Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">🚀 Novos Recursos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowAIAssistant(true)}>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Bot className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-blue-900">Assistente IA</h3>
+                    <p className="text-sm text-blue-700">Chat inteligente para dúvidas</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowLearningPath(true)}>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Target className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-purple-900">Trilha Personalizada</h3>
+                    <p className="text-sm text-purple-700">Caminho adaptado ao seu perfil</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowGamification(true)}>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Gamepad2 className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-green-900">Gamificação</h3>
+                    <p className="text-sm text-green-700">Conquistas e ranking</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Modules Progress */}
           <div className="lg:col-span-2">
@@ -273,7 +350,52 @@ export default function DashboardPage() {
             </Card>
           </div>
         </div>
+
+        {/* Conditional Feature Displays */}
+        {showLearningPath && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-7xl w-full max-h-[90vh] overflow-hidden">
+              <div className="flex justify-between items-center p-4 border-b">
+                <h2 className="text-xl font-semibold">Trilha Personalizada de Aprendizagem</h2>
+                <Button variant="outline" onClick={() => setShowLearningPath(false)}>
+                  Fechar
+                </Button>
+              </div>
+              <div className="p-4 overflow-y-auto max-h-[80vh]">
+                <PersonalizedLearningPath 
+                  user={mockUser}
+                  onStartAssessment={() => alert('Avaliação de skills em desenvolvimento!')}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showGamification && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-7xl w-full max-h-[90vh] overflow-hidden">
+              <div className="flex justify-between items-center p-4 border-b">
+                <h2 className="text-xl font-semibold">Sistema de Gamificação</h2>
+                <Button variant="outline" onClick={() => setShowGamification(false)}>
+                  Fechar
+                </Button>
+              </div>
+              <div className="p-4 overflow-y-auto max-h-[80vh]">
+                <GamificationSystem user={mockUser} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* AI Teaching Assistant - Always available when activated */}
+      {showAIAssistant && (
+        <AITeachingAssistant
+          currentLesson={currentLesson}
+          isMinimized={isAIAssistantMinimized}
+          onToggleMinimize={() => setIsAIAssistantMinimized(!isAIAssistantMinimized)}
+        />
+      )}
     </div>
   )
 }
