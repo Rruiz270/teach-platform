@@ -15,11 +15,19 @@ exports.registerSchema = zod_1.z.object({
         role: zod_1.z.nativeEnum(client_1.Role).optional(),
         schoolId: zod_1.z.string().optional(),
         teachingLevel: zod_1.z.nativeEnum(client_1.TeachingLevel),
-        subjects: zod_1.z.array(zod_1.z.string()).min(1, 'At least one subject is required'),
+        subjects: zod_1.z.array(zod_1.z.string()),
         state: zod_1.z.string().min(2, 'State is required'),
         city: zod_1.z.string().min(2, 'City is required'),
         phone: zod_1.z.string().optional(),
     }),
+}).refine((data) => {
+    if (data.body.role !== 'AI_MAESTRO' && data.body.subjects.length === 0) {
+        return false;
+    }
+    return true;
+}, {
+    message: 'At least one subject is required',
+    path: ['body', 'subjects']
 });
 exports.loginSchema = zod_1.z.object({
     body: zod_1.z.object({

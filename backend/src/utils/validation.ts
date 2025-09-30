@@ -14,11 +14,20 @@ export const registerSchema = z.object({
     role: z.nativeEnum(Role).optional(),
     schoolId: z.string().optional(),
     teachingLevel: z.nativeEnum(TeachingLevel),
-    subjects: z.array(z.string()).min(1, 'At least one subject is required'),
+    subjects: z.array(z.string()),
     state: z.string().min(2, 'State is required'),
     city: z.string().min(2, 'City is required'),
     phone: z.string().optional(),
   }),
+}).refine((data) => {
+  // Only require subjects for non-AI MAESTRO roles
+  if (data.body.role !== 'AI_MAESTRO' && data.body.subjects.length === 0) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'At least one subject is required',
+  path: ['body', 'subjects']
 });
 
 export const loginSchema = z.object({
