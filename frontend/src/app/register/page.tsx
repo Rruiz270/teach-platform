@@ -85,7 +85,8 @@ export default function RegisterPage() {
       return
     }
 
-    if (formData.subjects.length === 0) {
+    // Only check subjects for non-AI MAESTRO roles
+    if (formData.role !== 'AI_MAESTRO' && formData.subjects.length === 0) {
       setError('Selecione pelo menos uma disciplina')
       setIsLoading(false)
       return
@@ -110,7 +111,7 @@ export default function RegisterPage() {
         password: formData.password,
         role: formData.role,
         teachingLevel: formData.teachingLevel,
-        subjects: formData.subjects,
+        subjects: formData.role === 'AI_MAESTRO' ? [] : formData.subjects,
         state: formData.state,
         city: formData.city,
         phone: formData.phone || undefined
