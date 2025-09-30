@@ -88,11 +88,13 @@ export default function AdminDashboard() {
       qualifications: ['Doutorado em Educação', 'Especialização em IA', 'Certificação Google for Education'],
       languages: ['Português (Nativo)', 'Inglês (Fluente)', 'Espanhol (Intermediário)'],
       availability: {
-        monday: ['19:00-20:00', '20:00-21:00'],
-        tuesday: ['19:00-20:00'],
-        wednesday: ['19:00-20:00', '20:00-21:00'],
-        thursday: ['19:00-20:00'],
-        friday: ['19:00-20:00']
+        monday: 'evening',
+        tuesday: 'evening',
+        wednesday: 'evening',
+        thursday: 'evening',
+        friday: 'evening',
+        saturday: 'unavailable',
+        sunday: 'unavailable'
       },
       upcomingClasses: 3,
       completedClasses: 44,
@@ -112,10 +114,13 @@ export default function AdminDashboard() {
       qualifications: ['MBA em Gestão Educacional', 'Especialização em Machine Learning', 'Certificação Microsoft Educator'],
       languages: ['Português (Nativo)', 'Inglês (Intermediário)'],
       availability: {
-        monday: ['20:00-21:00'],
-        wednesday: ['19:00-20:00', '20:00-21:00'],
-        friday: ['19:00-20:00', '20:00-21:00'],
-        saturday: ['09:00-10:00', '10:00-11:00']
+        monday: 'evening',
+        tuesday: 'unavailable',
+        wednesday: 'evening',
+        thursday: 'unavailable',
+        friday: 'evening',
+        saturday: 'morning',
+        sunday: 'unavailable'
       },
       upcomingClasses: 2,
       completedClasses: 30,
@@ -135,9 +140,13 @@ export default function AdminDashboard() {
       qualifications: ['Doutorado em Educação', 'Especialização em IA', 'Certificação em Data Science'],
       languages: ['Português (Nativo)', 'Inglês (Fluente)', 'Francês (Intermediário)'],
       availability: {
-        tuesday: ['19:00-20:00', '20:00-21:00'],
-        thursday: ['19:00-20:00', '20:00-21:00'],
-        saturday: ['14:00-15:00', '15:00-16:00']
+        monday: 'unavailable',
+        tuesday: 'evening',
+        wednesday: 'unavailable',
+        thursday: 'evening',
+        friday: 'unavailable',
+        saturday: 'afternoon',
+        sunday: 'unavailable'
       },
       upcomingClasses: 1,
       completedClasses: 27,
@@ -157,9 +166,13 @@ export default function AdminDashboard() {
       qualifications: ['Mestrado em Educação', 'Certificação em Game Design', 'Curso de Machine Learning'],
       languages: ['Português (Nativo)', 'Inglês (Básico)'],
       availability: {
-        monday: ['19:00-20:00'],
-        wednesday: ['19:00-20:00'],
-        friday: ['19:00-20:00']
+        monday: 'evening',
+        tuesday: 'unavailable',
+        wednesday: 'evening',
+        thursday: 'unavailable',
+        friday: 'evening',
+        saturday: 'unavailable',
+        sunday: 'unavailable'
       },
       upcomingClasses: 0,
       completedClasses: 21,
@@ -174,6 +187,19 @@ export default function AdminDashboard() {
       case 'inactive': return 'bg-gray-100 text-gray-800'
       case 'busy': return 'bg-yellow-100 text-yellow-800'
       default: return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getAvailabilityText = (availability: string) => {
+    switch(availability) {
+      case 'unavailable': return 'Indisponível'
+      case 'morning': return 'Manhã'
+      case 'afternoon': return 'Tarde'
+      case 'evening': return 'Noite'
+      case 'morning-afternoon': return 'Manhã e Tarde'
+      case 'afternoon-evening': return 'Tarde e Noite'
+      case 'all-day': return 'Dia todo'
+      default: return 'Não definido'
     }
   }
 
@@ -758,6 +784,31 @@ export default function AdminDashboard() {
                                           </div>
                                         </div>
 
+                                        <div className="mb-3">
+                                          <div className="text-sm font-medium mb-2">Disponibilidade:</div>
+                                          <div className="grid grid-cols-2 gap-2 text-xs">
+                                            {Object.entries(maestro.availability).map(([day, period]) => {
+                                              const dayNames = {
+                                                monday: 'Seg',
+                                                tuesday: 'Ter',
+                                                wednesday: 'Qua',
+                                                thursday: 'Qui',
+                                                friday: 'Sex',
+                                                saturday: 'Sáb',
+                                                sunday: 'Dom'
+                                              }
+                                              return (
+                                                <div key={day} className={`flex justify-between p-1 rounded ${
+                                                  period === 'unavailable' ? 'bg-gray-100 text-gray-500' : 'bg-blue-50 text-blue-700'
+                                                }`}>
+                                                  <span>{dayNames[day as keyof typeof dayNames]}:</span>
+                                                  <span className="font-medium">{getAvailabilityText(period)}</span>
+                                                </div>
+                                              )
+                                            })}
+                                          </div>
+                                        </div>
+
                                         <div className="flex space-x-2">
                                           <Button 
                                             size="sm" 
@@ -838,13 +889,13 @@ export default function AdminDashboard() {
                                 <CardContent>
                                   <div className="space-y-4">
                                     {maestros.map((maestro) => {
-                                      const totalSlots = Object.values(maestro.availability).flat().length
-                                      const percentage = (totalSlots / 20) * 100 // Assuming max 20 slots per week
+                                      const availableDays = Object.values(maestro.availability).filter(day => day !== 'unavailable').length
+                                      const percentage = (availableDays / 7) * 100
                                       return (
                                         <div key={maestro.id} className="space-y-2">
                                           <div className="flex justify-between text-sm">
                                             <span>{maestro.name}</span>
-                                            <span>{totalSlots} slots/semana</span>
+                                            <span>{availableDays} dias/semana</span>
                                           </div>
                                           <Progress value={percentage} className="h-2" />
                                         </div>

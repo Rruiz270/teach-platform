@@ -30,14 +30,14 @@ export default function RegisterPage() {
     qualifications: [] as string[],
     specializations: [] as string[],
     availability: {
-      monday: [],
-      tuesday: [],
-      wednesday: [],
-      thursday: [],
-      friday: [],
-      saturday: [],
-      sunday: []
-    } as Record<string, string[]>,
+      monday: 'unavailable',
+      tuesday: 'unavailable',
+      wednesday: 'unavailable',
+      thursday: 'unavailable',
+      friday: 'unavailable',
+      saturday: 'unavailable',
+      sunday: 'unavailable'
+    } as Record<string, string>,
     hourlyRate: '',
     maxStudentsPerSession: '50',
     languagesSpoken: [] as string[],
@@ -176,14 +176,12 @@ export default function RegisterPage() {
     }))
   }
 
-  const handleAvailabilityToggle = (day: string, timeSlot: string) => {
+  const handleAvailabilityChange = (day: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       availability: {
         ...prev.availability,
-        [day]: prev.availability[day].includes(timeSlot)
-          ? prev.availability[day].filter(slot => slot !== timeSlot)
-          : [...prev.availability[day], timeSlot]
+        [day]: value
       }
     }))
   }
@@ -228,10 +226,14 @@ export default function RegisterPage() {
     'Certified Ethical Hacker (CEH)', 'Project Management Professional (PMP)', 'Scrum Master Certified'
   ]
 
-  const timeSlots = [
-    '07:00-08:00', '08:00-09:00', '09:00-10:00', '10:00-11:00', '11:00-12:00',
-    '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00',
-    '17:00-18:00', '18:00-19:00', '19:00-20:00', '20:00-21:00', '21:00-22:00'
+  const availabilityOptions = [
+    { value: 'unavailable', label: 'Indisponível' },
+    { value: 'morning', label: 'Manhã (08:00 - 12:00)' },
+    { value: 'afternoon', label: 'Tarde (13:00 - 17:00)' },
+    { value: 'evening', label: 'Noite (18:00 - 22:00)' },
+    { value: 'morning-afternoon', label: 'Manhã e Tarde (08:00 - 17:00)' },
+    { value: 'afternoon-evening', label: 'Tarde e Noite (13:00 - 22:00)' },
+    { value: 'all-day', label: 'Dia todo (08:00 - 22:00)' }
   ]
 
   const weekDays = [
@@ -443,7 +445,7 @@ export default function RegisterPage() {
 
                 <div className="space-y-2">
                   <Label>Idiomas Falados</Label>
-                  <div className="grid grid-cols-2 gap-2 max-h-24 overflow-y-auto border rounded p-2">
+                  <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto border rounded p-2">
                     {languagesSpoken.map((language) => (
                       <label key={language} className="flex items-center space-x-2 text-sm">
                         <input
@@ -478,27 +480,29 @@ export default function RegisterPage() {
                 <div className="space-y-3">
                   <Label className="flex items-center space-x-2">
                     <Clock className="h-4 w-4" />
-                    <span>Disponibilidade por Semana</span>
+                    <span>Disponibilidade Semanal</span>
                   </Label>
-                  <div className="space-y-3 border rounded p-3 bg-gray-50">
+                  <p className="text-sm text-gray-600">Selecione seus períodos disponíveis para cada dia da semana</p>
+                  <div className="space-y-3 border rounded p-4 bg-gray-50">
                     {weekDays.map((day) => (
-                      <div key={day.key} className="space-y-2">
-                        <Label className="text-sm font-medium">{day.label}</Label>
-                        <div className="grid grid-cols-3 gap-1">
-                          {timeSlots.map((slot) => (
-                            <label key={`${day.key}-${slot}`} className="flex items-center space-x-1 text-xs">
-                              <input
-                                type="checkbox"
-                                checked={formData.availability[day.key].includes(slot)}
-                                onChange={() => handleAvailabilityToggle(day.key, slot)}
-                                className="w-3 h-3"
-                              />
-                              <span>{slot}</span>
-                            </label>
+                      <div key={day.key} className="flex items-center justify-between">
+                        <Label className="text-sm font-medium min-w-[120px]">{day.label}</Label>
+                        <select
+                          value={formData.availability[day.key]}
+                          onChange={(e) => handleAvailabilityChange(day.key, e.target.value)}
+                          className="flex-1 ml-4 px-3 py-2 border rounded-md text-sm"
+                        >
+                          {availabilityOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
                           ))}
-                        </div>
+                        </select>
                       </div>
                     ))}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-2">
+                    💡 Dica: Você pode ajustar horários específicos após o registro
                   </div>
                 </div>
               </div>
