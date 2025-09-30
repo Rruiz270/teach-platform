@@ -8,18 +8,119 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Brain, Calendar, Users, Video, BookOpen, MessageSquare, Clock, Play, FileText, Award, TrendingUp } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Brain, Calendar, Users, Video, BookOpen, MessageSquare, Clock, Play, FileText, Award, TrendingUp, Plus, X } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function MaestroDashboard() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
   const router = useRouter()
+  
+  // Modal states
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
+  const [isCreateLessonModalOpen, setIsCreateLessonModalOpen] = useState(false)
+  const [isEditMaterialModalOpen, setIsEditMaterialModalOpen] = useState(false)
+  const [isRecordVideoModalOpen, setIsRecordVideoModalOpen] = useState(false)
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false)
+  
+  // Form states
+  const [scheduleForm, setScheduleForm] = useState({
+    title: '',
+    date: '',
+    time: '',
+    duration: '90',
+    module: 'Starter',
+    description: ''
+  })
+  
+  const [lessonForm, setLessonForm] = useState({
+    title: '',
+    module: 'Starter',
+    lesson: '1',
+    description: '',
+    objectives: '',
+    materials: ''
+  })
+  
+  const [materialForm, setMaterialForm] = useState({
+    module: 'Starter',
+    lesson: '1',
+    type: 'PDF',
+    title: '',
+    content: ''
+  })
+  
+  const [videoForm, setVideoForm] = useState({
+    title: '',
+    module: 'Starter',
+    lesson: '1',
+    description: '',
+    recordingType: 'screen'
+  })
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/login')
     }
   }, [isAuthenticated, isLoading, router])
+
+  // Handler functions
+  const handleStartClass = (classId: number) => {
+    alert(`Iniciando aula ao vivo ${classId}...`)
+    // In real app: redirect to live streaming platform
+  }
+
+  const handleAccessMaterial = (classId: number) => {
+    alert(`Acessando material da aula ${classId}...`)
+    // In real app: open material viewer/editor
+  }
+
+  const handleCreateLesson = () => {
+    alert(`Criando nova aula: ${lessonForm.title} - ${lessonForm.module} Lição ${lessonForm.lesson}`)
+    setIsCreateLessonModalOpen(false)
+    setLessonForm({ title: '', module: 'Starter', lesson: '1', description: '', objectives: '', materials: '' })
+  }
+
+  const handleEditMaterial = () => {
+    alert(`Editando material: ${materialForm.title} - ${materialForm.module} Lição ${materialForm.lesson}`)
+    setIsEditMaterialModalOpen(false)
+    setMaterialForm({ module: 'Starter', lesson: '1', type: 'PDF', title: '', content: '' })
+  }
+
+  const handleRecordVideo = () => {
+    alert(`Iniciando gravação: ${videoForm.title} - ${videoForm.module} Lição ${videoForm.lesson}`)
+    setIsRecordVideoModalOpen(false)
+    setVideoForm({ title: '', module: 'Starter', lesson: '1', description: '', recordingType: 'screen' })
+  }
+
+  const handleQAForum = () => {
+    router.push('/forum')
+  }
+
+  const handleScheduleNewClass = () => {
+    alert(`Agendando nova aula: ${scheduleForm.title} em ${scheduleForm.date} às ${scheduleForm.time}`)
+    setIsScheduleModalOpen(false)
+    setScheduleForm({ title: '', date: '', time: '', duration: '90', module: 'Starter', description: '' })
+  }
+
+  const handleRespondForum = () => {
+    router.push('/forum')
+  }
+
+  const handleGenerateReport = () => {
+    alert('Gerando relatório de performance...')
+    setIsReportModalOpen(false)
+    // In real app: generate and download report
+  }
+
+  const handleViewAllTeachers = () => {
+    alert('Exibindo lista de todos os professores...')
+    // In real app: navigate to teachers management page
+  }
 
   if (isLoading) {
     return (
@@ -230,11 +331,18 @@ export default function MaestroDashboard() {
                         </div>
                       </div>
                       <div className="flex space-x-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleAccessMaterial(class_item.id)}
+                        >
                           <FileText className="w-4 h-4 mr-1" />
                           Material
                         </Button>
-                        <Button size="sm">
+                        <Button 
+                          size="sm"
+                          onClick={() => handleStartClass(class_item.id)}
+                        >
                           <Play className="w-4 h-4 mr-1" />
                           Iniciar
                         </Button>
@@ -258,19 +366,333 @@ export default function MaestroDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <Button variant="outline" className="h-20 flex flex-col space-y-1">
-                    <BookOpen className="h-6 w-6" />
-                    <span className="text-xs">Criar Aula</span>
-                  </Button>
-                  <Button variant="outline" className="h-20 flex flex-col space-y-1">
-                    <FileText className="h-6 w-6" />
-                    <span className="text-xs">Editar Material</span>
-                  </Button>
-                  <Button variant="outline" className="h-20 flex flex-col space-y-1">
-                    <Video className="h-6 w-6" />
-                    <span className="text-xs">Gravar Vídeo</span>
-                  </Button>
-                  <Button variant="outline" className="h-20 flex flex-col space-y-1">
+                  <Dialog open={isCreateLessonModalOpen} onOpenChange={setIsCreateLessonModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="h-20 flex flex-col space-y-1">
+                        <BookOpen className="h-6 w-6" />
+                        <span className="text-xs">Criar Aula</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle>Criar Nova Aula</DialogTitle>
+                        <DialogDescription>
+                          Crie uma nova aula para um dos módulos do curso.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="lesson-title" className="text-right">
+                            Título
+                          </Label>
+                          <Input
+                            id="lesson-title"
+                            value={lessonForm.title}
+                            onChange={(e) => setLessonForm({...lessonForm, title: e.target.value})}
+                            className="col-span-3"
+                            placeholder="Ex: Introdução à IA na Educação"
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="lesson-module" className="text-right">
+                            Módulo
+                          </Label>
+                          <Select 
+                            value={lessonForm.module} 
+                            onValueChange={(value) => setLessonForm({...lessonForm, module: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Starter">Starter</SelectItem>
+                              <SelectItem value="Survivor">Survivor</SelectItem>
+                              <SelectItem value="Explorer">Explorer</SelectItem>
+                              <SelectItem value="Expert">Expert</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="lesson-number" className="text-right">
+                            Lição
+                          </Label>
+                          <Select 
+                            value={lessonForm.lesson} 
+                            onValueChange={(value) => setLessonForm({...lessonForm, lesson: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">Lição 1</SelectItem>
+                              <SelectItem value="2">Lição 2</SelectItem>
+                              <SelectItem value="3">Lição 3</SelectItem>
+                              <SelectItem value="4">Lição 4</SelectItem>
+                              <SelectItem value="5">Lição 5</SelectItem>
+                              <SelectItem value="6">Lição 6</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="lesson-description" className="text-right">
+                            Descrição
+                          </Label>
+                          <Textarea
+                            id="lesson-description"
+                            value={lessonForm.description}
+                            onChange={(e) => setLessonForm({...lessonForm, description: e.target.value})}
+                            className="col-span-3"
+                            placeholder="Descreva o conteúdo da aula..."
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="lesson-objectives" className="text-right">
+                            Objetivos
+                          </Label>
+                          <Textarea
+                            id="lesson-objectives"
+                            value={lessonForm.objectives}
+                            onChange={(e) => setLessonForm({...lessonForm, objectives: e.target.value})}
+                            className="col-span-3"
+                            placeholder="Liste os objetivos de aprendizagem..."
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-end space-x-2">
+                        <Button variant="outline" onClick={() => setIsCreateLessonModalOpen(false)}>
+                          Cancelar
+                        </Button>
+                        <Button onClick={handleCreateLesson}>
+                          Criar Aula
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+
+                  <Dialog open={isEditMaterialModalOpen} onOpenChange={setIsEditMaterialModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="h-20 flex flex-col space-y-1">
+                        <FileText className="h-6 w-6" />
+                        <span className="text-xs">Editar Material</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle>Editar Material</DialogTitle>
+                        <DialogDescription>
+                          Edite materiais de apoio para as aulas.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="material-module" className="text-right">
+                            Módulo
+                          </Label>
+                          <Select 
+                            value={materialForm.module} 
+                            onValueChange={(value) => setMaterialForm({...materialForm, module: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Starter">Starter</SelectItem>
+                              <SelectItem value="Survivor">Survivor</SelectItem>
+                              <SelectItem value="Explorer">Explorer</SelectItem>
+                              <SelectItem value="Expert">Expert</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="material-lesson" className="text-right">
+                            Lição
+                          </Label>
+                          <Select 
+                            value={materialForm.lesson} 
+                            onValueChange={(value) => setMaterialForm({...materialForm, lesson: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">Lição 1</SelectItem>
+                              <SelectItem value="2">Lição 2</SelectItem>
+                              <SelectItem value="3">Lição 3</SelectItem>
+                              <SelectItem value="4">Lição 4</SelectItem>
+                              <SelectItem value="5">Lição 5</SelectItem>
+                              <SelectItem value="6">Lição 6</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="material-type" className="text-right">
+                            Tipo
+                          </Label>
+                          <Select 
+                            value={materialForm.type} 
+                            onValueChange={(value) => setMaterialForm({...materialForm, type: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="PDF">PDF</SelectItem>
+                              <SelectItem value="Slide">Apresentação</SelectItem>
+                              <SelectItem value="Video">Vídeo</SelectItem>
+                              <SelectItem value="Link">Link Externo</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="material-title" className="text-right">
+                            Título
+                          </Label>
+                          <Input
+                            id="material-title"
+                            value={materialForm.title}
+                            onChange={(e) => setMaterialForm({...materialForm, title: e.target.value})}
+                            className="col-span-3"
+                            placeholder="Nome do material..."
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="material-content" className="text-right">
+                            Conteúdo
+                          </Label>
+                          <Textarea
+                            id="material-content"
+                            value={materialForm.content}
+                            onChange={(e) => setMaterialForm({...materialForm, content: e.target.value})}
+                            className="col-span-3"
+                            placeholder="Conteúdo ou URL do material..."
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-end space-x-2">
+                        <Button variant="outline" onClick={() => setIsEditMaterialModalOpen(false)}>
+                          Cancelar
+                        </Button>
+                        <Button onClick={handleEditMaterial}>
+                          Salvar Material
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+
+                  <Dialog open={isRecordVideoModalOpen} onOpenChange={setIsRecordVideoModalOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="h-20 flex flex-col space-y-1">
+                        <Video className="h-6 w-6" />
+                        <span className="text-xs">Gravar Vídeo</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[600px]">
+                      <DialogHeader>
+                        <DialogTitle>Gravar Vídeo</DialogTitle>
+                        <DialogDescription>
+                          Configure e inicie uma gravação de vídeo para as aulas.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="video-title" className="text-right">
+                            Título
+                          </Label>
+                          <Input
+                            id="video-title"
+                            value={videoForm.title}
+                            onChange={(e) => setVideoForm({...videoForm, title: e.target.value})}
+                            className="col-span-3"
+                            placeholder="Título do vídeo..."
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="video-module" className="text-right">
+                            Módulo
+                          </Label>
+                          <Select 
+                            value={videoForm.module} 
+                            onValueChange={(value) => setVideoForm({...videoForm, module: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Starter">Starter</SelectItem>
+                              <SelectItem value="Survivor">Survivor</SelectItem>
+                              <SelectItem value="Explorer">Explorer</SelectItem>
+                              <SelectItem value="Expert">Expert</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="video-lesson" className="text-right">
+                            Lição
+                          </Label>
+                          <Select 
+                            value={videoForm.lesson} 
+                            onValueChange={(value) => setVideoForm({...videoForm, lesson: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">Lição 1</SelectItem>
+                              <SelectItem value="2">Lição 2</SelectItem>
+                              <SelectItem value="3">Lição 3</SelectItem>
+                              <SelectItem value="4">Lição 4</SelectItem>
+                              <SelectItem value="5">Lição 5</SelectItem>
+                              <SelectItem value="6">Lição 6</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="video-type" className="text-right">
+                            Tipo de Gravação
+                          </Label>
+                          <Select 
+                            value={videoForm.recordingType} 
+                            onValueChange={(value) => setVideoForm({...videoForm, recordingType: value})}
+                          >
+                            <SelectTrigger className="col-span-3">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="screen">Tela + Áudio</SelectItem>
+                              <SelectItem value="camera">Câmera + Áudio</SelectItem>
+                              <SelectItem value="both">Tela + Câmera</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="video-description" className="text-right">
+                            Descrição
+                          </Label>
+                          <Textarea
+                            id="video-description"
+                            value={videoForm.description}
+                            onChange={(e) => setVideoForm({...videoForm, description: e.target.value})}
+                            className="col-span-3"
+                            placeholder="Descreva o conteúdo do vídeo..."
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-end space-x-2">
+                        <Button variant="outline" onClick={() => setIsRecordVideoModalOpen(false)}>
+                          Cancelar
+                        </Button>
+                        <Button onClick={handleRecordVideo}>
+                          Iniciar Gravação
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+
+                  <Button 
+                    variant="outline" 
+                    className="h-20 flex flex-col space-y-1"
+                    onClick={handleQAForum}
+                  >
                     <MessageSquare className="h-6 w-6" />
                     <span className="text-xs">Q&A Fórum</span>
                   </Button>
@@ -357,19 +779,177 @@ export default function MaestroDashboard() {
                 <CardTitle>Ações Rápidas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start">
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Agendar Nova Aula
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Dialog open={isScheduleModalOpen} onOpenChange={setIsScheduleModalOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="w-full justify-start">
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Agendar Nova Aula
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[600px]">
+                    <DialogHeader>
+                      <DialogTitle>Agendar Nova Aula</DialogTitle>
+                      <DialogDescription>
+                        Agende uma nova aula ao vivo para os professores.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="schedule-title" className="text-right">
+                          Título
+                        </Label>
+                        <Input
+                          id="schedule-title"
+                          value={scheduleForm.title}
+                          onChange={(e) => setScheduleForm({...scheduleForm, title: e.target.value})}
+                          className="col-span-3"
+                          placeholder="Ex: Workshop Avançado de IA"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="schedule-module" className="text-right">
+                          Módulo
+                        </Label>
+                        <Select 
+                          value={scheduleForm.module} 
+                          onValueChange={(value) => setScheduleForm({...scheduleForm, module: value})}
+                        >
+                          <SelectTrigger className="col-span-3">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Starter">Starter</SelectItem>
+                            <SelectItem value="Survivor">Survivor</SelectItem>
+                            <SelectItem value="Explorer">Explorer</SelectItem>
+                            <SelectItem value="Expert">Expert</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="schedule-date" className="text-right">
+                          Data
+                        </Label>
+                        <Input
+                          id="schedule-date"
+                          type="date"
+                          value={scheduleForm.date}
+                          onChange={(e) => setScheduleForm({...scheduleForm, date: e.target.value})}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="schedule-time" className="text-right">
+                          Horário
+                        </Label>
+                        <Input
+                          id="schedule-time"
+                          type="time"
+                          value={scheduleForm.time}
+                          onChange={(e) => setScheduleForm({...scheduleForm, time: e.target.value})}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="schedule-duration" className="text-right">
+                          Duração (min)
+                        </Label>
+                        <Select 
+                          value={scheduleForm.duration} 
+                          onValueChange={(value) => setScheduleForm({...scheduleForm, duration: value})}
+                        >
+                          <SelectTrigger className="col-span-3">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="60">60 minutos</SelectItem>
+                            <SelectItem value="90">90 minutos</SelectItem>
+                            <SelectItem value="120">120 minutos</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="schedule-description" className="text-right">
+                          Descrição
+                        </Label>
+                        <Textarea
+                          id="schedule-description"
+                          value={scheduleForm.description}
+                          onChange={(e) => setScheduleForm({...scheduleForm, description: e.target.value})}
+                          className="col-span-3"
+                          placeholder="Descreva o conteúdo da aula..."
+                        />
+                      </div>
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={() => setIsScheduleModalOpen(false)}>
+                        Cancelar
+                      </Button>
+                      <Button onClick={handleScheduleNewClass}>
+                        Agendar Aula
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={handleRespondForum}
+                >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Responder Fórum
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Gerar Relatório
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
+                
+                <Dialog open={isReportModalOpen} onOpenChange={setIsReportModalOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full justify-start">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Gerar Relatório
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>Gerar Relatório</DialogTitle>
+                      <DialogDescription>
+                        Selecione o tipo de relatório que deseja gerar.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <input type="radio" id="performance" name="reportType" value="performance" />
+                          <Label htmlFor="performance">Relatório de Performance dos Professores</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input type="radio" id="engagement" name="reportType" value="engagement" />
+                          <Label htmlFor="engagement">Relatório de Engajamento por Módulo</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input type="radio" id="completion" name="reportType" value="completion" />
+                          <Label htmlFor="completion">Taxa de Conclusão das Aulas</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input type="radio" id="feedback" name="reportType" value="feedback" />
+                          <Label htmlFor="feedback">Relatório de Feedback e Avaliações</Label>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={() => setIsReportModalOpen(false)}>
+                        Cancelar
+                      </Button>
+                      <Button onClick={handleGenerateReport}>
+                        Gerar Relatório
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={handleViewAllTeachers}
+                >
                   <Users className="mr-2 h-4 w-4" />
                   Ver Todos Professores
                 </Button>
