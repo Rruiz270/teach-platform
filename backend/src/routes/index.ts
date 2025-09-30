@@ -7,6 +7,7 @@ import assessmentRoutes from './assessment.routes';
 import progressRoutes from './progress.routes';
 import forumRoutes from './forum.routes';
 import aiRoutes from './ai.routes';
+import aiAssistantRoutes from './ai-assistant.routes';
 
 export const setupRoutes = (app: Application) => {
   const apiRouter = Router();
@@ -23,6 +24,7 @@ export const setupRoutes = (app: Application) => {
   apiRouter.use('/progress', progressRoutes);
   apiRouter.use('/forum', forumRoutes);
   apiRouter.use('/ai', aiRoutes);
+  apiRouter.use('/ai-assistant', aiAssistantRoutes);
 
   // Apply API router
   app.use(API_PREFIX, apiRouter);

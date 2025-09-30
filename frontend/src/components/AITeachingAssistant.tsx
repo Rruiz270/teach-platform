@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { aiService, type ChatRequest } from '@/services/aiService'
 import { 
   MessageSquare, 
   Send, 
@@ -158,37 +159,51 @@ export default function AITeachingAssistant({
   }
 
   const generateAIResponse = async (userMessage: string, context?: string): Promise<string> => {
-    // Simulate AI response - in production, this would call your AI service
     setIsLoading(true)
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    const responses = {
-      chatgpt: [
-        `Para usar o ChatGPT em ${currentLesson?.title || 'suas aulas'}, recomendo começar com prompts específicos como: "Crie 3 exercícios práticos sobre [tópico] para alunos do ensino fundamental". Isso gera conteúdo mais direcionado.`,
-        `Ótima pergunta! Uma estratégia eficaz é usar o ChatGPT para criar cenários reais. Por exemplo: "Imagine que você é um cientista descobrindo um novo planeta. Descreva sua descoberta em 100 palavras." Isso estimula criatividade e engajamento.`,
-        `Sugiro estruturar suas solicitações ao ChatGPT em 3 partes: 1) Contexto (nível dos alunos), 2) Tarefa específica, 3) Formato desejado. Isso melhora significativamente a qualidade das respostas.`
-      ],
-      general: [
-        `Com base na sua pergunta sobre "${userMessage}", posso sugerir algumas abordagens práticas. A IA pode ser especialmente útil para personalizar o aprendizado dos seus alunos.`,
-        `Entendo sua dúvida. Uma boa prática é sempre revisar e adaptar o conteúdo gerado por IA para o contexto específico da sua turma. Posso ajudar você a desenvolver isso?`,
-        `Essa é uma questão importante! Recomendo começar com casos simples e ir aumentando a complexidade gradualmente. Quer que eu crie um exemplo específico para sua situação?`
-      ],
-      activity: [
-        `Vou criar uma atividade personalizada para "${currentLesson?.title || 'esta aula'}": \n\n🎯 **Atividade: IA Detective**\n1. Apresente 3 textos aos alunos (1 escrito por humano, 2 por IA)\n2. Peça para identificarem qual é humano\n3. Discutam as pistas que ajudaram na identificação\n4. Reflexão: Como podemos usar IA de forma ética?\n\n⏱️ Duração: 20-30 minutos`,
-        `Aqui está uma atividade prática para "${currentLesson?.title || 'sua aula'}":\n\n🎲 **Jogo dos Prompts**\n1. Divida a turma em grupos de 3-4 alunos\n2. Cada grupo recebe um prompt "quebrado"\n3. Precisam melhorar o prompt para obter melhor resposta\n4. Testam com ChatGPT e apresentam resultados\n5. Turma vota no melhor prompt melhorado\n\n🏆 Prêmio para o grupo vencedor!`
-      ]
-    }
+    try {
+      // Build conversation context from previous messages
+      const previousMessages = messages
+        .filter(m => m.type !== 'suggestion')
+        .slice(-6) // Last 6 messages for context
+        .map(m => ({
+          role: m.type === 'user' ? 'user' as const : 'assistant' as const,
+          content: m.content
+        }))
 
-    let responseArray = responses.general
-    if (userMessage.toLowerCase().includes('chatgpt') || userMessage.toLowerCase().includes('prompt')) {
-      responseArray = responses.chatgpt
-    } else if (userMessage.toLowerCase().includes('atividade') || userMessage.toLowerCase().includes('exercício')) {
-      responseArray = responses.activity
-    }
+      // Prepare request for Claude API
+      const chatRequest: ChatRequest = {
+        message: userMessage,
+        context: {
+          lessonId: currentLesson?.id,
+          lessonTitle: currentLesson?.title,
+          moduleLevel: currentLesson?.module,
+          previousMessages
+        }
+      }
 
-    return responseArray[Math.floor(Math.random() * responseArray.length)]
+      // Call real Claude API
+      const response = await aiService.chat(chatRequest)
+      
+      if (response.success) {
+        return response.data.response
+      } else {
+        throw new Error('Failed to get AI response')
+      }
+    } catch (error) {
+      console.error('AI response error:', error)
+      
+      // Fallback response
+      return `😅 Desculpe, tive um problema técnico. Mas posso sugerir algumas abordagens práticas para "${userMessage}". 
+
+A IA é uma ferramenta poderosa para personalizar o ensino. Algumas estratégias que sempre funcionam:
+
+• **Prompts específicos**: Seja detalhado sobre o que precisa
+• **Contexto claro**: Informe o nível dos alunos e objetivo
+• **Iteração**: Refine as respostas conforme necessário
+
+Quer tentar novamente? Posso ajudar com prompts mais específicos! 🤖✨`
+    }
   }
 
   const handleSendMessage = async () => {
