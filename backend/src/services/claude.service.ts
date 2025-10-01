@@ -31,6 +31,9 @@ class ClaudeService {
         throw new AppError('ANTHROPIC_API_KEY is not configured. Please set up the API key in your environment variables.', 500);
       }
       
+      // Log API key format for debugging (first/last 4 chars only)
+      logger.info(`Initializing Claude with API key: ${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}`);
+      
       this.client = new Anthropic({
         apiKey: apiKey,
       });
@@ -55,7 +58,7 @@ class ClaudeService {
       ];
 
       const response = await client.messages.create({
-        model: 'claude-3-sonnet-20240229',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1000,
         temperature: 0.7,
         system: systemPrompt,
@@ -106,7 +109,7 @@ For each question, provide:
 Format the response as a JSON array of questions.`;
 
       const response = await client.messages.create({
-        model: 'claude-3-sonnet-20240229',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 2000,
         temperature: 0.8,
         system: 'You are an expert educator specializing in creating assessments for AI education. Always respond with valid JSON.',
@@ -169,7 +172,7 @@ Format as JSON.`;
 
       const client = this.initializeClient();
       const response = await client.messages.create({
-        model: 'claude-3-sonnet-20240229',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1500,
         temperature: 0.7,
         system: 'You are an AI learning path advisor. Provide personalized, actionable recommendations.',
@@ -223,7 +226,7 @@ Format as structured JSON.`;
 
       const client = this.initializeClient();
       const response = await client.messages.create({
-        model: 'claude-3-sonnet-20240229',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 2500,
         temperature: 0.8,
         system: 'You are an expert curriculum designer specializing in AI education. Create engaging, practical lesson content.',
