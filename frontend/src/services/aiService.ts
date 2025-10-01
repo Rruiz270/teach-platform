@@ -70,9 +70,11 @@ interface LessonContentRequest {
   includeActivities?: boolean
 }
 
+import Cookies from 'js-cookie'
+
 class AIService {
   private async makeRequest<T>(endpoint: string, data: any): Promise<T> {
-    const token = localStorage.getItem('token')
+    const token = Cookies.get('accessToken')
     
     // Handle both cases: API_BASE_URL with or without /api/v1
     const baseUrl = API_BASE_URL.endsWith('/api/v1') ? API_BASE_URL : `${API_BASE_URL}/api/v1`

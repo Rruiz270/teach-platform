@@ -119,7 +119,9 @@ export default function AITeachingAssistant({
   }
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
   }
 
   useEffect(() => {
@@ -348,8 +350,8 @@ Quer tentar novamente? Posso ajudar com prompts mais específicos! 🤖✨`
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="chat" className="flex-1 flex flex-col m-2 mt-0">
-          <div className="flex-1 overflow-y-auto space-y-3 p-2 bg-gray-50 rounded-lg">
+        <TabsContent value="chat" className="flex-1 flex flex-col m-2 mt-0 h-0">
+          <div className="flex-1 overflow-y-auto space-y-3 p-2 bg-gray-50 rounded-lg max-h-[400px]">
             {messages.map((message) => (
               <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] rounded-lg p-3 ${
