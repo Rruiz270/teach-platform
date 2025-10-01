@@ -20,8 +20,9 @@ export const registerSchema = z.object({
     phone: z.string().optional(),
   }),
 }).refine((data) => {
-  // Only require subjects for non-AI MAESTRO roles
-  if (data.body.role !== 'AI_MAESTRO' && data.body.subjects.length === 0) {
+  // Only require subjects for roles that need them (teachers and parents)
+  const rolesWithoutSubjects = ['AI_MAESTRO', 'SUPER_ADMIN', 'ADMIN'];
+  if (!rolesWithoutSubjects.includes(data.body.role || 'TEACHER') && data.body.subjects.length === 0) {
     return false;
   }
   return true;
