@@ -76,9 +76,25 @@ class ClaudeService {
           outputTokens: response.usage.output_tokens,
         },
       };
-    } catch (error) {
-      logger.error('Claude API error:', error);
-      throw new AppError('Failed to generate AI response', 500);
+    } catch (error: any) {
+      logger.error('Claude API error:', {
+        message: error.message,
+        status: error.status,
+        type: error.type,
+        error: error.error,
+        stack: error.stack
+      });
+      
+      // More specific error handling
+      if (error.status === 401) {
+        throw new AppError('Claude API authentication failed. Please check API key.', 401);
+      } else if (error.status === 429) {
+        throw new AppError('Claude API rate limit exceeded. Please try again later.', 429);
+      } else if (error.status === 400) {
+        throw new AppError('Invalid request to Claude API. Please check your input.', 400);
+      } else {
+        throw new AppError(`Claude API error: ${error.message || 'Unknown error'}`, 500);
+      }
     }
   }
 
