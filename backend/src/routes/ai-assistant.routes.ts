@@ -59,6 +59,16 @@ router.post(
   authenticate,
   validate(chatSchema),
   asyncHandler(async (req, res) => {
+    // Debug logging
+    logger.info('AI Chat request received:', {
+      body: req.body,
+      user: req.user?.id,
+      headers: {
+        'content-type': req.headers['content-type'],
+        authorization: req.headers.authorization ? 'Bearer [REDACTED]' : 'None'
+      }
+    });
+
     const { message, context } = req.body;
     const userId = req.user!.id;
 
