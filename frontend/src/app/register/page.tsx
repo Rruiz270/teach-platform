@@ -18,7 +18,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'TEACHER' as 'TEACHER' | 'ADMIN' | 'PARENT' | 'AI_MAESTRO',
+    role: 'TEACHER' as 'TEACHER' | 'ADMIN' | 'PARENT' | 'AI_MAESTRO' | 'SUPER_ADMIN',
     teachingLevel: 'ELEMENTARY' as 'EARLY_YEARS' | 'ELEMENTARY' | 'JUNIOR_HIGH' | 'HIGH_SCHOOL' | 'UNIVERSITY',
     subjects: [] as string[],
     state: '',
@@ -85,8 +85,8 @@ export default function RegisterPage() {
       return
     }
 
-    // Only check subjects for non-AI MAESTRO roles
-    if (formData.role !== 'AI_MAESTRO' && formData.subjects.length === 0) {
+    // Only check subjects for roles that need them
+    if (formData.role !== 'AI_MAESTRO' && formData.role !== 'SUPER_ADMIN' && formData.role !== 'ADMIN' && formData.subjects.length === 0) {
       setError('Selecione pelo menos uma disciplina')
       setIsLoading(false)
       return
@@ -111,7 +111,7 @@ export default function RegisterPage() {
         password: formData.password,
         role: formData.role,
         teachingLevel: formData.teachingLevel,
-        subjects: formData.role === 'AI_MAESTRO' ? [] : formData.subjects,
+        subjects: (formData.role === 'AI_MAESTRO' || formData.role === 'SUPER_ADMIN' || formData.role === 'ADMIN') ? [] : formData.subjects,
         state: formData.state,
         city: formData.city,
         phone: formData.phone || undefined
@@ -302,6 +302,7 @@ export default function RegisterPage() {
                   <SelectItem value="ADMIN">Administrador(a) Escolar</SelectItem>
                   <SelectItem value="AI_MAESTRO">AI MAESTRO</SelectItem>
                   <SelectItem value="PARENT">Pai/Mãe/Responsável</SelectItem>
+                  <SelectItem value="SUPER_ADMIN">Super Administrador</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -322,7 +323,7 @@ export default function RegisterPage() {
               </Select>
             </div>
 
-            {formData.role !== 'AI_MAESTRO' && (
+            {formData.role !== 'AI_MAESTRO' && formData.role !== 'SUPER_ADMIN' && formData.role !== 'ADMIN' && (
               <div className="space-y-2">
                 <Label>Disciplinas (selecione pelo menos uma)</Label>
                 <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded p-2">
