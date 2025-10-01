@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, Users, Trophy, Clock, Star, ArrowRight, Bot, Target, Gamepad2 } from 'lucide-react'
+import { BookOpen, Users, Trophy, Clock, Star, ArrowRight, Bot, Target, Gamepad2, Calendar } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import AITeachingAssistant from '@/components/AITeachingAssistant'
 import PersonalizedLearningPath from '@/components/PersonalizedLearningPath'
@@ -338,6 +338,12 @@ export default function DashboardPage() {
                   <Button className="w-full" variant="outline">
                     <BookOpen className="mr-2 h-4 w-4" />
                     Biblioteca de Recursos
+                  </Button>
+                </Link>
+                <Link href="/calendar">
+                  <Button className="w-full" variant="outline">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    Calendário de Eventos
                   </Button>
                 </Link>
                 <Link href="/certificates">
