@@ -4,6 +4,7 @@ import { validate } from '../utils/validation';
 import { z } from 'zod';
 import { claudeService } from '../services/claude.service';
 import { asyncHandler } from '../middleware/errorHandler';
+import { logger } from '../utils/logger';
 
 const router = Router();
 
