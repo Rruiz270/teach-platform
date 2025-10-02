@@ -458,6 +458,7 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
                 onRegister={handleRegister}
                 onUnregister={handleUnregister}
                 onViewDetails={setSelectedEvent}
+                onOpenSchedulingCalendar={openSchedulingCalendar}
               />
             ))}
           </div>
@@ -546,15 +547,71 @@ function EventCard({
   event, 
   onRegister, 
   onUnregister, 
-  onViewDetails 
+  onViewDetails,
+  onOpenSchedulingCalendar
 }: { 
   event: Event
   onRegister: (id: string) => void
   onUnregister: (id: string) => void
   onViewDetails: (event: Event) => void
+  onOpenSchedulingCalendar: (event: Event) => void
 }) {
   const isEventFull = event.maxParticipants ? event.currentParticipants >= event.maxParticipants : false
   const isPastEvent = new Date(event.endDate) < new Date()
+
+  // Use the enhanced button logic
+  const getLessonButtonInfo = (event: Event) => {
+    const isRegistered = event.userRegistration?.status === 'CONFIRMED'
+    const hasCompleted = event.userRegistration?.lessonCompleted || event.lessonCompletionStatus === 'completed'
+    const isEventFull = event.maxParticipants ? event.currentParticipants >= event.maxParticipants : false
+    const availableSeats = event.maxParticipants ? event.maxParticipants - event.currentParticipants : 0
+
+    if (hasCompleted) {
+      return {
+        text: 'Aula Concluída',
+        icon: CheckCircle2,
+        variant: 'outline' as const,
+        disabled: true,
+        action: () => {},
+        className: 'bg-green-50 border-green-200 text-green-800'
+      }
+    }
+
+    if (event.isRecurring || event.recurringDates?.length) {
+      return {
+        text: isRegistered ? 'Reagendar Aula' : 'Agendar Aula',
+        icon: CalendarScheduleIcon,
+        variant: 'default' as const,
+        disabled: false,
+        action: () => onOpenSchedulingCalendar(event),
+        className: '',
+        showSeats: true,
+        availableSeats
+      }
+    }
+
+    if (isRegistered) {
+      return {
+        text: 'Cancelar Inscrição',
+        icon: UserMinus,
+        variant: 'outline' as const,
+        disabled: false,
+        action: () => onUnregister(event.id),
+        className: ''
+      }
+    }
+
+    return {
+      text: isEventFull ? 'Lotado' : 'Inscrever-se',
+      icon: UserPlus,
+      variant: 'default' as const,
+      disabled: isEventFull,
+      action: () => onRegister(event.id),
+      className: '',
+      showSeats: true,
+      availableSeats
+    }
+  }
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -685,6 +742,7 @@ function WeekView({ events, onEventClick }: { events: Event[], onEventClick: (ev
             onRegister={() => {}}
             onUnregister={() => {}}
             onViewDetails={onEventClick}
+            onOpenSchedulingCalendar={() => {}}
           />
         ))}
       </div>
