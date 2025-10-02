@@ -26,8 +26,12 @@ import {
   Download,
   Share2,
   BookOpen,
-  Brain
+  Brain,
+  CheckCircle2,
+  AlertCircle,
+  Calendar as CalendarScheduleIcon
 } from 'lucide-react'
+import LessonSchedulingCalendar from './LessonSchedulingCalendar'
 
 interface Event {
   id: string
@@ -40,7 +44,10 @@ interface Event {
   meetingUrl?: string
   maxParticipants?: number
   currentParticipants: number
+  availableSeats?: number
   isPublished: boolean
+  recurringDates?: string[]
+  isRecurring?: boolean
   instructor?: {
     id: string
     profile?: {
@@ -48,6 +55,14 @@ interface Event {
       photoUrl?: string
     }
   }
+  userRegistration?: {
+    id: string
+    status: string
+    hasAttended: boolean
+    lessonCompleted: boolean
+    completedAt?: string
+  }
+  lessonCompletionStatus?: 'not_started' | 'in_progress' | 'completed'
   module?: {
     id: string
     title: string
@@ -78,6 +93,69 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
     instructor: 'all',
     module: 'all'
   })
+  const [isSchedulingCalendarOpen, setIsSchedulingCalendarOpen] = useState(false)
+  const [selectedLessonForScheduling, setSelectedLessonForScheduling] = useState<Event | null>(null)
+  const [userRegistrations, setUserRegistrations] = useState<string[]>([]) // Array of event IDs user is registered for
+
+  // Helper function to get button text and action based on lesson status
+  const getLessonButtonInfo = (event: Event) => {
+    const isRegistered = event.userRegistration?.status === 'CONFIRMED'
+    const hasCompleted = event.userRegistration?.lessonCompleted || event.lessonCompletionStatus === 'completed'
+    const isEventFull = event.maxParticipants ? event.currentParticipants >= event.maxParticipants : false
+    const availableSeats = event.maxParticipants ? event.maxParticipants - event.currentParticipants : 0
+
+    if (hasCompleted) {
+      return {
+        text: 'Aula Concluída',
+        icon: CheckCircle2,
+        variant: 'outline' as const,
+        disabled: true,
+        action: () => {},
+        className: 'bg-green-50 border-green-200 text-green-800'
+      }
+    }
+
+    if (event.isRecurring || event.recurringDates?.length) {
+      return {
+        text: isRegistered ? 'Reagendar Aula' : 'Agendar Aula',
+        icon: CalendarScheduleIcon,
+        variant: 'default' as const,
+        disabled: false,
+        action: () => openSchedulingCalendar(event),
+        className: '',
+        showSeats: true,
+        availableSeats
+      }
+    }
+
+    if (isRegistered) {
+      return {
+        text: 'Cancelar Inscrição',
+        icon: UserMinus,
+        variant: 'outline' as const,
+        disabled: false,
+        action: () => onUnregister(event.id),
+        className: ''
+      }
+    }
+
+    return {
+      text: isEventFull ? 'Lotado' : 'Inscrever-se',
+      icon: UserPlus,
+      variant: 'default' as const,
+      disabled: isEventFull,
+      action: () => onRegister(event.id),
+      className: '',
+      showSeats: true,
+      availableSeats
+    }
+  }
+
+  // Function to open scheduling calendar
+  const openSchedulingCalendar = (event: Event) => {
+    setSelectedLessonForScheduling(event)
+    setIsSchedulingCalendarOpen(true)
+  }
 
   // Mock data - in production this would come from API
   useEffect(() => {
@@ -92,7 +170,15 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         meetingUrl: 'https://meet.google.com/abc-defg-hij',
         maxParticipants: 50,
         currentParticipants: 23,
+        availableSeats: 27,
         isPublished: true,
+        isRecurring: true,
+        recurringDates: [
+          '2024-12-14T19:00:00Z',
+          '2024-12-16T19:00:00Z',
+          '2024-12-18T19:00:00Z',
+          '2024-12-20T19:00:00Z'
+        ],
         instructor: {
           id: 'maestro1',
           profile: {
@@ -105,7 +191,13 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
           title: 'Starter - Fundamentos de IA',
           type: 'STARTER'
         },
-        isRegistered: true
+        userRegistration: {
+          id: 'reg1',
+          status: 'CONFIRMED',
+          hasAttended: false,
+          lessonCompleted: false
+        },
+        lessonCompletionStatus: 'not_started'
       },
       {
         id: '2',
@@ -151,6 +243,39 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
           }
         },
         isRegistered: false
+      },
+      {
+        id: '3',
+        title: 'Avaliação Automatizada - Survivor',
+        description: 'Aula sobre ferramentas de avaliação automatizada com IA',
+        startDate: '2024-12-19T20:00:00Z',
+        endDate: '2024-12-19T21:30:00Z',
+        type: 'LIVE_CLASS',
+        meetingUrl: 'https://meet.google.com/def-ghij-klm',
+        maxParticipants: 42,
+        currentParticipants: 42,
+        availableSeats: 0,
+        isPublished: true,
+        instructor: {
+          id: 'maestro1',
+          profile: {
+            name: 'AI MAESTRO',
+            photoUrl: undefined
+          }
+        },
+        module: {
+          id: 'survivor',
+          title: 'Survivor - Nível Básico',
+          type: 'SURVIVOR'
+        },
+        userRegistration: {
+          id: 'reg3',
+          status: 'CONFIRMED',
+          hasAttended: true,
+          lessonCompleted: true,
+          completedAt: '2024-12-19T21:30:00Z'
+        },
+        lessonCompletionStatus: 'completed'
       }
     ]
 
@@ -376,6 +501,42 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
           onUnregister={handleUnregister}
         />
       )}
+      
+      {selectedLessonForScheduling && (
+        <LessonSchedulingCalendar
+          isOpen={isSchedulingCalendarOpen}
+          onClose={() => {
+            setIsSchedulingCalendarOpen(false)
+            setSelectedLessonForScheduling(null)
+          }}
+          lessonTitle={selectedLessonForScheduling.title}
+          lessonDescription={selectedLessonForScheduling.description}
+          availableDates={selectedLessonForScheduling.recurringDates?.map((date, index) => ({
+            id: `${selectedLessonForScheduling.id}-${index}`,
+            date: date,
+            startTime: '19:00',
+            endTime: '20:30',
+            maxParticipants: selectedLessonForScheduling.maxParticipants || 50,
+            currentParticipants: Math.floor(Math.random() * 20), // Mock data
+            availableSeats: (selectedLessonForScheduling.maxParticipants || 50) - Math.floor(Math.random() * 20),
+            meetingUrl: selectedLessonForScheduling.meetingUrl,
+            location: selectedLessonForScheduling.location,
+            instructorName: selectedLessonForScheduling.instructor?.profile?.name || 'AI MAESTRO'
+          })) || []}
+          userRegistrations={userRegistrations}
+          onSchedule={async (dateId) => {
+            // Handle scheduling logic here
+            console.log('Scheduling for date:', dateId)
+            setUserRegistrations(prev => [...prev, dateId])
+          }}
+          onUnregister={async (dateId) => {
+            // Handle unregistering logic here
+            console.log('Unregistering from date:', dateId)
+            setUserRegistrations(prev => prev.filter(id => id !== dateId))
+          }}
+          hasCompletedLesson={selectedLessonForScheduling.lessonCompletionStatus === 'completed'}
+        />
+      )}
     </div>
   )
 }
@@ -457,25 +618,30 @@ function EventCard({
 
           {!isPastEvent && (
             <>
-              {event.isRegistered ? (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => onUnregister(event.id)}
-                >
-                  <UserMinus className="h-4 w-4 mr-2" />
-                  Cancelar Inscrição
-                </Button>
-              ) : (
-                <Button 
-                  size="sm"
-                  disabled={isEventFull}
-                  onClick={() => onRegister(event.id)}
-                >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  {isEventFull ? 'Lotado' : 'Inscrever-se'}
-                </Button>
-              )}
+              {(() => {
+                const buttonInfo = getLessonButtonInfo(event)
+                const Icon = buttonInfo.icon
+                return (
+                  <div className="flex flex-col items-end space-y-2">
+                    {buttonInfo.showSeats && (
+                      <div className="flex items-center space-x-1 text-xs text-gray-600">
+                        <Users className="h-3 w-3" />
+                        <span>{buttonInfo.availableSeats} vagas</span>
+                      </div>
+                    )}
+                    <Button 
+                      variant={buttonInfo.variant}
+                      size="sm"
+                      disabled={buttonInfo.disabled}
+                      onClick={buttonInfo.action}
+                      className={buttonInfo.className}
+                    >
+                      <Icon className="h-4 w-4 mr-2" />
+                      {buttonInfo.text}
+                    </Button>
+                  </div>
+                )
+              })()}
             </>
           )}
         </div>
@@ -696,34 +862,44 @@ function EventDetailsModal({
 
             {!isPastEvent && (
               <>
-                {event.isRegistered ? (
-                  <div className="space-x-2">
-                    {event.meetingUrl && (
-                      <Button 
-                        variant="outline"
-                        onClick={() => window.open(event.meetingUrl, '_blank')}
-                      >
-                        <Video className="h-4 w-4 mr-2" />
-                        Entrar na Reunião
-                      </Button>
-                    )}
-                    <Button 
-                      variant="outline"
-                      onClick={() => onUnregister(event.id)}
-                    >
-                      <UserMinus className="h-4 w-4 mr-2" />
-                      Cancelar Inscrição
-                    </Button>
-                  </div>
-                ) : (
-                  <Button 
-                    disabled={isEventFull}
-                    onClick={() => onRegister(event.id)}
-                  >
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    {isEventFull ? 'Evento Lotado' : 'Inscrever-se'}
-                  </Button>
-                )}
+                {(() => {
+                  const buttonInfo = getLessonButtonInfo(event)
+                  const Icon = buttonInfo.icon
+                  const isRegistered = event.userRegistration?.status === 'CONFIRMED'
+                  
+                  return (
+                    <div className="space-y-3">
+                      {buttonInfo.showSeats && (
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+                          <Users className="h-4 w-4" />
+                          <span>{buttonInfo.availableSeats} de {event.maxParticipants} vagas disponíveis</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex space-x-2">
+                        {isRegistered && event.meetingUrl && (
+                          <Button 
+                            variant="outline"
+                            onClick={() => window.open(event.meetingUrl, '_blank')}
+                          >
+                            <Video className="h-4 w-4 mr-2" />
+                            Entrar na Reunião
+                          </Button>
+                        )}
+                        
+                        <Button 
+                          variant={buttonInfo.variant}
+                          disabled={buttonInfo.disabled}
+                          onClick={buttonInfo.action}
+                          className={buttonInfo.className}
+                        >
+                          <Icon className="h-4 w-4 mr-2" />
+                          {buttonInfo.text}
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                })()}
               </>
             )}
           </div>

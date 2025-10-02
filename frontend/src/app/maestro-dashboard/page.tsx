@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Brain, Calendar, Users, Video, BookOpen, MessageSquare, Clock, Play, FileText, Award, TrendingUp, Plus, X } from 'lucide-react'
+import { Brain, Calendar, Users, Video, BookOpen, MessageSquare, Clock, Play, FileText, Award, TrendingUp, Plus, X, Eye, Mail, Phone, MapPin, GraduationCap } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import MaterialViewer from '@/components/MaterialViewer'
 
@@ -29,6 +29,8 @@ export default function MaestroDashboard() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
   const [isMaterialViewerOpen, setIsMaterialViewerOpen] = useState(false)
   const [selectedLessonData, setSelectedLessonData] = useState(null)
+  const [isStudentListModalOpen, setIsStudentListModalOpen] = useState(false)
+  const [selectedClassStudents, setSelectedClassStudents] = useState(null)
   
   // Form states
   const [scheduleForm, setScheduleForm] = useState({
@@ -75,6 +77,70 @@ export default function MaestroDashboard() {
   const handleStartClass = (classId: number) => {
     alert(`Iniciando aula ao vivo ${classId}...`)
     // In real app: redirect to live streaming platform
+  }
+
+  const handleViewStudents = (classItem: any) => {
+    // Mock student data for the selected class
+    const mockStudents = [
+      {
+        id: '1',
+        name: 'Ana Silva Santos',
+        email: 'ana.silva@email.com',
+        phone: '(11) 99999-1234',
+        city: 'São Paulo',
+        state: 'SP',
+        teachingLevel: 'Ensino Fundamental',
+        subjects: ['Matemática', 'Ciências'],
+        registrationDate: '2024-11-15T10:30:00Z',
+        hasAttended: true,
+        avatar: null
+      },
+      {
+        id: '2',
+        name: 'Carlos Roberto Lima',
+        email: 'carlos.lima@email.com',
+        phone: '(21) 88888-5678',
+        city: 'Rio de Janeiro',
+        state: 'RJ',
+        teachingLevel: 'Ensino Médio',
+        subjects: ['História', 'Geografia'],
+        registrationDate: '2024-11-10T14:20:00Z',
+        hasAttended: false,
+        avatar: null
+      },
+      {
+        id: '3',
+        name: 'Maria José Oliveira',
+        email: 'maria.oliveira@email.com',
+        phone: '(31) 77777-9012',
+        city: 'Belo Horizonte',
+        state: 'MG',
+        teachingLevel: 'Educação Infantil',
+        subjects: ['Português', 'Artes'],
+        registrationDate: '2024-11-08T09:15:00Z',
+        hasAttended: true,
+        avatar: null
+      },
+      {
+        id: '4',
+        name: 'João Pedro Costa',
+        email: 'joao.costa@email.com',
+        phone: '(85) 66666-3456',
+        city: 'Fortaleza',
+        state: 'CE',
+        teachingLevel: 'Ensino Fundamental II',
+        subjects: ['Inglês', 'Educação Física'],
+        registrationDate: '2024-11-20T16:45:00Z',
+        hasAttended: false,
+        avatar: null
+      }
+    ]
+
+    setSelectedClassStudents({
+      classInfo: classItem,
+      students: mockStudents
+    })
+    setIsStudentListModalOpen(true)
   }
 
   const handleAccessMaterial = (classId: number) => {
@@ -443,6 +509,14 @@ export default function MaestroDashboard() {
                         >
                           <FileText className="w-4 h-4 mr-1" />
                           Material
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleViewStudents(class_item)}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          Alunos
                         </Button>
                         <Button 
                           size="sm"
@@ -1071,6 +1145,141 @@ export default function MaestroDashboard() {
           onClose={() => setIsMaterialViewerOpen(false)}
           lessonData={selectedLessonData}
         />
+      )}
+
+      {/* Student List Modal */}
+      {selectedClassStudents && (
+        <Dialog open={isStudentListModalOpen} onOpenChange={setIsStudentListModalOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center space-x-2">
+                <Users className="h-5 w-5 text-blue-600" />
+                <span>Alunos Inscritos - {selectedClassStudents.classInfo.title}</span>
+              </DialogTitle>
+              <DialogDescription>
+                <div className="flex items-center space-x-4 text-sm">
+                  <span className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    {new Date(selectedClassStudents.classInfo.date).toLocaleDateString('pt-BR')}
+                  </span>
+                  <span className="flex items-center">
+                    <Clock className="w-4 h-4 mr-1" />
+                    {selectedClassStudents.classInfo.time}
+                  </span>
+                  <Badge variant="outline">
+                    {selectedClassStudents.classInfo.module}
+                  </Badge>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    {selectedClassStudents.students.length} Professores Inscritos
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {selectedClassStudents.students.filter((s: any) => s.hasAttended).length} já participaram de aulas anteriores
+                  </p>
+                </div>
+                <Button variant="outline" size="sm">
+                  <Mail className="h-4 w-4 mr-2" />
+                  Enviar Email para Todos
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {selectedClassStudents.students.map((student: any) => (
+                  <Card key={student.id} className="p-4">
+                    <div className="flex items-start space-x-3">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={student.avatar} />
+                        <AvatarFallback className="bg-blue-100 text-blue-600">
+                          {student.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-semibold text-gray-900 truncate">
+                            {student.name}
+                          </h4>
+                          {student.hasAttended && (
+                            <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                              Participou
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <div className="space-y-1 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1">
+                            <Mail className="h-3 w-3" />
+                            <span className="truncate">{student.email}</span>
+                          </div>
+                          
+                          <div className="flex items-center space-x-1">
+                            <Phone className="h-3 w-3" />
+                            <span>{student.phone}</span>
+                          </div>
+                          
+                          <div className="flex items-center space-x-1">
+                            <MapPin className="h-3 w-3" />
+                            <span>{student.city}, {student.state}</span>
+                          </div>
+                          
+                          <div className="flex items-center space-x-1">
+                            <GraduationCap className="h-3 w-3" />
+                            <span>{student.teachingLevel}</span>
+                          </div>
+                        </div>
+
+                        <div className="mt-2">
+                          <div className="flex flex-wrap gap-1">
+                            {student.subjects.map((subject: string, index: number) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {subject}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-3 text-xs text-gray-500">
+                          Inscrito em: {new Date(student.registrationDate).toLocaleDateString('pt-BR')}
+                        </div>
+
+                        <div className="flex space-x-2 mt-3">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open(`mailto:${student.email}`, '_blank')}
+                          >
+                            <Mail className="h-3 w-3 mr-1" />
+                            Email
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => window.open(`tel:${student.phone}`, '_blank')}
+                          >
+                            <Phone className="h-3 w-3 mr-1" />
+                            Ligar
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setIsStudentListModalOpen(false)}>
+                Fechar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   )
