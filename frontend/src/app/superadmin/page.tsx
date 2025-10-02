@@ -165,7 +165,7 @@ export default function SuperAdminDashboard() {
         {/* Quick Access Tiles */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">🚀 Acesso Rápido às Áreas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Admin Dashboard Tile */}
             <Link href="/admin">
               <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
@@ -249,6 +249,94 @@ export default function SuperAdminDashboard() {
                 </CardContent>
               </Card>
             </Link>
+
+            {/* Calendar Management Tile */}
+            <Link href="/calendar">
+              <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-orange-200 hover:shadow-lg transition-all cursor-pointer group">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="p-3 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+                        <Calendar className="h-8 w-8 text-orange-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-orange-900 text-lg">Calendário Global</h3>
+                        <p className="text-sm text-orange-700">Gerenciar todos os eventos</p>
+                        <div className="flex items-center space-x-4 mt-2">
+                          <Badge variant="secondary" className="text-xs">
+                            Criar Eventos
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Visualizar Tudo
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-orange-600 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+        </div>
+
+        {/* Exclusive SuperAdmin Features */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">👑 Funcionalidades Exclusivas do Super Admin</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-200 hover:shadow-lg transition-all cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-yellow-100 rounded-lg">
+                    <Crown className="h-8 w-8 text-yellow-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-yellow-900 text-lg">Gerenciar Super Admins</h3>
+                    <p className="text-sm text-yellow-700">Criar e gerenciar outros super admins</p>
+                    <Button variant="outline" size="sm" className="mt-2">
+                      <UserCheck className="h-4 w-4 mr-2" />
+                      Gerenciar
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-red-50 to-pink-50 border-red-200 hover:shadow-lg transition-all cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-red-100 rounded-lg">
+                    <Shield className="h-8 w-8 text-red-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-red-900 text-lg">Configurações Globais</h3>
+                    <p className="text-sm text-red-700">Alterar configurações da plataforma</p>
+                    <Button variant="outline" size="sm" className="mt-2">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configurar
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 border-indigo-200 hover:shadow-lg transition-all cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-indigo-100 rounded-lg">
+                    <Database className="h-8 w-8 text-indigo-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-indigo-900 text-lg">Backup & Restore</h3>
+                    <p className="text-sm text-indigo-700">Backup completo do sistema</p>
+                    <Button variant="outline" size="sm" className="mt-2">
+                      <Download className="h-4 w-4 mr-2" />
+                      Backup
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 

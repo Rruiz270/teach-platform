@@ -32,8 +32,10 @@ export default function LoginPage() {
       const userRole = userData.role
       
       switch (userRole) {
-        case 'ADMIN':
         case 'SUPER_ADMIN':
+          router.push('/superadmin')
+          break
+        case 'ADMIN':
           router.push('/admin')
           break
         case 'AI_MAESTRO':

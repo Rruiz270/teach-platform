@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Users, BookOpen, Award, TrendingUp, Settings, Eye, UserCheck, BarChart3, Calendar, MessageSquare, FileText, GraduationCap, Brain, Star, Clock, DollarSign, Video, Download } from 'lucide-react'
+import { Users, BookOpen, Award, TrendingUp, Settings, Eye, UserCheck, BarChart3, Calendar, MessageSquare, FileText, GraduationCap, Brain, Star, Clock, DollarSign, Video, Download, Crown } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -240,10 +240,20 @@ export default function AdminDashboard() {
                 <h1 className="text-2xl font-bold teach-gradient bg-clip-text text-transparent">
                   TEACH
                 </h1>
-                <Badge variant="secondary">Admin</Badge>
+                <Badge variant="secondary">
+                  {user.role === 'SUPER_ADMIN' ? 'Super Admin (Acesso Limitado)' : 'Admin'}
+                </Badge>
               </Link>
             </div>
             <div className="flex items-center space-x-4">
+              {user.role === 'SUPER_ADMIN' && (
+                <Link href="/superadmin">
+                  <Button variant="default" size="sm" className="bg-yellow-600 hover:bg-yellow-700 text-white">
+                    <Crown className="h-4 w-4 mr-2" />
+                    Painel SuperAdmin
+                  </Button>
+                </Link>
+              )}
               <span className="text-sm text-gray-600">Olá, {user.name}</span>
               <Button variant="outline" size="sm" onClick={logout}>
                 Sair
