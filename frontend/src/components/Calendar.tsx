@@ -115,9 +115,10 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
       }
     }
 
+    // PRIORITY: Recurring events always show "Agendar Aula" button
     if (event.isRecurring || event.recurringDates?.length) {
       return {
-        text: isRegistered ? 'Reagendar Aula' : 'Agendar Aula',
+        text: 'Agendar Aula',
         icon: CalendarScheduleIcon,
         variant: 'default' as const,
         disabled: false,
@@ -140,7 +141,7 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
     }
 
     return {
-      text: isEventFull ? 'Lotado' : 'Inscrever-se',
+      text: isEventFull ? 'Lotado' : 'Inscrever-se na Aula',
       icon: UserPlus,
       variant: 'default' as const,
       disabled: isEventFull,
@@ -153,6 +154,12 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
 
   // Function to open scheduling calendar
   const openSchedulingCalendar = (event: Event) => {
+    console.log('Opening scheduling calendar for event:', event.title)
+    console.log('Event details:', { 
+      isRecurring: event.isRecurring, 
+      recurringDates: event.recurringDates,
+      userRegistration: event.userRegistration 
+    })
     setSelectedLessonForScheduling(event)
     setIsSchedulingCalendarOpen(true)
   }
@@ -193,7 +200,7 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         },
         userRegistration: {
           id: 'reg1',
-          status: 'CONFIRMED',
+          status: 'PENDING',
           hasAttended: false,
           lessonCompleted: false
         },
@@ -577,9 +584,10 @@ function EventCard({
       }
     }
 
+    // PRIORITY: Recurring events always show "Agendar Aula" button
     if (event.isRecurring || event.recurringDates?.length) {
       return {
-        text: isRegistered ? 'Reagendar Aula' : 'Agendar Aula',
+        text: 'Agendar Aula',
         icon: CalendarScheduleIcon,
         variant: 'default' as const,
         disabled: false,
@@ -602,7 +610,7 @@ function EventCard({
     }
 
     return {
-      text: isEventFull ? 'Lotado' : 'Inscrever-se',
+      text: isEventFull ? 'Lotado' : 'Inscrever-se na Aula',
       icon: UserPlus,
       variant: 'default' as const,
       disabled: isEventFull,
