@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Play, CheckCircle, Lock, Clock, BookOpen } from 'lucide-react'
+import { ArrowLeft, Play, CheckCircle, Lock, Clock, BookOpen, Calendar } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function ModulesPage() {
@@ -109,10 +109,20 @@ export default function ModulesPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Módulos de Aprendizado</h2>
-          <p className="text-lg text-gray-600">
-            Explore nossa jornada estruturada de aprendizado em IA para educação
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Módulos de Aprendizado</h2>
+              <p className="text-lg text-gray-600">
+                Explore nossa jornada estruturada de aprendizado em IA para educação
+              </p>
+            </div>
+            <Link href="/calendar">
+              <Button variant="outline" className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4" />
+                <span>Agendar Aulas</span>
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

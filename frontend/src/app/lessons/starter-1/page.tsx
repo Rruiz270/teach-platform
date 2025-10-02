@@ -9,8 +9,9 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain } from 'lucide-react'
+import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain, CalendarIcon } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import LessonSchedulingCalendar from '@/components/LessonSchedulingCalendar'
 
 export default function StarterLesson1Page() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -18,6 +19,9 @@ export default function StarterLesson1Page() {
   const [videoCompleted, setVideoCompleted] = useState(false)
   const [quizScore, setQuizScore] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [isSchedulingCalendarOpen, setIsSchedulingCalendarOpen] = useState(false)
+  const [userRegistrations, setUserRegistrations] = useState<string[]>([])
+  const [lessonCompleted, setLessonCompleted] = useState(false)
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -60,7 +64,16 @@ export default function StarterLesson1Page() {
       instructor: 'AI MAESTRO',
       duration: '90 min',
       registered: false,
-      description: 'Aula inaugural sobre IA na educação com o AI MAESTRO'
+      description: 'Aula inaugural sobre IA na educação com o AI MAESTRO',
+      recurringDates: [
+        '2024-12-14T19:00:00Z',
+        '2024-12-16T19:00:00Z', 
+        '2024-12-18T19:00:00Z',
+        '2024-12-20T19:00:00Z',
+        '2024-12-22T19:00:00Z'
+      ],
+      maxParticipants: 50,
+      currentParticipants: 23
     },
     content: {
       theory: `
@@ -645,26 +658,27 @@ Bem-vindo à revolução da IA na educação! 🚀
                     </ul>
                   </div>
                   
-                  {lesson.liveSession.registered ? (
-                    <div className="space-y-2">
-                      <Badge variant="default" className="w-full justify-center">
-                        ✅ Inscrito
+                  <div className="space-y-2">
+                    {lessonCompleted ? (
+                      <Badge variant="default" className="w-full justify-center bg-green-100 text-green-800 border-green-200">
+                        ✅ Aula Concluída
                       </Badge>
-                      <Button className="w-full" size="sm">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        Adicionar ao Calendário
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Button className="w-full">
-                        Inscrever-se na Aula
-                      </Button>
-                      <p className="text-xs text-gray-500 text-center">
-                        Vagas limitadas - Inscreva-se já!
-                      </p>
-                    </div>
-                  )}
+                    ) : (
+                      <>
+                        <Button 
+                          className="w-full" 
+                          onClick={() => setIsSchedulingCalendarOpen(true)}
+                        >
+                          <CalendarIcon className="w-4 h-4 mr-2" />
+                          Agendar Aula
+                        </Button>
+                        <div className="flex items-center justify-center space-x-1 text-xs text-gray-600">
+                          <Users className="w-3 h-3" />
+                          <span>{lesson.liveSession.maxParticipants - lesson.liveSession.currentParticipants} vagas disponíveis</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -857,6 +871,38 @@ Bem-vindo à revolução da IA na educação! 🚀
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Lesson Scheduling Calendar */}
+      <LessonSchedulingCalendar
+        isOpen={isSchedulingCalendarOpen}
+        onClose={() => setIsSchedulingCalendarOpen(false)}
+        lessonTitle={lesson.title}
+        lessonDescription={lesson.description}
+        availableDates={lesson.liveSession.recurringDates?.map((date, index) => ({
+          id: `lesson-${index}`,
+          date: date,
+          startTime: '19:00',
+          endTime: '20:30',
+          maxParticipants: lesson.liveSession.maxParticipants,
+          currentParticipants: Math.floor(Math.random() * 20), // Mock data
+          availableSeats: lesson.liveSession.maxParticipants - Math.floor(Math.random() * 20),
+          meetingUrl: 'https://meet.google.com/abc-defg-hij',
+          location: 'Online',
+          instructorName: lesson.liveSession.instructor
+        })) || []}
+        userRegistrations={userRegistrations}
+        onSchedule={async (dateId) => {
+          console.log('Scheduling for date:', dateId)
+          setUserRegistrations(prev => [...prev, dateId])
+          // Here you would normally make an API call
+        }}
+        onUnregister={async (dateId) => {
+          console.log('Unregistering from date:', dateId)
+          setUserRegistrations(prev => prev.filter(id => id !== dateId))
+          // Here you would normally make an API call
+        }}
+        hasCompletedLesson={lessonCompleted}
+      />
     </div>
   )
 }
