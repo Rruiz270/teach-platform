@@ -21,7 +21,8 @@ exports.registerSchema = zod_1.z.object({
         phone: zod_1.z.string().optional(),
     }),
 }).refine((data) => {
-    if (data.body.role !== 'AI_MAESTRO' && data.body.subjects.length === 0) {
+    const rolesWithoutSubjects = ['AI_MAESTRO', 'SUPER_ADMIN', 'ADMIN'];
+    if (!rolesWithoutSubjects.includes(data.body.role || 'TEACHER') && data.body.subjects.length === 0) {
         return false;
     }
     return true;
