@@ -59,18 +59,18 @@ export default function StarterLesson1Page() {
     ],
     videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
     liveSession: {
-      date: '2024-12-15',
+      date: '2025-10-15',
       time: '19:00',
       instructor: 'AI MAESTRO',
       duration: '90 min',
       registered: false,
       description: 'Aula inaugural sobre IA na educação com o AI MAESTRO',
       recurringDates: [
-        '2024-12-14T19:00:00Z',
-        '2024-12-16T19:00:00Z', 
-        '2024-12-18T19:00:00Z',
-        '2024-12-20T19:00:00Z',
-        '2024-12-22T19:00:00Z'
+        '2025-10-14T19:00:00Z',
+        '2025-10-16T19:00:00Z', 
+        '2025-10-18T19:00:00Z',
+        '2025-10-20T19:00:00Z',
+        '2025-10-22T19:00:00Z'
       ],
       maxParticipants: 50,
       currentParticipants: 23

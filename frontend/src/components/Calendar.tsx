@@ -171,8 +171,8 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         id: '1',
         title: 'Aula Ao Vivo com AI MAESTRO',
         description: 'Aula inaugural sobre IA na educação com o AI MAESTRO',
-        startDate: '2024-12-14T19:00:00Z',
-        endDate: '2024-12-14T20:30:00Z',
+        startDate: '2025-10-14T19:00:00Z',
+        endDate: '2025-10-14T20:30:00Z',
         type: 'LIVE_CLASS',
         meetingUrl: 'https://meet.google.com/abc-defg-hij',
         maxParticipants: 50,
@@ -181,10 +181,10 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         isPublished: true,
         isRecurring: true,
         recurringDates: [
-          '2024-12-14T19:00:00Z',
-          '2024-12-16T19:00:00Z',
-          '2024-12-18T19:00:00Z',
-          '2024-12-20T19:00:00Z'
+          '2025-10-14T19:00:00Z',
+          '2025-10-16T19:00:00Z',
+          '2025-10-18T19:00:00Z',
+          '2025-10-20T19:00:00Z'
         ],
         instructor: {
           id: 'maestro1',
@@ -210,8 +210,8 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         id: '2',
         title: 'Workshop: Criando Prompts Eficazes',
         description: 'Workshop prático sobre criação de prompts para ChatGPT na educação',
-        startDate: '2024-12-16T20:00:00Z',
-        endDate: '2024-12-16T21:30:00Z',
+        startDate: '2025-10-16T20:00:00Z',
+        endDate: '2025-10-16T21:30:00Z',
         type: 'WORKSHOP',
         meetingUrl: 'https://meet.google.com/xyz-defg-hij',
         maxParticipants: 30,
@@ -235,8 +235,8 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         id: '3',
         title: 'Mentoria Individual: IA na Avaliação',
         description: 'Sessão de mentoria personalizada sobre uso de IA em avaliação',
-        startDate: '2024-12-18T15:00:00Z',
-        endDate: '2024-12-18T16:00:00Z',
+        startDate: '2025-09-18T15:00:00Z',
+        endDate: '2025-09-18T16:00:00Z',
         type: 'MENTORING',
         meetingUrl: 'https://meet.google.com/men-toria-123',
         maxParticipants: 1,
@@ -255,8 +255,8 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         id: '3',
         title: 'Mentoria Individual: IA na Avaliação',
         description: 'Sessão de mentoria personalizada sobre uso de IA em avaliação',
-        startDate: '2024-12-18T15:00:00Z',
-        endDate: '2024-12-18T16:00:00Z',
+        startDate: '2025-09-18T15:00:00Z',
+        endDate: '2025-09-18T16:00:00Z',
         type: 'MENTORING',
         meetingUrl: 'https://meet.google.com/men-toria-123',
         maxParticipants: 1,
@@ -280,8 +280,8 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         id: '4',
         title: 'Avaliação Automatizada - Survivor',
         description: 'Aula sobre ferramentas de avaliação automatizada com IA',
-        startDate: '2024-12-19T20:00:00Z',
-        endDate: '2024-12-19T21:30:00Z',
+        startDate: '2025-09-19T20:00:00Z',
+        endDate: '2025-09-19T21:30:00Z',
         type: 'LIVE_CLASS',
         meetingUrl: 'https://meet.google.com/def-ghij-klm',
         maxParticipants: 42,
@@ -312,8 +312,8 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         id: '5',
         title: 'Workshop: Machine Learning para Educadores',
         description: 'Workshop prático sobre ML aplicado à educação',
-        startDate: '2024-12-21T14:00:00Z',
-        endDate: '2024-12-21T16:00:00Z',
+        startDate: '2025-10-21T14:00:00Z',
+        endDate: '2025-10-21T16:00:00Z',
         type: 'WORKSHOP',
         meetingUrl: 'https://meet.google.com/ml-workshop',
         maxParticipants: 25,
@@ -338,8 +338,8 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
         id: '6',
         title: 'Q&A: Primeiros Passos com ChatGPT',
         description: 'Sessão de perguntas e respostas sobre ChatGPT na educação',
-        startDate: '2024-12-23T19:00:00Z',
-        endDate: '2024-12-23T20:00:00Z',
+        startDate: '2025-10-23T19:00:00Z',
+        endDate: '2025-10-23T20:00:00Z',
         type: 'Q_AND_A',
         meetingUrl: 'https://meet.google.com/qa-chatgpt',
         maxParticipants: 100,
@@ -359,6 +359,72 @@ export default function Calendar({ userRole = 'TEACHER' }: CalendarProps) {
           type: 'STARTER'
         },
         isRegistered: false
+      },
+      {
+        id: '7',
+        title: 'Aula Concluída: Fundamentos de IA',
+        description: 'Aula sobre conceitos básicos de IA (já concluída)',
+        startDate: '2025-09-15T19:00:00Z',
+        endDate: '2025-09-15T20:30:00Z',
+        type: 'LIVE_CLASS',
+        meetingUrl: 'https://meet.google.com/completed-class',
+        maxParticipants: 50,
+        currentParticipants: 45,
+        availableSeats: 5,
+        isPublished: true,
+        instructor: {
+          id: 'maestro1',
+          profile: {
+            name: 'AI MAESTRO',
+            photoUrl: undefined
+          }
+        },
+        module: {
+          id: 'starter',
+          title: 'Starter - Fundamentos de IA',
+          type: 'STARTER'
+        },
+        userRegistration: {
+          id: 'reg7',
+          status: 'CONFIRMED',
+          hasAttended: true,
+          lessonCompleted: true,
+          completedAt: '2025-09-15T20:30:00Z'
+        },
+        lessonCompletionStatus: 'completed'
+      },
+      {
+        id: '8',
+        title: 'Workshop Concluído: Prompts Avançados',
+        description: 'Workshop sobre técnicas avançadas de prompting (concluído)',
+        startDate: '2025-09-20T14:00:00Z',
+        endDate: '2025-09-20T16:00:00Z',
+        type: 'WORKSHOP',
+        meetingUrl: 'https://meet.google.com/completed-workshop',
+        maxParticipants: 30,
+        currentParticipants: 28,
+        availableSeats: 2,
+        isPublished: true,
+        instructor: {
+          id: 'maestro2',
+          profile: {
+            name: 'Dr. Ana Silva',
+            photoUrl: undefined
+          }
+        },
+        module: {
+          id: 'survivor',
+          title: 'Survivor - IA na Prática',
+          type: 'SURVIVOR'
+        },
+        userRegistration: {
+          id: 'reg8',
+          status: 'CONFIRMED',
+          hasAttended: true,
+          lessonCompleted: true,
+          completedAt: '2025-09-20T16:00:00Z'
+        },
+        lessonCompletionStatus: 'completed'
       }
     ]
 
@@ -805,9 +871,19 @@ function MonthView({
   onEventClick: (event: Event) => void,
   onOpenSchedulingCalendar: (event: Event) => void
 }) {
+  const [viewDate, setViewDate] = useState(new Date()) // Current view date
   const today = new Date()
-  const currentMonth = today.getMonth()
-  const currentYear = today.getFullYear()
+  const currentMonth = viewDate.getMonth()
+  const currentYear = viewDate.getFullYear()
+  
+  // Navigation functions
+  const goToPreviousMonth = () => {
+    setViewDate(new Date(currentYear, currentMonth - 1, 1))
+  }
+  
+  const goToNextMonth = () => {
+    setViewDate(new Date(currentYear, currentMonth + 1, 1))
+  }
   
   // Generate calendar grid for current month
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1)
@@ -845,11 +921,17 @@ function MonthView({
 
   return (
     <div className="bg-white border rounded-lg overflow-hidden">
-      {/* Month/Year header */}
-      <div className="px-4 py-3 border-b bg-gray-50">
+      {/* Month/Year header with navigation */}
+      <div className="px-4 py-3 border-b bg-gray-50 flex justify-between items-center">
+        <Button variant="outline" size="sm" onClick={goToPreviousMonth}>
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
         <h3 className="text-lg font-semibold text-gray-900">
           {firstDayOfMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
         </h3>
+        <Button variant="outline" size="sm" onClick={goToNextMonth}>
+          <ChevronRight className="h-4 w-4" />
+        </Button>
       </div>
       
       <div className="grid grid-cols-7 gap-0">
@@ -934,22 +1016,99 @@ function MonthView({
   )
 }
 
-// Week View Component (simplified)
+// Week View Component
 function WeekView({ events, onEventClick }: { events: Event[], onEventClick: (event: Event) => void }) {
+  const [viewDate, setViewDate] = useState(new Date())
+  
+  // Get start of week (Sunday)
+  const startOfWeek = new Date(viewDate)
+  startOfWeek.setDate(viewDate.getDate() - viewDate.getDay())
+  
+  // Generate 7 days for the week
+  const weekDays = []
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(startOfWeek)
+    day.setDate(startOfWeek.getDate() + i)
+    weekDays.push(day)
+  }
+  
+  // Navigation functions
+  const goToPreviousWeek = () => {
+    const newDate = new Date(viewDate)
+    newDate.setDate(viewDate.getDate() - 7)
+    setViewDate(newDate)
+  }
+  
+  const goToNextWeek = () => {
+    const newDate = new Date(viewDate)
+    newDate.setDate(viewDate.getDate() + 7)
+    setViewDate(newDate)
+  }
+  
+  // Get events for a specific date
+  const getEventsForDate = (date: Date) => {
+    return events.filter(event => {
+      const eventDate = new Date(event.startDate)
+      return eventDate.toDateString() === date.toDateString()
+    })
+  }
+
   return (
-    <div className="space-y-4">
-      <p className="text-gray-600">Vista semanal em desenvolvimento</p>
-      <div className="grid gap-4">
-        {events.map((event) => (
-          <EventCard 
-            key={event.id} 
-            event={event} 
-            onRegister={() => {}}
-            onUnregister={() => {}}
-            onViewDetails={onEventClick}
-            onOpenSchedulingCalendar={() => {}}
-          />
-        ))}
+    <div className="bg-white border rounded-lg overflow-hidden">
+      {/* Week navigation header */}
+      <div className="px-4 py-3 border-b bg-gray-50 flex justify-between items-center">
+        <Button variant="outline" size="sm" onClick={goToPreviousWeek}>
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <h3 className="text-lg font-semibold text-gray-900">
+          {startOfWeek.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} - {weekDays[6].toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
+        </h3>
+        <Button variant="outline" size="sm" onClick={goToNextWeek}>
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+      
+      {/* Week grid */}
+      <div className="grid grid-cols-7 gap-0">
+        {weekDays.map((day, index) => {
+          const dayEvents = getEventsForDate(day)
+          const isToday = day.toDateString() === new Date().toDateString()
+          
+          return (
+            <div key={index} className={`min-h-40 p-3 border-r ${isToday ? 'bg-blue-50' : 'bg-white'}`}>
+              <div className={`text-center mb-3 ${isToday ? 'text-blue-600 font-bold' : 'text-gray-900'}`}>
+                <div className="text-xs text-gray-600">
+                  {day.toLocaleDateString('pt-BR', { weekday: 'short' })}
+                </div>
+                <div className="text-lg">
+                  {day.getDate()}
+                </div>
+              </div>
+              
+              {/* Events for this day */}
+              <div className="space-y-2">
+                {dayEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    onClick={() => onEventClick(event)}
+                    className={`cursor-pointer p-2 rounded text-xs border ${getEventTypeColor(event.type)} hover:opacity-80`}
+                  >
+                    <div className="font-medium truncate">{event.title}</div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      {new Date(event.startDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    {event.maxParticipants && (
+                      <div className="flex items-center text-xs text-gray-600 mt-1">
+                        <Users className="w-3 h-3 mr-1" />
+                        <span>{event.maxParticipants - event.currentParticipants} vagas</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
