@@ -6,8 +6,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Calendar, Clock, Users, MapPin, Video, BookOpen, CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
-import { format, parseISO, isAfter, isBefore, addDays, startOfDay } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+// Simplified date formatting - will enhance after dependency is installed
+const formatDate = (dateString: string) => {
+  try {
+    return new Date(dateString).toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  } catch {
+    return dateString
+  }
+}
+
+const isDatePast = (dateString: string) => {
+  try {
+    return new Date(dateString) < new Date()
+  } catch {
+    return false
+  }
+}
 
 interface LessonDate {
   id: string
@@ -73,7 +92,7 @@ export default function LessonSchedulingCalendar({
   const getDateStatus = (date: LessonDate) => {
     const isRegistered = userRegistrations.includes(date.id)
     const isFull = date.availableSeats === 0
-    const isPastDate = isBefore(parseISO(date.date), startOfDay(new Date()))
+    const isPastDate = isDatePast(date.date)
     
     if (isPastDate) return 'past'
     if (isRegistered) return 'registered'
@@ -94,14 +113,24 @@ export default function LessonSchedulingCalendar({
     }
   }
 
-  // Group dates by week for better organization
+  // Group dates by month for better organization (simplified)
   const groupedDates = availableDates.reduce((groups, date) => {
-    const week = format(parseISO(date.date), 'wo \'semana de\' yyyy', { locale: ptBR })
-    if (!groups[week]) {
-      groups[week] = []
+    try {
+      const month = new Date(date.date).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+      const key = `Aulas em ${month}`
+      if (!groups[key]) {
+        groups[key] = []
+      }
+      groups[key].push(date)
+      return groups
+    } catch {
+      const key = 'Próximas Aulas'
+      if (!groups[key]) {
+        groups[key] = []
+      }
+      groups[key].push(date)
+      return groups
     }
-    groups[week].push(date)
-    return groups
   }, {} as Record<string, LessonDate[]>)
 
   return (
@@ -164,10 +193,10 @@ export default function LessonSchedulingCalendar({
                           <div className="flex justify-between items-start mb-3">
                             <div>
                               <h4 className="font-semibold text-gray-900">
-                                {format(parseISO(date.date), 'EEEE, dd \'de\' MMMM', { locale: ptBR })}
+                                {formatDate(date.date)}
                               </h4>
-                              <p className="text-sm text-gray-600 capitalize">
-                                {format(parseISO(date.date), 'EEEE', { locale: ptBR })}
+                              <p className="text-sm text-gray-600">
+                                {date.startTime} - {date.endTime}
                               </p>
                             </div>
                             {getStatusBadge(status)}
