@@ -12,7 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain, CalendarIcon } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import LessonSchedulingCalendar from '@/components/LessonSchedulingCalendar'
-import LearningAIInterface from '@/components/LearningAIInterface'
+import AIMAESTROLearningInterface from '@/components/AIMAESTROLearningInterface'
+import EmbeddedActivityAssistant from '@/components/EmbeddedActivityAssistant'
 
 export default function StarterLesson1Page() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -559,87 +560,11 @@ Bem-vindo à revolução da IA na educação! 🚀
           </CardHeader>
         </Card>
 
-        {/* Contextual AI Suggestions */}
-        <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-purple-900">
-              🤖 IAs Recomendadas para Esta Aula
-              <Badge variant="secondary" className="bg-purple-100 text-purple-800">INTEGRADO</Badge>
-            </CardTitle>
-            <CardDescription className="text-purple-700">
-              Ferramentas de IA especializadas para praticar os conceitos desta aula
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">🤖</span>
-                    <div>
-                      <h4 className="font-medium text-gray-900">ChatGPT Educacional</h4>
-                      <p className="text-xs text-gray-600">Ideal para: Conceitos básicos</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    Crie explicações simples sobre IA para diferentes idades
-                  </p>
-                  <Button size="sm" className="w-full bg-green-600 hover:bg-green-700">
-                    Usar Agora
-                  </Button>
-                </CardContent>
-              </Card>
 
-              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">📚</span>
-                    <div>
-                      <h4 className="font-medium text-gray-900">Claude Professor</h4>
-                      <p className="text-xs text-gray-600">Ideal para: Exemplos práticos</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    Gere exemplos de IA no cotidiano brasileiro
-                  </p>
-                  <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
-                    Usar Agora
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">🎨</span>
-                    <div>
-                      <h4 className="font-medium text-gray-900">DALL-E Educacional</h4>
-                      <p className="text-xs text-gray-600">Ideal para: Visualizações</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    Crie infográficos sobre história da IA
-                  </p>
-                  <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700">
-                    Usar Agora
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div className="mt-4 p-3 bg-white/50 rounded-lg">
-              <p className="text-xs text-purple-700 text-center">
-                💡 <strong>Dica:</strong> Todas as ferramentas estão integradas na plataforma. Use-as para criar material sobre os conceitos desta aula!
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Learning AI Interface */}
-        <LearningAIInterface 
+        {/* AI MAESTRO Learning Interface */}
+        <AIMAESTROLearningInterface 
           lessonTitle={lesson.title}
-          lessonType="introduction"
-          moduleType="starter"
+          showTools={true}
         />
 
         {/* Main Content */}
@@ -884,51 +809,11 @@ Bem-vindo à revolução da IA na educação! 🚀
 
           {/* Assignment Tab */}
           <TabsContent value="assignment" className="space-y-6">
-            {/* Activity-Specific AI Tools */}
-            <LearningAIInterface 
-              lessonTitle={lesson.title}
-              lessonType="project"
-              moduleType="starter"
-              activityContext={lesson.assignment.title}
+            {/* Embedded Activity Assistant */}
+            <EmbeddedActivityAssistant
+              activityTitle={lesson.assignment.title}
+              projectRequirements={lesson.assignment.requirements}
             />
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Award className="mr-2 h-5 w-5" />
-                  {lesson.assignment.title}
-                </CardTitle>
-                <CardDescription>{lesson.assignment.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-3">Requisitos do Projeto:</h4>
-                  <ul className="space-y-2">
-                    {lesson.assignment.requirements.map((req, index) => (
-                      <li key={index} className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{req}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-blue-900 mb-2">Como Entregar:</h4>
-                  <p className="text-sm text-blue-800">{lesson.assignment.submission}</p>
-                </div>
-                
-                <div className="flex space-x-4">
-                  <Button className="flex-1">
-                    <Download className="w-4 h-4 mr-2" />
-                    Enviar Projeto
-                  </Button>
-                  <Button variant="outline">
-                    Ver Exemplo
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>

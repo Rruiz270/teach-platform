@@ -11,7 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain, Globe, BarChart3 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import LearningAIInterface from '@/components/LearningAIInterface'
+import AIMAESTROLearningInterface from '@/components/AIMAESTROLearningInterface'
+import EmbeddedActivityAssistant from '@/components/EmbeddedActivityAssistant'
 
 export default function StarterLesson2Page() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -808,11 +809,10 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
           </CardContent>
         </Card>
 
-        {/* Learning AI Interface */}
-        <LearningAIInterface 
+        {/* AI MAESTRO Learning Interface */}
+        <AIMAESTROLearningInterface 
           lessonTitle={lesson.title}
-          lessonType="introduction"
-          moduleType="starter"
+          showTools={true}
         />
 
         {/* Main Content */}
@@ -1056,51 +1056,11 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
 
           {/* Assignment Tab */}
           <TabsContent value="assignment" className="space-y-6">
-            {/* Activity-Specific AI Tools */}
-            <LearningAIInterface 
-              lessonTitle={lesson.title}
-              lessonType="project"
-              moduleType="starter"
-              activityContext={lesson.assignment.title}
+            {/* Embedded Activity Assistant */}
+            <EmbeddedActivityAssistant
+              activityTitle={lesson.assignment.title}
+              projectRequirements={lesson.assignment.requirements}
             />
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Award className="mr-2 h-5 w-5" />
-                  {lesson.assignment.title}
-                </CardTitle>
-                <CardDescription>{lesson.assignment.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-3">Requisitos do Projeto:</h4>
-                  <ul className="space-y-2">
-                    {lesson.assignment.requirements.map((req, index) => (
-                      <li key={index} className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{req}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-green-900 mb-2">Como Entregar:</h4>
-                  <p className="text-sm text-green-800">{lesson.assignment.submission}</p>
-                </div>
-                
-                <div className="flex space-x-4">
-                  <Button className="flex-1">
-                    <Download className="w-4 h-4 mr-2" />
-                    Enviar Projeto
-                  </Button>
-                  <Button variant="outline">
-                    Ver Exemplos Globais
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>
