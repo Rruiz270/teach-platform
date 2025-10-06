@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { WorkspaceController } from '../controllers/workspace.controller';
 import { AIOrchestrator } from '../services/ai-orchestrator.service';
 import { authMiddleware } from '../middleware/auth';
-import { validateRequest } from '../middleware/validation';
 import { z } from 'zod';
 
 const router = Router();
@@ -10,6 +9,25 @@ const workspaceController = new WorkspaceController();
 
 // Apply auth middleware to all routes
 router.use(authMiddleware);
+
+// Validation middleware
+const validateRequest = (schema: z.ZodType<any>) => {
+  return async (req: any, res: any, next: any) => {
+    try {
+      const validated = await schema.parseAsync(req.body);
+      req.body = validated;
+      next();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          error: 'Validation error',
+          details: error.errors
+        });
+      }
+      next(error);
+    }
+  };
+};
 
 // Validation schemas
 const createLessonSchema = z.object({
