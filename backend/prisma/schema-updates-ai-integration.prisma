@@ -1,0 +1,140 @@
+// Add these models to your existing schema.prisma
+
+// Enhanced AI Usage tracking
+model AIUsage {
+  id              String    @id @default(cuid())
+  userId          String
+  toolName        String    // e.g., 'text-anthropic', 'image-dall-e-3'
+  toolCategory    String    // 'text', 'image', 'video', 'audio', 'automation'
+  featureUsed     String    // 'lesson-builder', 'assessment-creator', etc.
+  inputPrompt     String?   @db.Text
+  outputContent   String?   @db.Text
+  tokensUsed      Int       @default(0)
+  creditsUsed     Float     @default(0)
+  responseTime    Int       // milliseconds
+  status          String    @default("success") // success, failed, quota_exceeded
+  errorMessage    String?
+  metadata        Json?     // Store additional context
+  createdAt       DateTime  @default(now())
+  
+  // Relations
+  user            User      @relation(fields: [userId], references: [id])
+  lessonId        String?
+  lesson          Lesson?   @relation(fields: [lessonId], references: [id])
+  projectId       String?
+  project         TeacherProject? @relation(fields: [projectId], references: [id])
+  
+  @@index([userId, createdAt])
+  @@index([toolName, createdAt])
+}
+
+// Auto-tracked Teacher Projects
+model TeacherProject {
+  id              String    @id @default(cuid())
+  userId          String
+  title           String
+  description     String?
+  type            String    // 'AI_LESSON', 'AI_ASSESSMENT', 'AI_VIDEO', 'MANUAL'
+  status          String    @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED, SHARED
+  aiGenerated     Boolean   @default(false)
+  metadata        Json?     // Store AI providers used, prompts, etc.
+  sharedWithSchool Boolean  @default(false)
+  likes           Int       @default(0)
+  views           Int       @default(0)
+  
+  // Time tracking
+  estimatedTimeSaved Int?   // minutes saved by using AI
+  actualTimeSpent    Int?   // minutes spent creating
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  user            User      @relation(fields: [userId], references: [id])
+  aiUsage         AIUsage[]
+  resources       ProjectResource[]
+  
+  @@index([userId, type])
+  @@index([createdAt])
+}
+
+model ProjectResource {
+  id              String    @id @default(cuid())
+  projectId       String
+  title           String
+  type            String    // 'IMAGE', 'VIDEO', 'DOCUMENT', 'AUDIO'
+  url             String?
+  content         String?   @db.Text
+  aiProvider      String?   // Which AI generated this
+  metadata        Json?
+  createdAt       DateTime  @default(now())
+  
+  project         TeacherProject @relation(fields: [projectId], references: [id])
+  
+  @@index([projectId])
+}
+
+// AI Provider Configuration
+model AIProvider {
+  id              String    @id @default(cuid())
+  name            String    @unique // 'anthropic', 'openai', 'synthesia', etc.
+  displayName     String    // 'Claude (Anthropic)'
+  category        String    // 'text', 'image', 'video', etc.
+  isActive        Boolean   @default(true)
+  isPrimary       Boolean   @default(false)
+  config          Json      // API endpoints, rate limits, etc.
+  costPer1000Tokens Float?
+  monthlyQuota    Json?     // Quota limits per plan
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// User AI Quotas
+model UserAIQuota {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  subscriptionPlan String   // 'FREE', 'INDIVIDUAL', 'SCHOOL', 'GOVERNMENT'
+  
+  // Monthly limits
+  textTokensLimit      Int
+  textTokensUsed       Int      @default(0)
+  imageGenerationsLimit Int
+  imageGenerationsUsed  Int      @default(0)
+  videoMinutesLimit    Int
+  videoMinutesUsed     Float    @default(0)
+  audioMinutesLimit    Int
+  audioMinutesUsed     Float    @default(0)
+  
+  // Reset date
+  resetDate       DateTime
+  lastResetDate   DateTime?
+  
+  // Warnings
+  warningsSent    Json?     // Track 50%, 80%, 90% warnings
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  user            User      @relation(fields: [userId], references: [id])
+}
+
+// Update existing Lesson model
+model Lesson {
+  // ... existing fields ...
+  
+  aiGenerated     Boolean   @default(false)
+  aiMetadata      Json?     // Store AI generation details
+  aiProviders     String[]  // List of AI providers used
+  
+  // Add relation
+  aiUsage         AIUsage[]
+}
+
+// Update existing User model relations
+model User {
+  // ... existing fields ...
+  
+  aiUsage         AIUsage[]
+  teacherProjects TeacherProject[]
+  aiQuota         UserAIQuota?
+}
