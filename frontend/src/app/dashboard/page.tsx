@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, Users, Trophy, Clock, Star, ArrowRight, Bot, Target, Gamepad2, Calendar } from 'lucide-react'
+import { BookOpen, Users, Trophy, Clock, Star, ArrowRight, Bot, Target, Gamepad2, Calendar, Sparkles, Wand2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import AITeachingAssistant from '@/components/AITeachingAssistant'
 import PersonalizedLearningPath from '@/components/PersonalizedLearningPath'
@@ -190,9 +190,49 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* New Features Section */}
+        {/* AI Workspace - Featured Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">🚀 Novos Recursos</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">🤖 Workspace IA - NOVO!</h2>
+          <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white border-0 hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => router.push('/workspace')}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <Sparkles className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">Workspace IA</h3>
+                    <p className="text-purple-100 mb-3">Crie aulas, imagens, vídeos e avaliações com IA - tudo em um lugar!</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                        📝 Criação de Aulas
+                      </Badge>
+                      <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                        🎨 Imagens IA
+                      </Badge>
+                      <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                        🎥 Vídeos IA
+                      </Badge>
+                      <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+                        📊 Avaliações
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="p-2 bg-white/20 rounded-lg mb-2">
+                    <Wand2 className="h-6 w-6 text-white" />
+                  </div>
+                  <p className="text-sm text-purple-100">Clique para entrar</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Other Features Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">🚀 Outros Recursos</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowAIAssistant(true)}>
               <CardContent className="p-4">
@@ -328,6 +368,12 @@ export default function DashboardPage() {
                 <CardTitle>Ações Rápidas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                <Link href="/workspace">
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700">
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Workspace IA
+                  </Button>
+                </Link>
                 <Link href="/forum">
                   <Button className="w-full" variant="outline">
                     <Users className="mr-2 h-4 w-4" />
