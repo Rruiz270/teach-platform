@@ -83,10 +83,10 @@ export default function WorkspacePage() {
 
   if (isLoading) {
     return (
-      <div className=\"min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50\">
-        <div className=\"text-center\">
-          <div className=\"animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4\"></div>
-          <p className=\"text-gray-600\">Carregando Workspace IA...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando Workspace IA...</p>
         </div>
       </div>
     )
@@ -168,131 +168,131 @@ export default function WorkspacePage() {
   }
 
   return (
-    <div className=\"min-h-screen bg-gradient-to-br from-purple-50 to-blue-50\">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       {/* Header */}
-      <header className=\"bg-white shadow-sm border-b\">
-        <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">
-          <div className=\"flex justify-between items-center h-16\">
-            <div className=\"flex items-center space-x-4\">
-              <Link href=\"/dashboard\">
-                <Button variant=\"ghost\" size=\"sm\">
-                  <ArrowLeft className=\"mr-2 h-4 w-4\" />
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
                   Voltar
                 </Button>
               </Link>
-              <div className=\"flex items-center space-x-2\">
-                <Sparkles className=\"h-8 w-8 text-purple-600\" />
-                <h1 className=\"text-2xl font-bold text-gray-900\">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="h-8 w-8 text-purple-600" />
+                <h1 className="text-2xl font-bold text-gray-900">
                   Workspace IA
                 </h1>
               </div>
             </div>
-            <div className=\"flex items-center space-x-4\">
+            <div className="flex items-center space-x-4">
               <Badge variant={usageStats.plan === 'FREE' ? 'secondary' : 'default'}>
                 Plano {usageStats.plan}
               </Badge>
-              <span className=\"text-sm text-gray-600\">Olá, {user.name}</span>
+              <span className="text-sm text-gray-600">Olá, {user.name}</span>
             </div>
           </div>
         </div>
       </header>
 
-      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8\">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Usage Overview */}
-        <div className=\"mb-8\">
-          <h2 className=\"text-lg font-semibold text-gray-900 mb-4\">📊 Uso Mensal</h2>
-          <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">📊 Uso Mensal</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
-              <CardContent className=\"p-4\">
-                <div className=\"flex justify-between items-center mb-2\">
-                  <span className=\"text-sm font-medium\">Tokens de Texto</span>
-                  <span className=\"text-sm text-gray-500\">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Tokens de Texto</span>
+                  <span className="text-sm text-gray-500">
                     {usageStats.textTokens.toLocaleString()} / {usageStats.textTokensLimit.toLocaleString()}
                   </span>
                 </div>
-                <Progress value={getUsagePercentage(usageStats.textTokens, usageStats.textTokensLimit)} className=\"h-2\" />
+                <Progress value={getUsagePercentage(usageStats.textTokens, usageStats.textTokensLimit)} className="h-2" />
               </CardContent>
             </Card>
             
             <Card>
-              <CardContent className=\"p-4\">
-                <div className=\"flex justify-between items-center mb-2\">
-                  <span className=\"text-sm font-medium\">Imagens Geradas</span>
-                  <span className=\"text-sm text-gray-500\">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Imagens Geradas</span>
+                  <span className="text-sm text-gray-500">
                     {usageStats.imageGenerations} / {usageStats.imageGenerationsLimit}
                   </span>
                 </div>
-                <Progress value={getUsagePercentage(usageStats.imageGenerations, usageStats.imageGenerationsLimit)} className=\"h-2\" />
+                <Progress value={getUsagePercentage(usageStats.imageGenerations, usageStats.imageGenerationsLimit)} className="h-2" />
               </CardContent>
             </Card>
             
             <Card>
-              <CardContent className=\"p-4\">
-                <div className=\"flex justify-between items-center mb-2\">
-                  <span className=\"text-sm font-medium\">Minutos de Vídeo</span>
-                  <span className=\"text-sm text-gray-500\">
+              <CardContent className="p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Minutos de Vídeo</span>
+                  <span className="text-sm text-gray-500">
                     {usageStats.videoMinutes} / {usageStats.videoMinutesLimit}
                   </span>
                 </div>
-                <Progress value={getUsagePercentage(usageStats.videoMinutes, usageStats.videoMinutesLimit)} className=\"h-2\" />
+                <Progress value={getUsagePercentage(usageStats.videoMinutes, usageStats.videoMinutesLimit)} className="h-2" />
               </CardContent>
             </Card>
           </div>
         </div>
 
         {/* Main Workspace */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className=\"space-y-6\">
-          <TabsList className=\"grid w-full grid-cols-5 lg:w-[600px]\">
-            <TabsTrigger value=\"lessons\" className=\"flex items-center gap-2\">
-              <FileText className=\"w-4 h-4\" />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 lg:w-[600px]">
+            <TabsTrigger value="lessons" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
               Aulas
             </TabsTrigger>
-            <TabsTrigger value=\"images\" className=\"flex items-center gap-2\">
-              <Image className=\"w-4 h-4\" />
+            <TabsTrigger value="images" className="flex items-center gap-2">
+              <Image className="w-4 h-4" />
               Imagens
             </TabsTrigger>
-            <TabsTrigger value=\"videos\" className=\"flex items-center gap-2\">
-              <Video className=\"w-4 h-4\" />
+            <TabsTrigger value="videos" className="flex items-center gap-2">
+              <Video className="w-4 h-4" />
               Vídeos
             </TabsTrigger>
-            <TabsTrigger value=\"assessments\" className=\"flex items-center gap-2\">
-              <Brain className=\"w-4 h-4\" />
+            <TabsTrigger value="assessments" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
               Avaliações
             </TabsTrigger>
-            <TabsTrigger value=\"analytics\" className=\"flex items-center gap-2\">
-              <BarChart3 className=\"w-4 h-4\" />
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
               Analytics
             </TabsTrigger>
           </TabsList>
 
           {/* Lesson Builder */}
-          <TabsContent value=\"lessons\" className=\"space-y-6\">
+          <TabsContent value="lessons" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className=\"flex items-center gap-2\">
-                  <FileText className=\"w-5 h-5\" />
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
                   Criador de Aulas com IA
                 </CardTitle>
                 <CardDescription>
                   Gere aulas completas com roteiro, atividades e materiais usando Claude (Anthropic)
                 </CardDescription>
               </CardHeader>
-              <CardContent className=\"space-y-4\">
-                <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor=\"topic\">Tópico da Aula</Label>
+                    <Label htmlFor="topic">Tópico da Aula</Label>
                     <Input
-                      id=\"topic\"
-                      placeholder=\"Ex: Fotossíntese, Guerra Fria, Frações...\"
+                      id="topic"
+                      placeholder="Ex: Fotossíntese, Guerra Fria, Frações..."
                       value={lessonForm.topic}
                       onChange={(e) => setLessonForm({...lessonForm, topic: e.target.value})}
                     />
                   </div>
                   <div>
-                    <Label htmlFor=\"grade\">Série/Ano</Label>
+                    <Label htmlFor="grade">Série/Ano</Label>
                     <Input
-                      id=\"grade\"
-                      placeholder=\"Ex: 5º ano, 8ª série, 1º colegial...\"
+                      id="grade"
+                      placeholder="Ex: 5º ano, 8ª série, 1º colegial..."
                       value={lessonForm.grade}
                       onChange={(e) => setLessonForm({...lessonForm, grade: e.target.value})}
                     />
@@ -300,10 +300,10 @@ export default function WorkspacePage() {
                 </div>
                 
                 <div>
-                  <Label htmlFor=\"objectives\">Objetivos de Aprendizagem (Opcional)</Label>
+                  <Label htmlFor="objectives">Objetivos de Aprendizagem (Opcional)</Label>
                   <Textarea
-                    id=\"objectives\"
-                    placeholder=\"Descreva o que os alunos devem aprender...\"
+                    id="objectives"
+                    placeholder="Descreva o que os alunos devem aprender..."
                     value={lessonForm.objectives}
                     onChange={(e) => setLessonForm({...lessonForm, objectives: e.target.value})}
                   />
@@ -312,16 +312,16 @@ export default function WorkspacePage() {
                 <Button 
                   onClick={handleLessonGeneration}
                   disabled={!lessonForm.topic || !lessonForm.grade || isGenerating}
-                  className=\"w-full\"
+                  className="w-full"
                 >
                   {isGenerating ? (
                     <>
-                      <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Gerando aula com IA...
                     </>
                   ) : (
                     <>
-                      <Wand2 className=\"mr-2 h-4 w-4\" />
+                      <Wand2 className="mr-2 h-4 w-4" />
                       Gerar Aula com IA
                     </>
                   )}
@@ -331,23 +331,23 @@ export default function WorkspacePage() {
           </TabsContent>
 
           {/* Image Generator */}
-          <TabsContent value=\"images\" className=\"space-y-6\">
+          <TabsContent value="images" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className=\"flex items-center gap-2\">
-                  <Image className=\"w-5 h-5\" />
+                <CardTitle className="flex items-center gap-2">
+                  <Image className="w-5 h-5" />
                   Gerador de Imagens Educacionais
                 </CardTitle>
                 <CardDescription>
                   Crie ilustrações e infográficos educacionais com DALL-E 3
                 </CardDescription>
               </CardHeader>
-              <CardContent className=\"space-y-4\">
+              <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor=\"imagePrompt\">Descrição da Imagem</Label>
+                  <Label htmlFor="imagePrompt">Descrição da Imagem</Label>
                   <Textarea
-                    id=\"imagePrompt\"
-                    placeholder=\"Ex: Ilustração educacional do ciclo da água para crianças...\"
+                    id="imagePrompt"
+                    placeholder="Ex: Ilustração educacional do ciclo da água para crianças..."
                     value={imageForm.prompt}
                     onChange={(e) => setImageForm({...imageForm, prompt: e.target.value})}
                   />
@@ -356,16 +356,16 @@ export default function WorkspacePage() {
                 <Button 
                   onClick={handleImageGeneration}
                   disabled={!imageForm.prompt || isGenerating}
-                  className=\"w-full\"
+                  className="w-full"
                 >
                   {isGenerating ? (
                     <>
-                      <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Gerando imagem...
                     </>
                   ) : (
                     <>
-                      <Wand2 className=\"mr-2 h-4 w-4\" />
+                      <Wand2 className="mr-2 h-4 w-4" />
                       Gerar Imagem com IA
                     </>
                   )}
@@ -375,35 +375,35 @@ export default function WorkspacePage() {
           </TabsContent>
 
           {/* Assessment Creator */}
-          <TabsContent value=\"assessments\" className=\"space-y-6\">
+          <TabsContent value="assessments" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className=\"flex items-center gap-2\">
-                  <Brain className=\"w-5 h-5\" />
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="w-5 h-5" />
                   Criador de Avaliações
                 </CardTitle>
                 <CardDescription>
                   Gere questões e avaliações personalizadas com Claude
                 </CardDescription>
               </CardHeader>
-              <CardContent className=\"space-y-4\">
-                <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor=\"assessmentTopic\">Tópico da Avaliação</Label>
+                    <Label htmlFor="assessmentTopic">Tópico da Avaliação</Label>
                     <Input
-                      id=\"assessmentTopic\"
-                      placeholder=\"Ex: Revolução Industrial\"
+                      id="assessmentTopic"
+                      placeholder="Ex: Revolução Industrial"
                       value={assessmentForm.topic}
                       onChange={(e) => setAssessmentForm({...assessmentForm, topic: e.target.value})}
                     />
                   </div>
                   <div>
-                    <Label htmlFor=\"questionCount\">Número de Questões</Label>
+                    <Label htmlFor="questionCount">Número de Questões</Label>
                     <Input
-                      id=\"questionCount\"
-                      type=\"number\"
-                      min=\"3\"
-                      max=\"20\"
+                      id="questionCount"
+                      type="number"
+                      min="3"
+                      max="20"
                       value={assessmentForm.questionCount}
                       onChange={(e) => setAssessmentForm({...assessmentForm, questionCount: parseInt(e.target.value)})}
                     />
@@ -413,16 +413,16 @@ export default function WorkspacePage() {
                 <Button 
                   onClick={handleAssessmentGeneration}
                   disabled={!assessmentForm.topic || isGenerating}
-                  className=\"w-full\"
+                  className="w-full"
                 >
                   {isGenerating ? (
                     <>
-                      <Loader2 className=\"mr-2 h-4 w-4 animate-spin\" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Gerando avaliação...
                     </>
                   ) : (
                     <>
-                      <Wand2 className=\"mr-2 h-4 w-4\" />
+                      <Wand2 className="mr-2 h-4 w-4" />
                       Gerar Avaliação com IA
                     </>
                   )}
@@ -432,24 +432,24 @@ export default function WorkspacePage() {
           </TabsContent>
 
           {/* Videos and Analytics tabs */}
-          <TabsContent value=\"videos\" className=\"space-y-6\">
+          <TabsContent value="videos" className="space-y-6">
             <Card>
-              <CardContent className=\"p-8 text-center\">
-                <Video className=\"w-12 h-12 text-gray-400 mx-auto mb-4\" />
-                <h3 className=\"text-lg font-semibold text-gray-900 mb-2\">Geração de Vídeos</h3>
-                <p className=\"text-gray-600 mb-4\">Funcionalidade em desenvolvimento</p>
-                <Badge variant=\"outline\">Em Breve</Badge>
+              <CardContent className="p-8 text-center">
+                <Video className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Geração de Vídeos</h3>
+                <p className="text-gray-600 mb-4">Funcionalidade em desenvolvimento</p>
+                <Badge variant="outline">Em Breve</Badge>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value=\"analytics\" className=\"space-y-6\">
+          <TabsContent value="analytics" className="space-y-6">
             <Card>
-              <CardContent className=\"p-8 text-center\">
-                <BarChart3 className=\"w-12 h-12 text-gray-400 mx-auto mb-4\" />
-                <h3 className=\"text-lg font-semibold text-gray-900 mb-2\">Analytics Avançados</h3>
-                <p className=\"text-gray-600 mb-4\">Métricas detalhadas do seu uso de IA</p>
-                <Badge variant=\"outline\">Em Breve</Badge>
+              <CardContent className="p-8 text-center">
+                <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Analytics Avançados</h3>
+                <p className="text-gray-600 mb-4">Métricas detalhadas do seu uso de IA</p>
+                <Badge variant="outline">Em Breve</Badge>
               </CardContent>
             </Card>
           </TabsContent>
@@ -457,25 +457,25 @@ export default function WorkspacePage() {
 
         {/* Generation Result */}
         {generationResult && (
-          <Card className=\"mt-8 border-green-200 bg-green-50\">
-            <CardContent className=\"p-6\">
-              <div className=\"flex items-center gap-2 mb-4\">
-                <CheckCircle className=\"w-5 h-5 text-green-600\" />
-                <h3 className=\"font-semibold text-green-900\">
+          <Card className="mt-8 border-green-200 bg-green-50">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <h3 className="font-semibold text-green-900">
                   {generationResult.type === 'lesson' && 'Aula Gerada com Sucesso!'}
                   {generationResult.type === 'image' && 'Imagem Gerada com Sucesso!'}
                   {generationResult.type === 'assessment' && 'Avaliação Gerada com Sucesso!'}
                 </h3>
               </div>
               
-              <div className=\"bg-white rounded-lg p-4 mb-4\">
+              <div className="bg-white rounded-lg p-4 mb-4">
                 {generationResult.type === 'lesson' && (
                   <div>
-                    <h4 className=\"font-medium mb-2\">{generationResult.content.title}</h4>
-                    <p className=\"text-gray-600 mb-2\">{generationResult.content.outline}</p>
-                    <div className=\"flex gap-2\">
+                    <h4 className="font-medium mb-2">{generationResult.content.title}</h4>
+                    <p className="text-gray-600 mb-2">{generationResult.content.outline}</p>
+                    <div className="flex gap-2">
                       {generationResult.content.materials.map((material: string, index: number) => (
-                        <Badge key={index} variant=\"outline\">{material}</Badge>
+                        <Badge key={index} variant="outline">{material}</Badge>
                       ))}
                     </div>
                   </div>
@@ -483,26 +483,26 @@ export default function WorkspacePage() {
                 
                 {generationResult.type === 'image' && (
                   <div>
-                    <div className=\"w-full h-48 bg-gray-200 rounded-lg mb-2 flex items-center justify-center\">
-                      <span className=\"text-gray-500\">Imagem gerada aqui</span>
+                    <div className="w-full h-48 bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
+                      <span className="text-gray-500">Imagem gerada aqui</span>
                     </div>
-                    <p className=\"text-sm text-gray-600\">{generationResult.content.prompt}</p>
+                    <p className="text-sm text-gray-600">{generationResult.content.prompt}</p>
                   </div>
                 )}
                 
                 {generationResult.type === 'assessment' && (
                   <div>
-                    <h4 className=\"font-medium mb-2\">Questões Geradas:</h4>
-                    <ul className=\"space-y-1\">
+                    <h4 className="font-medium mb-2">Questões Geradas:</h4>
+                    <ul className="space-y-1">
                       {generationResult.content.questions.map((question: string, index: number) => (
-                        <li key={index} className=\"text-gray-600\">• {question}</li>
+                        <li key={index} className="text-gray-600">• {question}</li>
                       ))}
                     </ul>
                   </div>
                 )}
               </div>
               
-              <p className=\"text-sm text-green-700\">
+              <p className="text-sm text-green-700">
                 Gerado por: {generationResult.content.provider}
               </p>
             </CardContent>
@@ -510,9 +510,9 @@ export default function WorkspacePage() {
         )}
 
         {/* Provider Attribution */}
-        <div className=\"mt-8 text-center text-sm text-gray-500\">
-          <p className=\"mb-2\">Powered by leading AI providers:</p>
-          <div className=\"flex items-center justify-center gap-4\">
+        <div className="mt-8 text-center text-sm text-gray-500">
+          <p className="mb-2">Powered by leading AI providers:</p>
+          <div className="flex items-center justify-center gap-4">
             <span>Claude (Anthropic)</span>
             <span>•</span>
             <span>GPT-4 & DALL-E (OpenAI)</span>
@@ -525,4 +525,4 @@ export default function WorkspacePage() {
       </div>
     </div>
   )
-}"
+}
