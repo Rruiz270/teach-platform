@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain, Globe, BarChart3 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import LearningAIInterface from '@/components/LearningAIInterface'
 
 export default function StarterLesson2Page() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -807,8 +808,15 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
           </CardContent>
         </Card>
 
+        {/* Learning AI Interface */}
+        <LearningAIInterface 
+          lessonTitle={lesson.title}
+          lessonType="introduction"
+          moduleType="starter"
+        />
+
         {/* Main Content */}
-        <Tabs defaultValue="video" className="space-y-6">
+        <Tabs defaultValue="video" className="space-y-6":
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="video">🌍 Vídeo</TabsTrigger>
             <TabsTrigger value="content">📊 Conteúdo</TabsTrigger>
@@ -1047,7 +1055,15 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
           </TabsContent>
 
           {/* Assignment Tab */}
-          <TabsContent value="assignment">
+          <TabsContent value="assignment" className="space-y-6">
+            {/* Activity-Specific AI Tools */}
+            <LearningAIInterface 
+              lessonTitle={lesson.title}
+              lessonType="project"
+              moduleType="starter"
+              activityContext={lesson.assignment.title}
+            />
+            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">

@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain, Rocket, Trophy, Lightbulb, FileText, Zap } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import ContextualAIToolsSuggestions from '@/components/ContextualAIToolsSuggestions'
+import LearningAIInterface from '@/components/LearningAIInterface'
 
 export default function StarterLesson6Page() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -1017,10 +1017,10 @@ Cada aula que você criar com IA não beneficia apenas seus alunos hoje, mas con
           </CardHeader>
         </Card>
 
-        {/* Contextual AI Tools Suggestions */}
-        <ContextualAIToolsSuggestions 
+        {/* Learning AI Interface */}
+        <LearningAIInterface 
           lessonTitle={lesson.title}
-          lessonContent={lesson.content.theory}
+          lessonType="project"
           moduleType="starter"
         />
 
@@ -1262,7 +1262,15 @@ Cada aula que você criar com IA não beneficia apenas seus alunos hoje, mas con
           </TabsContent>
 
           {/* Assignment Tab */}
-          <TabsContent value="assignment">
+          <TabsContent value="assignment" className="space-y-6">
+            {/* Activity-Specific AI Tools */}
+            <LearningAIInterface 
+              lessonTitle={lesson.title}
+              lessonType="project"
+              moduleType="starter"
+              activityContext={lesson.assignment.title}
+            />
+            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">

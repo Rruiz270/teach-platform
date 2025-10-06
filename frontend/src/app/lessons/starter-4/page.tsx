@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain, MessageSquare, Zap, Settings } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import ContextualAIToolsSuggestions from '@/components/ContextualAIToolsSuggestions'
+import LearningAIInterface from '@/components/LearningAIInterface'
 
 export default function StarterLesson4Page() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -922,10 +922,10 @@ A educação brasileira precisa de professores como você - **corajosos, inovado
           </CardHeader>
         </Card>
 
-        {/* Contextual AI Tools Suggestions */}
-        <ContextualAIToolsSuggestions 
+        {/* Learning AI Interface */}
+        <LearningAIInterface 
           lessonTitle={lesson.title}
-          lessonContent={lesson.content.theory}
+          lessonType="practice"
           moduleType="starter"
         />
 
@@ -1167,7 +1167,15 @@ A educação brasileira precisa de professores como você - **corajosos, inovado
           </TabsContent>
 
           {/* Assignment Tab */}
-          <TabsContent value="assignment">
+          <TabsContent value="assignment" className="space-y-6">
+            {/* Activity-Specific AI Tools */}
+            <LearningAIInterface 
+              lessonTitle={lesson.title}
+              lessonType="project"
+              moduleType="starter"
+              activityContext={lesson.assignment.title}
+            />
+            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
