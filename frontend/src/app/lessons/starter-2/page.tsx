@@ -816,7 +816,7 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
         />
 
         {/* Main Content */}
-        <Tabs defaultValue="video" className="space-y-6":
+        <Tabs defaultValue="video" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="video">🌍 Vídeo</TabsTrigger>
             <TabsTrigger value="content">📊 Conteúdo</TabsTrigger>
