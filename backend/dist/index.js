@@ -26,17 +26,24 @@ app.use((0, helmet_1.default)());
 const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || [];
+        if (process.env.NODE_ENV === 'production') {
+            logger_1.logger.info(`CORS request from origin: ${origin}`);
+        }
         if (!origin ||
             allowedOrigins.includes(origin) ||
-            origin.includes('teach-platform') && origin.includes('vercel.app') ||
-            origin.includes('localhost')) {
+            (origin && origin.includes('teach-platform') && origin.includes('vercel.app')) ||
+            (origin && origin.includes('localhost'))) {
             callback(null, true);
         }
         else {
+            logger_1.logger.warn(`CORS blocked origin: ${origin}`);
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['X-Total-Count']
 };
 app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.json({ limit: '10mb' }));

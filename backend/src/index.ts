@@ -30,17 +30,26 @@ const corsOptions = {
   origin: function (origin: any, callback: any) {
     const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || [];
     
+    // Log for debugging in production
+    if (process.env.NODE_ENV === 'production') {
+      logger.info(`CORS request from origin: ${origin}`);
+    }
+    
     // Allow all teach-platform Vercel deployments
     if (!origin || 
         allowedOrigins.includes(origin) || 
-        origin.includes('teach-platform') && origin.includes('vercel.app') ||
-        origin.includes('localhost')) {
+        (origin && origin.includes('teach-platform') && origin.includes('vercel.app')) ||
+        (origin && origin.includes('localhost'))) {
       callback(null, true);
     } else {
+      logger.warn(`CORS blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['X-Total-Count']
 };
 
 app.use(cors(corsOptions));
