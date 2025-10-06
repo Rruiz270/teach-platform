@@ -93,6 +93,13 @@ export default function AdminDashboard({ organizationType, organizationName, use
 
   return (
     <div className="space-y-6">
+      {/* Debug Header */}
+      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+        <p className="text-sm text-green-800">
+          <strong>AdminDashboard Component Active</strong> | Role: {userRole} | Org: {organizationName}
+        </p>
+      </div>
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
