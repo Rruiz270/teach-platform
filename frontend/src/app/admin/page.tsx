@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import AdminDashboard from '@/components/AdminDashboard'
+import ComprehensiveAdminDashboard from '@/components/ComprehensiveAdminDashboard'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -85,14 +85,7 @@ export default function AdminPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Debug info */}
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>Debug:</strong> Admin Dashboard Loading | User Role: {user.role} | Admin Component Active
-          </p>
-        </div>
-        
-        <AdminDashboard
+        <ComprehensiveAdminDashboard
           organizationType="school"
           organizationName="E.E. Dom Pedro II"
           userRole={user.role as 'SUPER_ADMIN' | 'ADMIN' | 'COORDINATOR'}
