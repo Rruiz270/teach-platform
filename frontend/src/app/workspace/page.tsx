@@ -72,7 +72,8 @@ export default function WorkspacePage() {
   const [assessmentForm, setAssessmentForm] = useState({
     topic: '',
     questionCount: 5,
-    difficulty: 'medium'
+    difficulty: 'medium',
+    description: ''
   })
 
   useEffect(() => {
@@ -277,10 +278,25 @@ export default function WorkspacePage() {
                   Gere aulas completas com roteiro, atividades e materiais usando Claude (Anthropic)
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* Natural Language Input */}
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg border">
+                  <h4 className="font-medium text-gray-900 mb-2">💬 Descreva sua aula em linguagem natural:</h4>
+                  <Textarea
+                    placeholder="Ex: Quero uma aula sobre fotossíntese para alunos do 5º ano, com duração de 45 minutos. A aula deve incluir experimentos práticos e os alunos devem entender como as plantas produzem energia..."
+                    value={lessonForm.objectives}
+                    onChange={(e) => setLessonForm({...lessonForm, objectives: e.target.value})}
+                    className="min-h-[100px] resize-none"
+                  />
+                  <p className="text-xs text-gray-600 mt-2">
+                    💡 Quanto mais detalhes você fornecer, melhor será o resultado
+                  </p>
+                </div>
+
+                {/* Smart Form Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="topic">Tópico da Aula</Label>
+                    <Label htmlFor="topic">🎯 Tópico Principal</Label>
                     <Input
                       id="topic"
                       placeholder="Ex: Fotossíntese, Guerra Fria, Frações..."
@@ -289,7 +305,7 @@ export default function WorkspacePage() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="grade">Série/Ano</Label>
+                    <Label htmlFor="grade">👥 Série/Ano</Label>
                     <Input
                       id="grade"
                       placeholder="Ex: 5º ano, 8ª série, 1º colegial..."
@@ -298,34 +314,29 @@ export default function WorkspacePage() {
                     />
                   </div>
                 </div>
-                
-                <div>
-                  <Label htmlFor="objectives">Objetivos de Aprendizagem (Opcional)</Label>
-                  <Textarea
-                    id="objectives"
-                    placeholder="Descreva o que os alunos devem aprender..."
-                    value={lessonForm.objectives}
-                    onChange={(e) => setLessonForm({...lessonForm, objectives: e.target.value})}
-                  />
-                </div>
 
                 <Button 
                   onClick={handleLessonGeneration}
-                  disabled={!lessonForm.topic || !lessonForm.grade || isGenerating}
-                  className="w-full"
+                  disabled={(!lessonForm.topic && !lessonForm.objectives) || isGenerating}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  size="lg"
                 >
                   {isGenerating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Gerando aula com IA...
+                      🤖 Claude está criando sua aula...
                     </>
                   ) : (
                     <>
                       <Wand2 className="mr-2 h-4 w-4" />
-                      Gerar Aula com IA
+                      ✨ Gerar Aula com IA
                     </>
                   )}
                 </Button>
+                
+                <p className="text-xs text-center text-gray-500">
+                  Gerado com Claude (Anthropic) • Fallback: GPT-4 (OpenAI)
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -342,34 +353,44 @@ export default function WorkspacePage() {
                   Crie ilustrações e infográficos educacionais com DALL-E 3
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="imagePrompt">Descrição da Imagem</Label>
+              <CardContent className="space-y-6">
+                {/* Natural Language Input */}
+                <div className="bg-gradient-to-r from-pink-50 to-orange-50 p-4 rounded-lg border">
+                  <h4 className="font-medium text-gray-900 mb-2">🎨 Descreva a imagem que você precisa:</h4>
                   <Textarea
                     id="imagePrompt"
-                    placeholder="Ex: Ilustração educacional do ciclo da água para crianças..."
+                    placeholder="Ex: Crie uma ilustração educacional colorida do ciclo da água para crianças do ensino fundamental. Deve mostrar evaporação, condensação e precipitação de forma simples e didática, com estilo cartoon..."
                     value={imageForm.prompt}
                     onChange={(e) => setImageForm({...imageForm, prompt: e.target.value})}
+                    className="min-h-[100px] resize-none"
                   />
+                  <p className="text-xs text-gray-600 mt-2">
+                    💡 Inclua estilo, público-alvo e objetivo educacional para melhores resultados
+                  </p>
                 </div>
 
                 <Button 
                   onClick={handleImageGeneration}
                   disabled={!imageForm.prompt || isGenerating}
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-pink-600 to-orange-600 hover:from-pink-700 hover:to-orange-700"
+                  size="lg"
                 >
                   {isGenerating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Gerando imagem...
+                      🎨 DALL-E está criando sua imagem...
                     </>
                   ) : (
                     <>
                       <Wand2 className="mr-2 h-4 w-4" />
-                      Gerar Imagem com IA
+                      ✨ Gerar Imagem com IA
                     </>
                   )}
                 </Button>
+                
+                <p className="text-xs text-center text-gray-500">
+                  Gerado com DALL-E 3 (OpenAI) • Fallback: Stable Diffusion
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -386,19 +407,34 @@ export default function WorkspacePage() {
                   Gere questões e avaliações personalizadas com Claude
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* Natural Language Input */}
+                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border">
+                  <h4 className="font-medium text-gray-900 mb-2">📝 Descreva a avaliação que você quer criar:</h4>
+                  <Textarea
+                    placeholder="Ex: Preciso de uma prova sobre a Revolução Industrial para alunos do 8º ano. Deve ter 10 questões mistas (múltipla escolha e dissertativas) cobrindo causas, consequências e principais invenções. Nível médio de dificuldade..."
+                    value={assessmentForm.description || ''}
+                    onChange={(e) => setAssessmentForm({...assessmentForm, description: e.target.value})}
+                    className="min-h-[100px] resize-none"
+                  />
+                  <p className="text-xs text-gray-600 mt-2">
+                    💡 Especifique tópicos, tipo de questões e nível de dificuldade
+                  </p>
+                </div>
+
+                {/* Quick Options */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="assessmentTopic">Tópico da Avaliação</Label>
+                    <Label htmlFor="assessmentTopic">📚 Tópico Principal</Label>
                     <Input
                       id="assessmentTopic"
-                      placeholder="Ex: Revolução Industrial"
+                      placeholder="Ex: Revolução Industrial, Fotossíntese..."
                       value={assessmentForm.topic}
                       onChange={(e) => setAssessmentForm({...assessmentForm, topic: e.target.value})}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="questionCount">Número de Questões</Label>
+                    <Label htmlFor="questionCount">🔢 Número de Questões</Label>
                     <Input
                       id="questionCount"
                       type="number"
@@ -412,21 +448,26 @@ export default function WorkspacePage() {
 
                 <Button 
                   onClick={handleAssessmentGeneration}
-                  disabled={!assessmentForm.topic || isGenerating}
-                  className="w-full"
+                  disabled={(!assessmentForm.topic && !assessmentForm.description) || isGenerating}
+                  className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                  size="lg"
                 >
                   {isGenerating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Gerando avaliação...
+                      🧠 Claude está criando sua avaliação...
                     </>
                   ) : (
                     <>
                       <Wand2 className="mr-2 h-4 w-4" />
-                      Gerar Avaliação com IA
+                      ✨ Gerar Avaliação com IA
                     </>
                   )}
                 </Button>
+                
+                <p className="text-xs text-center text-gray-500">
+                  Gerado com Claude (Anthropic) • Pedagogy-optimized prompts
+                </p>
               </CardContent>
             </Card>
           </TabsContent>

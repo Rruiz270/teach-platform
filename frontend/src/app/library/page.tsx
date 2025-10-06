@@ -38,6 +38,54 @@ export default function LibraryPage() {
     return null
   }
 
+  // AI Tools available in platform
+  const aiTools = [
+    {
+      id: 'chatgpt-edu',
+      name: 'ChatGPT Educacional',
+      description: 'IA especializada em conteúdo educacional brasileiro',
+      provider: 'OpenAI',
+      subjects: ['Todas as matérias'],
+      features: ['Criação de aulas', 'Exercícios personalizados', 'Explicações didáticas'],
+      color: 'from-green-500 to-emerald-600',
+      icon: '🤖',
+      available: true
+    },
+    {
+      id: 'claude-teacher',
+      name: 'Claude Professor',
+      description: 'Assistente pedagógico para planejamento e avaliação',
+      provider: 'Anthropic',
+      subjects: ['Português', 'História', 'Geografia'],
+      features: ['Análise de textos', 'Criação de provas', 'Feedback detalhado'],
+      color: 'from-blue-500 to-cyan-600',
+      icon: '📚',
+      available: true
+    },
+    {
+      id: 'dalle-edu',
+      name: 'DALL-E Educacional',
+      description: 'Geração de imagens e ilustrações para aulas',
+      provider: 'OpenAI',
+      subjects: ['Ciências', 'Arte', 'História'],
+      features: ['Ilustrações didáticas', 'Infográficos', 'Material visual'],
+      color: 'from-purple-500 to-pink-600',
+      icon: '🎨',
+      available: true
+    },
+    {
+      id: 'gemini-math',
+      name: 'Gemini Matemática',
+      description: 'Especialista em resolução e ensino de matemática',
+      provider: 'Google',
+      subjects: ['Matemática', 'Física', 'Química'],
+      features: ['Resolução passo-a-passo', 'Gráficos', 'Exercícios graduais'],
+      color: 'from-orange-500 to-red-600',
+      icon: '🔢',
+      available: true
+    }
+  ]
+
   const resources = [
     {
       id: 1,
@@ -201,6 +249,77 @@ export default function LibraryPage() {
           <p className="text-lg text-gray-600">
             Materiais exclusivos para potencializar seu uso de IA na educação
           </p>
+        </div>
+
+        {/* AI Tools Section */}
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            🤖 Ferramentas de IA Integradas
+            <Badge variant="secondary" className="bg-purple-100 text-purple-800">USAR AGORA</Badge>
+          </h3>
+          <p className="text-gray-600 mb-6">
+            Acesse diretamente as IAs especializadas para educação - sem sair da plataforma
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {aiTools.map((tool) => (
+              <Card key={tool.id} className="hover:shadow-lg transition-all duration-300 group cursor-pointer">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-2xl">{tool.icon}</span>
+                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-300">
+                      Ativo
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg">{tool.name}</CardTitle>
+                  <CardDescription className="text-sm">
+                    {tool.description}
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="space-y-3">
+                  <div>
+                    <p className="text-xs font-medium text-gray-700 mb-1">Matérias:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {tool.subjects.slice(0, 2).map((subject, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {subject}
+                        </Badge>
+                      ))}
+                      {tool.subjects.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{tool.subjects.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <p className="text-xs font-medium text-gray-700 mb-1">Recursos:</p>
+                    <ul className="text-xs text-gray-600 space-y-0.5">
+                      {tool.features.slice(0, 2).map((feature, index) => (
+                        <li key={index} className="flex items-center gap-1">
+                          <span className="text-green-500">•</span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <Button 
+                    className={`w-full bg-gradient-to-r ${tool.color} text-white hover:scale-105 transition-transform`}
+                    onClick={() => router.push('/workspace')}
+                  >
+                    Usar {tool.icon}
+                  </Button>
+                  
+                  <p className="text-xs text-center text-gray-500">
+                    Powered by {tool.provider}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
         {/* Search and Filters */}

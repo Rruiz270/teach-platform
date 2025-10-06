@@ -1,23 +1,20 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Lock, Brain, Bot } from 'lucide-react'
+import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Lock } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import LearningAITools from '@/components/LearningAITools'
 
 export default function ModuleDetailPage() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
   const router = useRouter()
   const params = useParams()
   const moduleId = params.id as string
-  const [activeTab, setActiveTab] = useState('lessons')
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -193,138 +190,101 @@ export default function ModuleDetailPage() {
           </CardHeader>
         </Card>
 
-        {/* Course Content Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
-            <TabsTrigger value="lessons" className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              Aulas Teóricas
-            </TabsTrigger>
-            <TabsTrigger value="ai-practice" className="flex items-center gap-2">
-              <Brain className="w-4 h-4" />
-              Prática de IA
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Regular Lessons */}
-          <TabsContent value="lessons">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" />
-                  Aulas do Módulo
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 ml-2">TEORIA</Badge>
-                </CardTitle>
-                <CardDescription>
-                  Clique em uma aula para começar ou continuar seus estudos teóricos
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {module.lessons.map((lesson, index) => (
-                  <div 
-                    key={lesson.id}
-                    className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
-                      lesson.completed ? 'bg-green-50 border-green-200' :
-                      lesson.current ? 'bg-blue-50 border-blue-200' :
-                      module.status === 'locked' ? 'bg-gray-50 border-gray-200' :
-                      'bg-white border-gray-200 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-                        lesson.completed ? 'bg-green-500 text-white' :
-                        lesson.current ? 'bg-blue-500 text-white' :
-                        module.status === 'locked' ? 'bg-gray-300 text-gray-500' :
-                        'bg-gray-200 text-gray-600'
-                      }`}>
-                        {lesson.completed ? (
-                          <CheckCircle className="w-4 h-4" />
-                        ) : lesson.current ? (
-                          <Play className="w-4 h-4" />
-                        ) : module.status === 'locked' ? (
-                          <Lock className="w-4 h-4" />
-                        ) : (
-                          <span className="text-sm font-medium">{index + 1}</span>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <h3 className={`font-medium ${
-                          module.status === 'locked' ? 'text-gray-500' : 'text-gray-900'
-                        }`}>
-                          {lesson.title}
-                        </h3>
-                        <p className="text-sm text-gray-600">{lesson.duration}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      {lesson.completed ? (
-                        <div className="flex items-center space-x-2">
-                          <Badge variant="secondary" className="text-green-700 bg-green-100">
-                            Concluída
-                          </Badge>
-                          <Link href={`/lessons/${moduleId === '1' ? 'starter-' : moduleId === '2' ? 'survivor-' : moduleId === '3' ? 'explorer-' : 'expert-'}${lesson.id}`}>
-                            <Button size="sm" variant="outline">
-                              Revisar
-                            </Button>
-                          </Link>
-                        </div>
-                      ) : lesson.current ? (
-                        <div className="flex items-center space-x-2">
-                          <Badge variant="default">
-                            Atual
-                          </Badge>
-                          <Link href={`/lessons/${moduleId === '1' ? 'starter-' : moduleId === '2' ? 'survivor-' : moduleId === '3' ? 'explorer-' : 'expert-'}${lesson.id}`}>
-                            <Button size="sm">
-                              Continuar
-                            </Button>
-                          </Link>
-                        </div>
-                      ) : module.status === 'locked' ? (
-                        <Badge variant="outline" className="text-gray-500">
-                          Bloqueada
-                        </Badge>
-                      ) : (
-                        <Link href={`/lessons/${lesson.id}`}>
-                          <Button size="sm" variant="outline">
-                            Iniciar
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
+        {/* Course Content - Simplified */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              Aulas do Módulo
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800 ml-2">IA INTEGRADA</Badge>
+            </CardTitle>
+            <CardDescription>
+              Aprenda conceitos fundamentais e pratique com IA integrada em cada aula
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {module.lessons.map((lesson, index) => (
+              <div 
+                key={lesson.id}
+                className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                  lesson.completed ? 'bg-green-50 border-green-200' :
+                  lesson.current ? 'bg-blue-50 border-blue-200' :
+                  module.status === 'locked' ? 'bg-gray-50 border-gray-200' :
+                  'bg-white border-gray-200 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                    lesson.completed ? 'bg-green-500 text-white' :
+                    lesson.current ? 'bg-blue-500 text-white' :
+                    module.status === 'locked' ? 'bg-gray-300 text-gray-500' :
+                    'bg-gray-200 text-gray-600'
+                  }`}>
+                    {lesson.completed ? (
+                      <CheckCircle className="w-4 h-4" />
+                    ) : lesson.current ? (
+                      <Play className="w-4 h-4" />
+                    ) : module.status === 'locked' ? (
+                      <Lock className="w-4 h-4" />
+                    ) : (
+                      <span className="text-sm font-medium">{index + 1}</span>
+                    )}
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* AI Practice Exercises */}
-          <TabsContent value="ai-practice">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="w-5 h-5" />
-                  Exercícios Práticos de IA
-                  <Badge variant="secondary" className="bg-purple-100 text-purple-800 ml-2">PRÁTICA</Badge>
-                </CardTitle>
-                <CardDescription>
-                  Pratique o uso de ferramentas de IA com exercícios guiados e feedback personalizado
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <LearningAITools 
-                  moduleId={moduleId} 
-                  userLevel={
-                    moduleId === '1' ? 'Starter' : 
-                    moduleId === '2' ? 'Survivor' : 
-                    moduleId === '3' ? 'Explorer' : 'Expert'
-                  } 
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                  
+                  <div>
+                    <h3 className={`font-medium ${
+                      module.status === 'locked' ? 'text-gray-500' : 'text-gray-900'
+                    }`}>
+                      {lesson.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      {lesson.duration}
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                        🤖 IA Assistida
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  {lesson.completed ? (
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="secondary" className="text-green-700 bg-green-100">
+                        Concluída
+                      </Badge>
+                      <Link href={`/lessons/${moduleId === '1' ? 'starter-' : moduleId === '2' ? 'survivor-' : moduleId === '3' ? 'explorer-' : 'expert-'}${lesson.id}`}>
+                        <Button size="sm" variant="outline">
+                          Revisar
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : lesson.current ? (
+                    <div className="flex items-center space-x-2">
+                      <Badge variant="default">
+                        Atual
+                      </Badge>
+                      <Link href={`/lessons/${moduleId === '1' ? 'starter-' : moduleId === '2' ? 'survivor-' : moduleId === '3' ? 'explorer-' : 'expert-'}${lesson.id}`}>
+                        <Button size="sm">
+                          Continuar
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : module.status === 'locked' ? (
+                    <Badge variant="outline" className="text-gray-500">
+                      Bloqueada
+                    </Badge>
+                  ) : (
+                    <Link href={`/lessons/${lesson.id}`}>
+                      <Button size="sm" variant="outline">
+                        Iniciar
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
         {/* Action Buttons */}
         <div className="mt-8 flex justify-center space-x-4">
