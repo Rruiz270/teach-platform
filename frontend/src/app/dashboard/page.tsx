@@ -190,28 +190,58 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* AI Workspace - Featured Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">🤖 Workspace IA - NOVO!</h2>
-          <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white border-0 hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => router.push('/workspace')}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+        {/* Learning vs Production Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Learning Section */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">📚 Meu Aprendizado</h2>
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">CURSO</Badge>
+            </div>
+            <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => router.push('/modules')}>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-blue-100 rounded-xl">
+                    <BookOpen className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-blue-900 mb-2">Curso IA para Educadores</h3>
+                    <p className="text-blue-700 mb-3">Continue sua jornada de aprendizado</p>
+                    <div className="flex gap-2">
+                      <Badge variant="outline" className="border-blue-300 text-blue-700">
+                        🎯 Explorer
+                      </Badge>
+                      <Badge variant="outline" className="border-blue-300 text-blue-700">
+                        65% Completo
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Production Section */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">⚡ Meu Workspace</h2>
+              <Badge variant="secondary" className="bg-purple-100 text-purple-800">PRODUÇÃO</Badge>
+            </div>
+            <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white border-0 hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => router.push('/workspace')}>
+              <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
                   <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                     <Sparkles className="h-8 w-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold mb-2">Workspace IA</h3>
-                    <p className="text-purple-100 mb-3">Crie aulas, imagens, vídeos e avaliações com IA - tudo em um lugar!</p>
-                    <div className="flex flex-wrap gap-2">
+                    <h3 className="text-xl font-bold mb-2">Criar Conteúdo com IA</h3>
+                    <p className="text-purple-100 mb-3">Ferramentas profissionais para suas aulas</p>
+                    <div className="flex gap-2">
                       <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                        📝 Criação de Aulas
+                        📝 Aulas
                       </Badge>
                       <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                        🎨 Imagens IA
-                      </Badge>
-                      <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                        🎥 Vídeos IA
+                        🎨 Imagens
                       </Badge>
                       <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
                         📊 Avaliações
@@ -219,15 +249,9 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="p-2 bg-white/20 rounded-lg mb-2">
-                    <Wand2 className="h-6 w-6 text-white" />
-                  </div>
-                  <p className="text-sm text-purple-100">Clique para entrar</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Other Features Section */}
