@@ -53,7 +53,15 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  ExternalLink
+  ExternalLink,
+  PieChart,
+  TrendingDown,
+  Users2,
+  BookMarked,
+  FileSpreadsheet,
+  PlayCircle,
+  PauseCircle,
+  RefreshCw
 } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -73,6 +81,10 @@ export default function CompleteAdminSystem({ organizationType, organizationName
   const [showReportsModal, setShowReportsModal] = useState(false)
   const [showUsersModal, setShowUsersModal] = useState(false)
   const [showCertificatesModal, setShowCertificatesModal] = useState(false)
+  const [showSchoolsModal, setShowSchoolsModal] = useState(false)
+  const [showContentModal, setShowContentModal] = useState(false)
+  const [showForumModal, setShowForumModal] = useState(false)
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
   
   // Sub-tab states for modals
   const [maestroTab, setMaestroTab] = useState('overview')
@@ -939,6 +951,720 @@ export default function CompleteAdminSystem({ organizationType, organizationName
     </Dialog>
   )
 
+  // Schools Modal Component
+  const SchoolsModal = () => (
+    <Dialog open={showSchoolsModal} onOpenChange={setShowSchoolsModal}>
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <School className="w-6 h-6" />
+            Gestão de Escolas
+          </DialogTitle>
+          <DialogDescription>
+            Cadastre e gerencie instituições de ensino da plataforma
+          </DialogDescription>
+        </DialogHeader>
+        
+        <Tabs defaultValue="list" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="list">Lista de Escolas</TabsTrigger>
+            <TabsTrigger value="add">Cadastrar Nova</TabsTrigger>
+            <TabsTrigger value="bulk">Importação em Lote</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="list" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <Input placeholder="Buscar escolas..." className="w-80" />
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Nova Escola
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { id: 1, name: 'E.E. Dom Pedro II', state: 'SP', city: 'São Paulo', users: 145, plan: 'Premium' },
+                { id: 2, name: 'EMEF Santos Dumont', state: 'RJ', city: 'Rio de Janeiro', users: 89, plan: 'Standard' },
+                { id: 3, name: 'Instituto Federal RS', state: 'RS', city: 'Porto Alegre', users: 267, plan: 'Enterprise' }
+              ].map((school) => (
+                <Card key={school.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <School className="w-8 h-8 text-blue-500" />
+                      <div>
+                        <h3 className="font-semibold">{school.name}</h3>
+                        <p className="text-sm text-gray-600">{school.city}, {school.state}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Usuários:</span>
+                        <span className="font-medium">{school.users}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Plano:</span>
+                        <Badge variant="outline">{school.plan}</Badge>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <Button size="sm" variant="outline" className="flex-1">Ver Detalhes</Button>
+                      <Button size="sm" variant="outline">
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="add" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Cadastrar Nova Escola</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium">Nome da Instituição</label>
+                    <Input placeholder="Ex: E.E. Dom Pedro II" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Tipo</label>
+                    <Input placeholder="Ex: Estadual, Municipal, Federal" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Estado</label>
+                    <Input placeholder="Ex: São Paulo" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Cidade</label>
+                    <Input placeholder="Ex: São Paulo" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">E-mail Institucional</label>
+                    <Input placeholder="contato@escola.edu.br" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Telefone</label>
+                    <Input placeholder="(11) 99999-9999" />
+                  </div>
+                </div>
+                <Button className="w-full">Cadastrar Escola</Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="bulk" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Importação em Lote</CardTitle>
+                <CardDescription>Importe múltiplas escolas via arquivo CSV</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600 mb-2">Arraste o arquivo CSV aqui ou clique para selecionar</p>
+                  <Button variant="outline">Selecionar Arquivo</Button>
+                </div>
+                <div className="text-sm text-gray-600">
+                  <p className="font-medium mb-2">Formato do CSV esperado:</p>
+                  <p>nome,tipo,estado,cidade,email,telefone</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Distribuição por Estado</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { state: 'São Paulo', count: 45, percentage: 31 },
+                      { state: 'Rio de Janeiro', count: 32, percentage: 22 },
+                      { state: 'Minas Gerais', count: 28, percentage: 19 },
+                      { state: 'Rio Grande do Sul', count: 25, percentage: 17 }
+                    ].map((item, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>{item.state}</span>
+                          <span>{item.count} escolas</span>
+                        </div>
+                        <Progress value={item.percentage} className="h-2" />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Tipos de Instituição</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {[
+                      { type: 'Estadual', count: 58, color: 'bg-blue-500' },
+                      { type: 'Municipal', count: 42, color: 'bg-green-500' },
+                      { type: 'Federal', count: 31, color: 'bg-purple-500' },
+                      { type: 'Particular', count: 14, color: 'bg-orange-500' }
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-4 h-4 rounded ${item.color}`}></div>
+                          <span>{item.type}</span>
+                        </div>
+                        <span className="font-medium">{item.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  )
+
+  // Content Modal Component
+  const ContentModal = () => (
+    <Dialog open={showContentModal} onOpenChange={setShowContentModal}>
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <BookOpen className="w-6 h-6" />
+            Gestão de Conteúdo
+          </DialogTitle>
+          <DialogDescription>
+            Gerencie módulos, aulas e recursos educacionais
+          </DialogDescription>
+        </DialogHeader>
+        
+        <Tabs defaultValue="modules" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="modules">Módulos</TabsTrigger>
+            <TabsTrigger value="lessons">Aulas</TabsTrigger>
+            <TabsTrigger value="resources">Recursos</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="modules" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Módulos Disponíveis</h3>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Novo Módulo
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { id: 1, name: 'Starter', lessons: 6, students: 2847, status: 'Ativo' },
+                { id: 2, name: 'Survivor', lessons: 8, students: 1567, status: 'Ativo' },
+                { id: 3, name: 'Explorer', lessons: 10, students: 892, status: 'Ativo' },
+                { id: 4, name: 'Master', lessons: 12, students: 234, status: 'Em Desenvolvimento' }
+              ].map((module) => (
+                <Card key={module.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <BookOpen className="w-8 h-8 text-orange-500" />
+                      <div>
+                        <h3 className="font-semibold">{module.name}</h3>
+                        <p className="text-sm text-gray-600">{module.lessons} aulas</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Estudantes:</span>
+                        <span className="font-medium">{module.students.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Status:</span>
+                        <Badge variant={module.status === 'Ativo' ? 'default' : 'secondary'}>
+                          {module.status}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <Button size="sm" variant="outline" className="flex-1">Gerenciar</Button>
+                      <Button size="sm" variant="outline">
+                        <BarChart3 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="lessons" className="space-y-4">
+            <div className="space-y-4">
+              {[
+                { id: 1, module: 'Starter', name: 'Introdução à IA', duration: '45min', completion: 92 },
+                { id: 2, module: 'Starter', name: 'ChatGPT Básico', duration: '60min', completion: 87 },
+                { id: 3, module: 'Starter', name: 'Criação de Conteúdo', duration: '50min', completion: 94 }
+              ].map((lesson) => (
+                <Card key={lesson.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <FileText className="w-8 h-8 text-blue-500" />
+                        <div>
+                          <h3 className="font-semibold">{lesson.name}</h3>
+                          <p className="text-sm text-gray-600">
+                            {lesson.module} • {lesson.duration}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-sm font-medium">{lesson.completion}% conclusão</p>
+                          <Progress value={lesson.completion} className="w-24 h-2" />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="resources" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <FileText className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">1,234</p>
+                  <p className="text-sm text-gray-600">PDFs</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <PlayCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">567</p>
+                  <p className="text-sm text-gray-600">Vídeos</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <Upload className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">89</p>
+                  <p className="text-sm text-gray-600">Atividades</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <Database className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">2.1GB</p>
+                  <p className="text-sm text-gray-600">Armazenamento</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Conteúdo Mais Acessado</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { content: 'Introdução à IA', views: 2847, type: 'Aula' },
+                      { content: 'ChatGPT Guia Completo', views: 2156, type: 'PDF' },
+                      { content: 'Workshop Prático', views: 1892, type: 'Vídeo' }
+                    ].map((item, index) => (
+                      <div key={index} className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">{item.content}</p>
+                          <p className="text-sm text-gray-600">{item.type}</p>
+                        </div>
+                        <span className="font-bold">{item.views.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Taxa de Conclusão por Módulo</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[
+                      { module: 'Starter', completion: 92 },
+                      { module: 'Survivor', completion: 78 },
+                      { module: 'Explorer', completion: 65 }
+                    ].map((item, index) => (
+                      <div key={index}>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>{item.module}</span>
+                          <span>{item.completion}%</span>
+                        </div>
+                        <Progress value={item.completion} className="h-2" />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  )
+
+  // Forum Modal Component
+  const ForumModal = () => (
+    <Dialog open={showForumModal} onOpenChange={setShowForumModal}>
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <MessageSquare className="w-6 h-6" />
+            Moderação do Fórum
+          </DialogTitle>
+          <DialogDescription>
+            Gerencie discussões, posts e moderação do fórum
+          </DialogDescription>
+        </DialogHeader>
+        
+        <Tabs defaultValue="posts" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="posts">Posts Recentes</TabsTrigger>
+            <TabsTrigger value="reports">Denúncias</TabsTrigger>
+            <TabsTrigger value="moderation">Ações de Moderação</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="posts" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <Input placeholder="Buscar posts..." className="w-80" />
+              <Button variant="outline">
+                <Filter className="w-4 h-4 mr-2" />
+                Filtros
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {[
+                { 
+                  id: 1, 
+                  title: 'Como usar ChatGPT para criar atividades?', 
+                  author: 'Prof. Maria Silva', 
+                  replies: 12, 
+                  time: '2 horas atrás',
+                  category: 'Dúvidas'
+                },
+                { 
+                  id: 2, 
+                  title: 'Compartilhando templates de aula com IA', 
+                  author: 'Prof. João Santos', 
+                  replies: 8, 
+                  time: '4 horas atrás',
+                  category: 'Compartilhamento'
+                },
+                { 
+                  id: 3, 
+                  title: 'Problemas com a ferramenta de imagem', 
+                  author: 'Prof. Ana Costa', 
+                  replies: 15, 
+                  time: '6 horas atrás',
+                  category: 'Suporte'
+                }
+              ].map((post) => (
+                <Card key={post.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold mb-2">{post.title}</h3>
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <span>Por {post.author}</span>
+                          <span>•</span>
+                          <span>{post.replies} respostas</span>
+                          <span>•</span>
+                          <span>{post.time}</span>
+                          <Badge variant="outline">{post.category}</Badge>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="reports" className="space-y-4">
+            <div className="space-y-4">
+              {[
+                { id: 1, type: 'Spam', post: 'Oferecendo curso particular...', reporter: 'User123', status: 'Pendente' },
+                { id: 2, type: 'Conteúdo Inapropriado', post: 'Este professor não sabe nada...', reporter: 'User456', status: 'Analisando' }
+              ].map((report) => (
+                <Card key={report.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant="destructive">{report.type}</Badge>
+                          <Badge variant="outline">{report.status}</Badge>
+                        </div>
+                        <p className="text-sm text-gray-800 mb-2">"{report.post}"</p>
+                        <p className="text-xs text-gray-600">Denunciado por {report.reporter}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline">Aprovar</Button>
+                        <Button size="sm" variant="destructive">Remover</Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="moderation" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações de Moderação</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Moderação Automática</p>
+                    <p className="text-sm text-gray-600">Filtra automaticamente spam e conteúdo inadequado</p>
+                  </div>
+                  <Badge variant="default">Ativo</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Aprovação Manual</p>
+                    <p className="text-sm text-gray-600">Posts de novos usuários passam por aprovação</p>
+                  </div>
+                  <Badge variant="secondary">Inativo</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Filtro de Palavras</p>
+                    <p className="text-sm text-gray-600">Bloqueia automaticamente palavras impróprias</p>
+                  </div>
+                  <Badge variant="default">Ativo</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <MessageSquare className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">1,234</p>
+                  <p className="text-sm text-gray-600">Posts Totais</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <Users className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">456</p>
+                  <p className="text-sm text-gray-600">Usuários Ativos</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">23</p>
+                  <p className="text-sm text-gray-600">Denúncias</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <TrendingUp className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                  <p className="text-2xl font-bold">89%</p>
+                  <p className="text-sm text-gray-600">Taxa Engajamento</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  )
+
+  // Settings Modal Component
+  const SettingsModal = () => (
+    <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Settings className="w-6 h-6" />
+            Configurações do Sistema
+          </DialogTitle>
+          <DialogDescription>
+            Configure aspectos gerais da plataforma e segurança
+          </DialogDescription>
+        </DialogHeader>
+        
+        <Tabs defaultValue="general" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="general">Geral</TabsTrigger>
+            <TabsTrigger value="security">Segurança</TabsTrigger>
+            <TabsTrigger value="notifications">Notificações</TabsTrigger>
+            <TabsTrigger value="integration">Integrações</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="general" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações Gerais</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Nome da Plataforma</label>
+                  <Input defaultValue="TEACH" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">URL Base</label>
+                  <Input defaultValue="https://teach-platform.vercel.app" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Email de Suporte</label>
+                  <Input defaultValue="suporte@teach.com.br" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Timezone</label>
+                  <Input defaultValue="America/Sao_Paulo" />
+                </div>
+                <Button>Salvar Configurações</Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="security" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações de Segurança</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Autenticação de Dois Fatores</p>
+                    <p className="text-sm text-gray-600">Obrigatório para administradores</p>
+                  </div>
+                  <Badge variant="default">Ativo</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Backup Automático</p>
+                    <p className="text-sm text-gray-600">Backup diário dos dados</p>
+                  </div>
+                  <Badge variant="default">Ativo</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Log de Auditoria</p>
+                    <p className="text-sm text-gray-600">Registra todas as ações administrativas</p>
+                  </div>
+                  <Badge variant="default">Ativo</Badge>
+                </div>
+                <Button variant="outline" className="w-full">
+                  <Database className="w-4 h-4 mr-2" />
+                  Executar Backup Manual
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="notifications" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configurações de Notificações</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  {[
+                    { name: 'Novos Usuários', description: 'Notificar quando novos usuários se cadastrarem', enabled: true },
+                    { name: 'Certificados Pendentes', description: 'Alertar sobre certificados aguardando aprovação', enabled: true },
+                    { name: 'Problemas de Sistema', description: 'Notificações de erros e problemas técnicos', enabled: true },
+                    { name: 'Relatórios Mensais', description: 'Enviar relatórios automáticos mensalmente', enabled: false }
+                  ].map((notification, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{notification.name}</p>
+                        <p className="text-sm text-gray-600">{notification.description}</p>
+                      </div>
+                      <Badge variant={notification.enabled ? 'default' : 'secondary'}>
+                        {notification.enabled ? 'Ativo' : 'Inativo'}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="integration" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Integrações Externas</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  {[
+                    { name: 'OpenAI API', status: 'Conectado', type: 'IA' },
+                    { name: 'Google Workspace', status: 'Desconectado', type: 'Produtividade' },
+                    { name: 'Microsoft Teams', status: 'Conectado', type: 'Comunicação' },
+                    { name: 'Zoom', status: 'Conectado', type: 'Videoconferência' }
+                  ].map((integration, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <ExternalLink className="w-6 h-6 text-gray-500" />
+                        <div>
+                          <p className="font-medium">{integration.name}</p>
+                          <p className="text-sm text-gray-600">{integration.type}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={integration.status === 'Conectado' ? 'default' : 'secondary'}>
+                          {integration.status}
+                        </Badge>
+                        <Button size="sm" variant="outline">
+                          {integration.status === 'Conectado' ? 'Configurar' : 'Conectar'}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
+  )
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -1048,7 +1774,7 @@ export default function CompleteAdminSystem({ organizationType, organizationName
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowSchoolsModal(true)}>
           <CardContent className="p-6 text-center">
             <School className="w-12 h-12 text-indigo-500 mx-auto mb-4" />
             <h3 className="font-semibold mb-2">Gestão de Escolas</h3>
@@ -1056,7 +1782,7 @@ export default function CompleteAdminSystem({ organizationType, organizationName
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowContentModal(true)}>
           <CardContent className="p-6 text-center">
             <BookOpen className="w-12 h-12 text-orange-500 mx-auto mb-4" />
             <h3 className="font-semibold mb-2">Gestão de Conteúdo</h3>
@@ -1064,7 +1790,7 @@ export default function CompleteAdminSystem({ organizationType, organizationName
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowForumModal(true)}>
           <CardContent className="p-6 text-center">
             <MessageSquare className="w-12 h-12 text-teal-500 mx-auto mb-4" />
             <h3 className="font-semibold mb-2">Moderação do Fórum</h3>
@@ -1072,7 +1798,7 @@ export default function CompleteAdminSystem({ organizationType, organizationName
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowSettingsModal(true)}>
           <CardContent className="p-6 text-center">
             <Settings className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <h3 className="font-semibold mb-2">Configurações</h3>
@@ -1086,6 +1812,10 @@ export default function CompleteAdminSystem({ organizationType, organizationName
       <ReportsModal />
       <UsersModal />
       <CertificatesModal />
+      <SchoolsModal />
+      <ContentModal />
+      <ForumModal />
+      <SettingsModal />
     </div>
   )
 }
