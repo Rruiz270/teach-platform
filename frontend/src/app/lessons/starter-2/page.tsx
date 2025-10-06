@@ -731,12 +731,87 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
           </CardHeader>
         </Card>
 
+        {/* Contextual AI Suggestions for IA na Educação */}
+        <Card className="bg-gradient-to-r from-emerald-50 to-cyan-50 border-emerald-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-emerald-900">
+              🌍 IAs para Educação Global
+              <Badge variant="secondary" className="bg-emerald-100 text-emerald-800">INTEGRADO</Badge>
+            </CardTitle>
+            <CardDescription className="text-emerald-700">
+              Explore ferramentas de IA usadas em sistemas educacionais pelo mundo
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">🤖</span>
+                    <div>
+                      <h4 className="font-medium text-gray-900">ChatGPT Educacional</h4>
+                      <p className="text-xs text-gray-600">Usado em: Estados Unidos, Reino Unido</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Crie exemplos de aplicação em diferentes países
+                  </p>
+                  <Button size="sm" className="w-full bg-green-600 hover:bg-green-700">
+                    Explorar
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">📊</span>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Claude Analytics</h4>
+                      <p className="text-xs text-gray-600">Usado em: Singapura, Finlândia</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Analise dados educacionais globais
+                  </p>
+                  <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+                    Explorar
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">🌐</span>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Gemini Global</h4>
+                      <p className="text-xs text-gray-600">Usado em: Coreia do Sul, Japão</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Compare sistemas educacionais
+                  </p>
+                  <Button size="sm" className="w-full bg-orange-600 hover:bg-orange-700">
+                    Explorar
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="mt-4 p-3 bg-white/50 rounded-lg">
+              <p className="text-xs text-emerald-700 text-center">
+                🌍 <strong>Explore:</strong> Veja como diferentes países usam IA na educação e adapte para sua realidade!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Main Content */}
         <Tabs defaultValue="video" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="video">🌍 Vídeo</TabsTrigger>
             <TabsTrigger value="content">📊 Conteúdo</TabsTrigger>
-            <TabsTrigger value="tools">🚀 Ferramentas</TabsTrigger>
             <TabsTrigger value="quiz">❓ Quiz</TabsTrigger>
             <TabsTrigger value="assignment">📋 Atividade</TabsTrigger>
           </TabsList>
@@ -892,36 +967,6 @@ A revolução da IA na educação não é mais uma questão de **"se"**, mas de 
           </TabsContent>
 
           {/* AI Tools Tab */}
-          <TabsContent value="tools">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {lesson.content.aiTools.map((tool, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      {tool.name}
-                      <Badge variant="secondary" className="text-xs">Global</Badge>
-                    </CardTitle>
-                    <CardDescription>{tool.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-gray-600">
-                        <strong>Aplicação:</strong> {tool.useCase}
-                      </p>
-                      <div className="flex space-x-2">
-                        <Button asChild size="sm" className="flex-1">
-                          <a href={tool.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Explorar
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
 
           {/* Quiz Tab */}
           <TabsContent value="quiz">

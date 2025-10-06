@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ArrowLeft, Play, CheckCircle, Clock, BookOpen, Video, Users, Award, Download, ExternalLink, Calendar, Brain, Rocket, Trophy, Lightbulb, FileText, Zap } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import ContextualAIToolsSuggestions from '@/components/ContextualAIToolsSuggestions'
 
 export default function StarterLesson6Page() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -1016,12 +1017,18 @@ Cada aula que você criar com IA não beneficia apenas seus alunos hoje, mas con
           </CardHeader>
         </Card>
 
+        {/* Contextual AI Tools Suggestions */}
+        <ContextualAIToolsSuggestions 
+          lessonTitle={lesson.title}
+          lessonContent={lesson.content.theory}
+          moduleType="starter"
+        />
+
         {/* Main Content */}
         <Tabs defaultValue="video" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="video">🚀 Vídeo</TabsTrigger>
             <TabsTrigger value="content">📚 Conteúdo</TabsTrigger>
-            <TabsTrigger value="tools">🛠️ Ferramentas</TabsTrigger>
             <TabsTrigger value="quiz">❓ Quiz</TabsTrigger>
             <TabsTrigger value="assignment">🏆 Projeto</TabsTrigger>
           </TabsList>
@@ -1174,41 +1181,6 @@ Cada aula que você criar com IA não beneficia apenas seus alunos hoje, mas con
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          {/* AI Tools Tab */}
-          <TabsContent value="tools">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {lesson.content.aiTools.map((tool, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      {tool.name}
-                      <Badge variant="secondary" className="text-xs">
-                        {tool.name.includes('Workspace') ? 'Suite' : 
-                         tool.name.includes('Team') ? 'Pro' : 'Ferramenta'}
-                      </Badge>
-                    </CardTitle>
-                    <CardDescription>{tool.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-gray-600">
-                        <strong>Papel no projeto:</strong> {tool.useCase}
-                      </p>
-                      <div className="flex space-x-2">
-                        <Button asChild size="sm" className="flex-1">
-                          <a href={tool.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Usar no Projeto
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </TabsContent>
 
           {/* Quiz Tab */}

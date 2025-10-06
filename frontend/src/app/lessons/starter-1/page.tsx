@@ -558,12 +558,87 @@ Bem-vindo à revolução da IA na educação! 🚀
           </CardHeader>
         </Card>
 
+        {/* Contextual AI Suggestions */}
+        <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-purple-900">
+              🤖 IAs Recomendadas para Esta Aula
+              <Badge variant="secondary" className="bg-purple-100 text-purple-800">INTEGRADO</Badge>
+            </CardTitle>
+            <CardDescription className="text-purple-700">
+              Ferramentas de IA especializadas para praticar os conceitos desta aula
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">🤖</span>
+                    <div>
+                      <h4 className="font-medium text-gray-900">ChatGPT Educacional</h4>
+                      <p className="text-xs text-gray-600">Ideal para: Conceitos básicos</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Crie explicações simples sobre IA para diferentes idades
+                  </p>
+                  <Button size="sm" className="w-full bg-green-600 hover:bg-green-700">
+                    Usar Agora
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">📚</span>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Claude Professor</h4>
+                      <p className="text-xs text-gray-600">Ideal para: Exemplos práticos</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Gere exemplos de IA no cotidiano brasileiro
+                  </p>
+                  <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+                    Usar Agora
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-md transition-all cursor-pointer" onClick={() => router.push('/workspace')}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-2xl">🎨</span>
+                    <div>
+                      <h4 className="font-medium text-gray-900">DALL-E Educacional</h4>
+                      <p className="text-xs text-gray-600">Ideal para: Visualizações</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Crie infográficos sobre história da IA
+                  </p>
+                  <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700">
+                    Usar Agora
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="mt-4 p-3 bg-white/50 rounded-lg">
+              <p className="text-xs text-purple-700 text-center">
+                💡 <strong>Dica:</strong> Todas as ferramentas estão integradas na plataforma. Use-as para criar material sobre os conceitos desta aula!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Main Content */}
         <Tabs defaultValue="video" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="video">📹 Vídeo</TabsTrigger>
             <TabsTrigger value="content">📚 Conteúdo</TabsTrigger>
-            <TabsTrigger value="tools">🤖 Ferramentas</TabsTrigger>
             <TabsTrigger value="quiz">❓ Quiz</TabsTrigger>
             <TabsTrigger value="assignment">📝 Atividade</TabsTrigger>
           </TabsList>
@@ -720,36 +795,6 @@ Bem-vindo à revolução da IA na educação! 🚀
           </TabsContent>
 
           {/* AI Tools Tab */}
-          <TabsContent value="tools">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {lesson.content.aiTools.map((tool, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      {tool.name}
-                      <Badge variant="secondary" className="text-xs">{tool.useCase.split(' ').slice(0,2).join(' ')}</Badge>
-                    </CardTitle>
-                    <CardDescription>{tool.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-gray-600">
-                        <strong>Ideal para:</strong> {tool.useCase}
-                      </p>
-                      <div className="flex space-x-2">
-                        <Button asChild size="sm" className="flex-1">
-                          <a href={tool.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4 mr-2" />
-                            Experimentar
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
 
           {/* Quiz Tab */}
           <TabsContent value="quiz">
