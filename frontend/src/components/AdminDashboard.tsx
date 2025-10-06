@@ -48,7 +48,7 @@ interface OrganizationMetrics {
 interface AdminDashboardProps {
   organizationType: 'school' | 'government' | 'university'
   organizationName: string
-  userRole: 'super-admin' | 'admin' | 'coordinator'
+  userRole: 'SUPER_ADMIN' | 'ADMIN' | 'COORDINATOR'
 }
 
 export default function AdminDashboard({ organizationType, organizationName, userRole }: AdminDashboardProps) {
@@ -107,7 +107,7 @@ export default function AdminDashboard({ organizationType, organizationName, use
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{organizationName}</h1>
             <p className="text-gray-600">
-              Dashboard Administrativo • {userRole === 'super-admin' ? 'Super Admin' : userRole === 'admin' ? 'Administrador' : 'Coordenador'}
+              Dashboard Administrativo • {userRole === 'SUPER_ADMIN' ? 'Super Admin' : userRole === 'ADMIN' ? 'Administrador' : 'Coordenador'}
             </p>
           </div>
         </div>

@@ -19,7 +19,7 @@ export default function AdminPage() {
     }
 
     // Check if user has admin privileges
-    if (!isLoading && user && !['admin', 'super-admin', 'coordinator'].includes(user.role || '')) {
+    if (!isLoading && user && !['ADMIN', 'SUPER_ADMIN', 'COORDINATOR'].includes(user.role || '')) {
       router.push('/dashboard')
     }
   }, [isAuthenticated, isLoading, router, user])
@@ -35,7 +35,7 @@ export default function AdminPage() {
     )
   }
 
-  if (!user || !['admin', 'super-admin', 'coordinator'].includes(user.role || '')) {
+  if (!user || !['ADMIN', 'SUPER_ADMIN', 'COORDINATOR'].includes(user.role || '')) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -73,7 +73,7 @@ export default function AdminPage() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                {user.name} • {user.role === 'super-admin' ? 'Super Admin' : user.role === 'admin' ? 'Admin' : 'Coordenador'}
+                {user.name} • {user.role === 'SUPER_ADMIN' ? 'Super Admin' : user.role === 'ADMIN' ? 'Admin' : 'Coordenador'}
               </span>
               <Button variant="outline" size="sm" onClick={logout}>
                 Sair
@@ -95,7 +95,7 @@ export default function AdminPage() {
         <AdminDashboard
           organizationType="school"
           organizationName="E.E. Dom Pedro II"
-          userRole={user.role as 'super-admin' | 'admin' | 'coordinator'}
+          userRole={user.role as 'SUPER_ADMIN' | 'ADMIN' | 'COORDINATOR'}
         />
       </div>
     </div>
