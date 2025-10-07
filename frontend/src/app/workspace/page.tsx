@@ -99,30 +99,28 @@ export default function WorkspacePage() {
     return null
   }
 
-  // Test API function
+  // Test API function (matching working AI Assistant)
   const testAPI = async () => {
     try {
-      console.log('Testing AI API...')
-      console.log('User authenticated:', isAuthenticated)
-      console.log('User data:', user)
+      console.log('Testing AI API (matching AI Assistant)...')
       
-      // Check if token exists
-      const token = document.cookie.split('; ').find(row => row.startsWith('token='))
-      console.log('Auth token exists:', !!token)
-      
+      // Use exact same call as working AI Assistant
       const response = await aiAPI.chat('claude', 'Hello, this is a test. Please respond with "API is working".')
       console.log('API Test Response:', response)
-      alert(`API Test Success: ${response.response}`)
+      alert(`✅ API Success: ${response.response}`)
     } catch (error) {
-      console.error('API Test Failed:', error)
-      console.error('Error details:', error.response?.data)
-      console.error('Error status:', error.response?.status)
+      console.error('❌ API Test Failed:', error)
       
-      let errorMessage = `Request failed with status code ${error.response?.status || 'unknown'}`
-      if (error.response?.data?.message) {
-        errorMessage += `: ${error.response.data.message}`
+      let errorMessage = 'Unknown error'
+      if (error.response) {
+        errorMessage = `HTTP ${error.response.status}: ${error.response.data?.message || error.response.statusText}`
+      } else if (error.request) {
+        errorMessage = 'Network error - no response from server'
+      } else {
+        errorMessage = error.message
       }
-      alert(`API Test Failed: ${errorMessage}`)
+      
+      alert(`❌ API Failed: ${errorMessage}`)
     }
   }
 
@@ -153,15 +151,8 @@ RESPONDA EM FORMATO JSON com esta estrutura exata:
 
 Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga as diretrizes pedagógicas brasileiras.`
 
-      // Use the existing AI API - try different tool names if needed
-      let response
-      try {
-        response = await aiAPI.chat('claude', prompt)
-      } catch (claudeError) {
-        console.log('Claude failed, trying chatgpt fallback:', claudeError)
-        // Fallback to chatgpt if claude fails
-        response = await aiAPI.chat('chatgpt', prompt)
-      }
+      // Use the existing AI API (same as working AI Assistant)
+      const response = await aiAPI.chat('claude', prompt)
       
       console.log('Claude Response:', response) // Debug log
       

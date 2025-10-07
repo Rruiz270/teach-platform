@@ -270,43 +270,12 @@ export const assessmentsAPI = {
 // AI API
 export const aiAPI = {
   async chat(tool: string, prompt: string, context?: string) {
-    try {
-      // Try the main AI endpoint first
-      const response: AxiosResponse<{ response: string; usage: any }> = await api.post('/ai/chat', {
-        tool,
-        prompt,
-        context,
-      })
-      return response.data
-    } catch (error) {
-      console.log('Main AI endpoint failed, trying alternatives...')
-      
-      // Try alternative endpoints
-      const alternatives = [
-        '/api/ai/chat',
-        '/api/v1/ai/chat',
-        '/chat',
-        '/api/chat'
-      ]
-      
-      for (const endpoint of alternatives) {
-        try {
-          console.log(`Trying endpoint: ${endpoint}`)
-          const response: AxiosResponse<{ response: string; usage: any }> = await api.post(endpoint, {
-            tool,
-            prompt,
-            context,
-          })
-          return response.data
-        } catch (altError) {
-          console.log(`Endpoint ${endpoint} failed:`, altError.response?.status)
-          continue
-        }
-      }
-      
-      // If all endpoints fail, throw the original error
-      throw error
-    }
+    const response: AxiosResponse<{ response: string; usage: any }> = await api.post('/ai/chat', {
+      tool,
+      prompt,
+      context,
+    })
+    return response.data
   },
 }
 
