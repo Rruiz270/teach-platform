@@ -29,7 +29,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { aiAPI } from '@/lib/api'
+import { api, aiAPI } from '@/lib/api'
 import Cookies from 'js-cookie'
 
 interface AIUsageStats {
@@ -105,7 +105,15 @@ export default function WorkspacePage() {
     try {
       console.log('Testing AI API...')
       console.log('API Base URL:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1')
-      console.log('User token exists:', !!Cookies.get('token'))
+      
+      const token = Cookies.get('token')
+      console.log('User token exists:', !!token)
+      console.log('User authenticated:', isAuthenticated)
+      
+      if (!token) {
+        alert('⚠️ Você não está autenticado! Por favor, faça login novamente.')
+        return
+      }
       
       // Test if we can reach the backend first
       try {
