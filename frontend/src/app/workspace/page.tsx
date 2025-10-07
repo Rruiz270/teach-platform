@@ -46,6 +46,7 @@ export default function WorkspacePage() {
   const [activeTab, setActiveTab] = useState('lessons')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationResult, setGenerationResult] = useState<any>(null)
+  const [resultTab, setResultTab] = useState('slides')
   const [usageStats, setUsageStats] = useState<AIUsageStats>({
     textTokens: 12500,
     textTokensLimit: 50000,
@@ -100,22 +101,39 @@ export default function WorkspacePage() {
   const handleLessonGeneration = async () => {
     setIsGenerating(true)
     setGenerationResult(null)
+    setResultTab('slides')
     
     try {
-      // Simulate API call - replace with actual API call when backend is ready
-      await new Promise(resolve => setTimeout(resolve, 3000))
-      
-      setGenerationResult({
-        type: 'lesson',
-        content: {
-          title: `Aula: ${lessonForm.topic}`,
-          outline: 'Roteiro da aula gerado com IA',
-          materials: ['Slides', 'Atividades', 'Avaliação'],
-          provider: 'Claude (Anthropic)'
-        }
+      const response = await fetch('/api/claude/lesson', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          topic: lessonForm.topic,
+          grade: lessonForm.grade,
+          duration: lessonForm.duration,
+          objectives: lessonForm.objectives
+        })
       })
+
+      if (!response.ok) {
+        throw new Error('Falha ao gerar aula')
+      }
+
+      const data = await response.json()
+      
+      if (data.success) {
+        setGenerationResult({
+          type: 'lesson',
+          content: data.content
+        })
+      } else {
+        throw new Error(data.error || 'Erro desconhecido')
+      }
     } catch (error) {
       console.error('Erro ao gerar aula:', error)
+      alert('Erro ao gerar aula. Tente novamente.')
     } finally {
       setIsGenerating(false)
     }
@@ -512,13 +530,56 @@ export default function WorkspacePage() {
               <div className="bg-white rounded-lg p-4 mb-4">
                 {generationResult.type === 'lesson' && (
                   <div>
-                    <h4 className="font-medium mb-2">{generationResult.content.title}</h4>
-                    <p className="text-gray-600 mb-2">{generationResult.content.outline}</p>
-                    <div className="flex gap-2">
-                      {generationResult.content.materials.map((material: string, index: number) => (
-                        <Badge key={index} variant="outline">{material}</Badge>
-                      ))}
-                    </div>
+                    <h4 className="font-medium mb-4">{generationResult.content.title}</h4>
+                    <p className="text-gray-600 mb-4">{generationResult.content.outline}</p>
+                    
+                    {/* Functional Tabs for Generated Content */}
+                    <Tabs value={resultTab} onValueChange={setResultTab} className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="slides">Slides</TabsTrigger>
+                        <TabsTrigger value="activities">Atividades</TabsTrigger>
+                        <TabsTrigger value="assessment">Avaliação</TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="slides" className="space-y-3 mt-4">
+                        <div className="bg-blue-50 rounded-lg p-4">
+                          <h5 className="font-medium text-blue-900 mb-3">📊 Slides da Aula</h5>
+                          <div className="space-y-2">
+                            {generationResult.content.slides?.map((slide: string, index: number) => (
+                              <div key={index} className="bg-white p-3 rounded border-l-4 border-blue-500">
+                                <p className="text-sm">{slide}</p>
+                              </div>
+                            )) || <p className="text-gray-600">Slides não disponíveis</p>}
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="activities" className="space-y-3 mt-4">
+                        <div className="bg-green-50 rounded-lg p-4">
+                          <h5 className="font-medium text-green-900 mb-3">🎯 Atividades</h5>
+                          <div className="space-y-2">
+                            {generationResult.content.activities?.map((activity: string, index: number) => (
+                              <div key={index} className="bg-white p-3 rounded border-l-4 border-green-500">
+                                <p className="text-sm">{activity}</p>
+                              </div>
+                            )) || <p className="text-gray-600">Atividades não disponíveis</p>}
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="assessment" className="space-y-3 mt-4">
+                        <div className="bg-purple-50 rounded-lg p-4">
+                          <h5 className="font-medium text-purple-900 mb-3">📝 Avaliação</h5>
+                          <div className="space-y-2">
+                            {generationResult.content.assessment?.map((question: string, index: number) => (
+                              <div key={index} className="bg-white p-3 rounded border-l-4 border-purple-500">
+                                <p className="text-sm">{question}</p>
+                              </div>
+                            )) || <p className="text-gray-600">Avaliação não disponível</p>}
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
                   </div>
                 )}
                 
