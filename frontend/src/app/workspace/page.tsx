@@ -29,6 +29,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { aiAPI } from '@/lib/api'
 
 interface AIUsageStats {
   textTokens: number
@@ -104,39 +105,168 @@ export default function WorkspacePage() {
     setResultTab('slides')
     
     try {
-      const response = await fetch('/api/claude/lesson', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          topic: lessonForm.topic,
-          grade: lessonForm.grade,
-          duration: lessonForm.duration,
-          objectives: lessonForm.objectives
-        })
-      })
+      // Create a structured prompt for lesson generation
+      const prompt = `Você é um especialista em educação brasileira. Crie uma aula completa em português seguindo o currículo brasileiro.
 
-      if (!response.ok) {
-        throw new Error('Falha ao gerar aula')
-      }
+DADOS DA AULA:
+- Tópico: ${lessonForm.topic}
+- Série/Ano: ${lessonForm.grade}
+- Duração: ${lessonForm.duration} minutos
+- Objetivos/Descrição: ${lessonForm.objectives}
 
-      const data = await response.json()
+RESPONDA EM FORMATO JSON com esta estrutura exata:
+{
+  "title": "Título da aula",
+  "outline": "Roteiro detalhado da aula com cronograma",
+  "slides": ["Slide 1: Introdução", "Slide 2: Conceitos principais", "..."],
+  "activities": ["Atividade 1: Descrição", "Atividade 2: Descrição", "..."],
+  "assessment": ["Questão 1", "Questão 2", "..."],
+  "duration": ${lessonForm.duration}
+}
+
+Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga as diretrizes pedagógicas brasileiras.`
+
+      // Use the existing AI API
+      const response = await aiAPI.chat('claude', prompt)
       
-      if (data.success) {
-        setGenerationResult({
-          type: 'lesson',
-          content: data.content
-        })
-      } else {
-        throw new Error(data.error || 'Erro desconhecido')
+      console.log('Claude Response:', response) // Debug log
+      
+      let lessonContent
+      
+      try {
+        // Try to parse as JSON first
+        const parsedContent = JSON.parse(response.response)
+        console.log('Parsed JSON:', parsedContent) // Debug log
+        lessonContent = {
+          ...parsedContent,
+          provider: 'Claude (Anthropic)'
+        }
+      } catch (parseError) {
+        console.log('JSON parse failed, using text extraction') // Debug log
+        // If not JSON, create a structured response from the text
+        const content = response.response
+        lessonContent = {
+          title: `Aula: ${lessonForm.topic}`,
+          outline: content,
+          slides: extractSlides(content),
+          activities: extractActivities(content), 
+          assessment: extractAssessment(content),
+          provider: 'Claude (Anthropic)',
+          duration: lessonForm.duration
+        }
       }
+      
+      // Ensure arrays exist and have content
+      if (!lessonContent.slides || lessonContent.slides.length === 0) {
+        lessonContent.slides = [
+          `Slide 1: Introdução ao ${lessonForm.topic}`,
+          'Slide 2: Objetivos da Aula',
+          'Slide 3: Conceitos Principais',
+          'Slide 4: Exemplos Práticos',
+          'Slide 5: Atividades',
+          'Slide 6: Conclusão'
+        ]
+      }
+      
+      if (!lessonContent.activities || lessonContent.activities.length === 0) {
+        lessonContent.activities = [
+          `Atividade 1: Discussão em grupo sobre ${lessonForm.topic}`,
+          'Atividade 2: Exercício prático',
+          'Atividade 3: Pesquisa orientada',
+          'Atividade 4: Apresentação dos resultados'
+        ]
+      }
+      
+      if (!lessonContent.assessment || lessonContent.assessment.length === 0) {
+        lessonContent.assessment = [
+          `1. O que você aprendeu sobre ${lessonForm.topic}?`,
+          '2. Cite dois exemplos práticos do tema.',
+          '3. Como você aplicaria esse conhecimento?',
+          '4. Que dúvidas ainda tem sobre o assunto?'
+        ]
+      }
+      
+      console.log('Final lesson content:', lessonContent) // Debug log
+      
+      setGenerationResult({
+        type: 'lesson',
+        content: lessonContent
+      })
     } catch (error) {
       console.error('Erro ao gerar aula:', error)
       alert('Erro ao gerar aula. Tente novamente.')
     } finally {
       setIsGenerating(false)
     }
+  }
+
+  // Helper functions to extract content from text
+  const extractSlides = (text: string): string[] => {
+    const slides = []
+    const lines = text.split('\n')
+    
+    for (const line of lines) {
+      if (line.toLowerCase().includes('slide') && line.includes(':')) {
+        slides.push(line.trim())
+      }
+    }
+    
+    if (slides.length === 0) {
+      return [
+        `Slide 1: ${lessonForm.topic}`,
+        'Slide 2: Objetivos da Aula',
+        'Slide 3: Conceitos Principais',
+        'Slide 4: Exemplos Práticos',
+        'Slide 5: Atividades',
+        'Slide 6: Conclusão'
+      ]
+    }
+    
+    return slides
+  }
+
+  const extractActivities = (text: string): string[] => {
+    const activities = []
+    const lines = text.split('\n')
+    
+    for (const line of lines) {
+      if (line.toLowerCase().includes('atividade') && line.includes(':')) {
+        activities.push(line.trim())
+      }
+    }
+    
+    if (activities.length === 0) {
+      return [
+        `Atividade 1: Discussão em grupo sobre ${lessonForm.topic}`,
+        'Atividade 2: Exercício prático',
+        'Atividade 3: Pesquisa orientada',
+        'Atividade 4: Apresentação dos resultados'
+      ]
+    }
+    
+    return activities
+  }
+
+  const extractAssessment = (text: string): string[] => {
+    const questions = []
+    const lines = text.split('\n')
+    
+    for (const line of lines) {
+      if (line.match(/^\d+\./) || (line.toLowerCase().includes('questão') && line.includes(':'))) {
+        questions.push(line.trim())
+      }
+    }
+    
+    if (questions.length === 0) {
+      return [
+        `1. O que você aprendeu sobre ${lessonForm.topic}?`,
+        '2. Cite dois exemplos práticos do tema.',
+        '3. Como você aplicaria esse conhecimento?',
+        '4. Que dúvidas ainda tem sobre o assunto?'
+      ]
+    }
+    
+    return questions
   }
 
   const handleImageGeneration = async () => {
