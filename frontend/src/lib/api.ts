@@ -31,17 +31,21 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Only redirect to login for auth-related endpoints, not AI API
       const isAIEndpoint = error.config?.url?.includes('/ai/')
-      const isAuthEndpoint = error.config?.url?.includes('/auth/')
+      const isLoginEndpoint = error.config?.url?.includes('/auth/login')
+      const currentPath = window.location.pathname
       
-      if (!isAIEndpoint) {
-        // Clear token and redirect to login for non-AI endpoints
+      // Don't redirect if:
+      // 1. It's an AI endpoint (let component handle it)
+      // 2. It's a login attempt (let login form handle it)
+      // 3. We're already on the login page
+      if (!isAIEndpoint && !isLoginEndpoint && currentPath !== '/login') {
+        // Clear token and redirect to login
         Cookies.remove('token')
         Cookies.remove('refreshToken')
         window.location.href = '/login'
       }
-      // For AI endpoints, just reject the promise to let the component handle it
+      // For AI endpoints and login attempts, just reject the promise
     }
     return Promise.reject(error)
   }
