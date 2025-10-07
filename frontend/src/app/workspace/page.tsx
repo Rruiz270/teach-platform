@@ -30,6 +30,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { aiAPI } from '@/lib/api'
+import Cookies from 'js-cookie'
 
 interface AIUsageStats {
   textTokens: number
@@ -99,21 +100,34 @@ export default function WorkspacePage() {
     return null
   }
 
-  // Test API function (matching working AI Assistant)
+  // Test API function (debugging token issue)
   const testAPI = async () => {
     try {
-      console.log('Testing AI API (matching AI Assistant)...')
+      console.log('Testing AI API...')
+      console.log('API Base URL:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1')
+      console.log('User token exists:', !!Cookies.get('token'))
       
-      // Use exact same call as working AI Assistant
-      const response = await aiAPI.chat('claude', 'Hello, this is a test. Please respond with "API is working".')
-      console.log('API Test Response:', response)
+      // Test if we can reach the backend first
+      try {
+        const testResponse = await api.get('/auth/me')
+        console.log('Auth test successful:', testResponse.data)
+      } catch (authError) {
+        console.error('Auth test failed:', authError)
+      }
+      
+      // Now test AI endpoint
+      const response = await aiAPI.chat('claude', 'Hello, this is a test.')
+      console.log('AI API Response:', response)
       alert(`✅ API Success: ${response.response}`)
     } catch (error) {
       console.error('❌ API Test Failed:', error)
+      console.error('Full error:', error.response)
       
       let errorMessage = 'Unknown error'
-      if (error.response) {
-        errorMessage = `HTTP ${error.response.status}: ${error.response.data?.message || error.response.statusText}`
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message
+      } else if (error.response) {
+        errorMessage = `HTTP ${error.response.status}: ${error.response.statusText}`
       } else if (error.request) {
         errorMessage = 'Network error - no response from server'
       } else {

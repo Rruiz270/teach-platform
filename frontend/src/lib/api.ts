@@ -270,12 +270,32 @@ export const assessmentsAPI = {
 // AI API
 export const aiAPI = {
   async chat(tool: string, prompt: string, context?: string) {
-    const response: AxiosResponse<{ response: string; usage: any }> = await api.post('/ai/chat', {
-      tool,
-      prompt,
-      context,
-    })
-    return response.data
+    try {
+      const response: AxiosResponse<{ response: string; usage: any }> = await api.post('/ai/chat', {
+        tool,
+        prompt,
+        context,
+      })
+      return response.data
+    } catch (error) {
+      // If "No token provided" error, the backend might expect the API key differently
+      if (error.response?.data?.message === 'No token provided') {
+        console.log('Trying with token in request body...')
+        
+        // Get the auth token from cookies
+        const token = Cookies.get('token')
+        
+        // Try sending token in the request body
+        const response: AxiosResponse<{ response: string; usage: any }> = await api.post('/ai/chat', {
+          tool,
+          prompt,
+          context,
+          token: token, // Add token to request body
+        })
+        return response.data
+      }
+      throw error
+    }
   },
 }
 
