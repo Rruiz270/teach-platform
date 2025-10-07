@@ -99,6 +99,19 @@ export default function WorkspacePage() {
     return null
   }
 
+  // Test API function
+  const testAPI = async () => {
+    try {
+      console.log('Testing AI API...')
+      const response = await aiAPI.chat('claude', 'Hello, this is a test. Please respond with "API is working".')
+      console.log('API Test Response:', response)
+      alert(`API Test Success: ${response.response}`)
+    } catch (error) {
+      console.error('API Test Failed:', error)
+      alert(`API Test Failed: ${error.message}`)
+    }
+  }
+
   const handleLessonGeneration = async () => {
     setIsGenerating(true)
     setGenerationResult(null)
@@ -194,7 +207,21 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
       })
     } catch (error) {
       console.error('Erro ao gerar aula:', error)
-      alert('Erro ao gerar aula. Tente novamente.')
+      
+      // More detailed error message
+      let errorMessage = 'Erro ao gerar aula. Tente novamente.'
+      if (error.response) {
+        // API returned an error response
+        errorMessage = `Erro ${error.response.status}: ${error.response.data?.message || 'Erro do servidor'}`
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = 'Erro de conexão. Verifique sua internet.'
+      } else {
+        // Something else went wrong
+        errorMessage = `Erro: ${error.message}`
+      }
+      
+      alert(errorMessage)
     } finally {
       setIsGenerating(false)
     }
@@ -463,24 +490,35 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
                   </div>
                 </div>
 
-                <Button 
-                  onClick={handleLessonGeneration}
-                  disabled={(!lessonForm.topic && !lessonForm.objectives) || isGenerating}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  size="lg"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      🤖 Claude está criando sua aula...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="mr-2 h-4 w-4" />
-                      ✨ Gerar Aula com IA
-                    </>
-                  )}
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    onClick={testAPI}
+                    variant="outline"
+                    className="w-full"
+                    size="sm"
+                  >
+                    🔧 Testar API (Debug)
+                  </Button>
+                  
+                  <Button 
+                    onClick={handleLessonGeneration}
+                    disabled={(!lessonForm.topic && !lessonForm.objectives) || isGenerating}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    size="lg"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        🤖 Claude está criando sua aula...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="mr-2 h-4 w-4" />
+                        ✨ Gerar Aula com IA
+                      </>
+                    )}
+                  </Button>
+                </div>
                 
                 <p className="text-xs text-center text-gray-500">
                   Gerado com Claude (Anthropic) • Fallback: GPT-4 (OpenAI)
