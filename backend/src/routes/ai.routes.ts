@@ -58,4 +58,43 @@ router.post('/feedback',
   aiController.generateFeedback
 );
 
+// Specialized AI Tools
+router.post('/image/generate', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.generateImage
+);
+
+router.post('/video/create', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.createVideo
+);
+
+router.post('/voice/generate', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.generateVoice
+);
+
+router.post('/workflow/create', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.createWorkflow
+);
+
+// Educational Content Generation
+router.post('/content/generate', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.generateEducationalContent
+);
+
+// Batch Processing
+router.post('/batch', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.processBatch
+);
+
 export default router;

@@ -273,4 +273,223 @@ export const aiController = {
       },
     });
   }),
+
+  // Image Generation Endpoints
+  generateImage: asyncHandler(async (req: Request, res: Response) => {
+    const { prompt, tool = 'dalle', size, quality, width, height } = req.body;
+    const userId = req.user!.id;
+
+    if (!prompt) {
+      throw new AppError('Prompt is required', 400);
+    }
+
+    const params: any = { prompt };
+    
+    if (tool === 'dalle') {
+      params.size = size || '1024x1024';
+      params.quality = quality || 'standard';
+    } else if (tool === 'stable-diffusion') {
+      params.width = width || 1024;
+      params.height = height || 1024;
+    }
+
+    const response = await aiService.processSpecializedRequest(userId, tool, params);
+
+    res.json({
+      success: true,
+      data: {
+        tool,
+        ...response,
+      },
+    });
+  }),
+
+  // Video Generation Endpoints
+  createVideo: asyncHandler(async (req: Request, res: Response) => {
+    const { tool = 'synthesia', script, avatarId, imageUrl, audioUrl } = req.body;
+    const userId = req.user!.id;
+
+    const params: any = {};
+
+    if (tool === 'synthesia') {
+      if (!script) {
+        throw new AppError('Script is required for Synthesia', 400);
+      }
+      params.script = script;
+      params.avatarId = avatarId;
+    } else if (tool === 'did' || tool === 'd-id') {
+      if (!imageUrl || !audioUrl) {
+        throw new AppError('Image URL and audio URL are required for D-ID', 400);
+      }
+      params.imageUrl = imageUrl;
+      params.audioUrl = audioUrl;
+    }
+
+    const response = await aiService.processSpecializedRequest(userId, tool, params);
+
+    res.json({
+      success: true,
+      data: {
+        tool,
+        ...response,
+      },
+    });
+  }),
+
+  // Voice Generation Endpoint
+  generateVoice: asyncHandler(async (req: Request, res: Response) => {
+    const { text, voiceId, tool = 'elevenlabs' } = req.body;
+    const userId = req.user!.id;
+
+    if (!text) {
+      throw new AppError('Text is required', 400);
+    }
+
+    const params = {
+      text,
+      voiceId,
+    };
+
+    const response = await aiService.processSpecializedRequest(userId, tool, params);
+
+    res.json({
+      success: true,
+      data: {
+        tool,
+        ...response,
+      },
+    });
+  }),
+
+  // Workflow Automation Endpoint
+  createWorkflow: asyncHandler(async (req: Request, res: Response) => {
+    const { workflow, tool = 'lindy' } = req.body;
+    const userId = req.user!.id;
+
+    if (!workflow) {
+      throw new AppError('Workflow configuration is required', 400);
+    }
+
+    const params = {
+      workflow,
+    };
+
+    const response = await aiService.processSpecializedRequest(userId, tool, params);
+
+    res.json({
+      success: true,
+      data: {
+        tool,
+        ...response,
+      },
+    });
+  }),
+
+  // Educational Content Generator using Claude (existing API key)
+  generateEducationalContent: asyncHandler(async (req: Request, res: Response) => {
+    const { contentType, params } = req.body;
+    const userId = req.user!.id;
+
+    if (!contentType || !params) {
+      throw new AppError('Content type and parameters are required', 400);
+    }
+
+    let prompt = '';
+    let context = 'Você é um especialista em educação brasileira criando conteúdo educacional de alta qualidade.';
+
+    switch (contentType) {
+      case 'worksheet':
+        prompt = `Crie uma folha de exercícios sobre ${params.topic} para alunos de ${params.grade}. 
+        Inclua ${params.exerciseCount || 10} exercícios variados com diferentes níveis de dificuldade.
+        Formate de forma clara e pronta para impressão.`;
+        break;
+      
+      case 'presentation':
+        prompt = `Crie um roteiro de apresentação sobre ${params.topic} para ${params.audience}.
+        Duração: ${params.duration || 30} minutos.
+        Inclua: introdução, pontos principais, exemplos, atividades interativas e conclusão.
+        Sugira recursos visuais para cada slide.`;
+        break;
+      
+      case 'studyGuide':
+        prompt = `Crie um guia de estudos completo sobre ${params.subject} focado em ${params.topic}.
+        Nível: ${params.grade}.
+        Inclua: resumo do conteúdo, conceitos-chave, exemplos resolvidos, dicas de estudo e questões de revisão.`;
+        break;
+      
+      case 'projectIdeas':
+        prompt = `Sugira 5 ideias de projetos educacionais sobre ${params.topic} para alunos de ${params.grade}.
+        Cada projeto deve incluir: objetivo, materiais necessários, passos, avaliação e variações.
+        Projetos devem ser práticos e engajadores.`;
+        break;
+
+      default:
+        throw new AppError('Invalid content type', 400);
+    }
+
+    // Use Claude for educational content generation
+    const response = await aiService.processAIRequest(userId, 'claude', prompt, context);
+
+    res.json({
+      success: true,
+      data: {
+        contentType,
+        content: response.content,
+        params,
+        usage: response.usage,
+        cost: response.cost,
+      },
+    });
+  }),
+
+  // Batch processing for multiple AI requests
+  processBatch: asyncHandler(async (req: Request, res: Response) => {
+    const { requests } = req.body;
+    const userId = req.user!.id;
+
+    if (!requests || !Array.isArray(requests) || requests.length === 0) {
+      throw new AppError('Requests array is required', 400);
+    }
+
+    if (requests.length > 10) {
+      throw new AppError('Maximum 10 requests per batch', 400);
+    }
+
+    const results = await Promise.allSettled(
+      requests.map(async (request) => {
+        try {
+          if (request.type === 'chat') {
+            return await aiService.processAIRequest(
+              userId,
+              request.tool || 'chatgpt',
+              request.prompt,
+              request.context
+            );
+          } else if (request.type === 'specialized') {
+            return await aiService.processSpecializedRequest(
+              userId,
+              request.tool,
+              request.params
+            );
+          } else {
+            throw new Error('Invalid request type');
+          }
+        } catch (error) {
+          return { error: error.message };
+        }
+      })
+    );
+
+    res.json({
+      success: true,
+      data: {
+        results: results.map((result, index) => ({
+          index,
+          status: result.status,
+          data: result.status === 'fulfilled' ? result.value : null,
+          error: result.status === 'rejected' ? result.reason : null,
+        })),
+      },
+    });
+  }),
 };

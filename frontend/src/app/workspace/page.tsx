@@ -103,7 +103,7 @@ export default function WorkspacePage() {
   // Test API function (debugging token issue)
   const testAPI = async () => {
     try {
-      console.log('Testing AI API...')
+      console.log('Testing AI API...v2')
       console.log('API Base URL:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1')
       
       const token = Cookies.get('token')
