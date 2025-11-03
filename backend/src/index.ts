@@ -35,11 +35,12 @@ const corsOptions = {
       logger.info(`CORS request from origin: ${origin}`);
     }
     
-    // Allow all teach-platform Vercel deployments
+    // Allow all teach-platform Vercel deployments and broader patterns
     if (!origin || 
         allowedOrigins.includes(origin) || 
         (origin && origin.includes('teach-platform') && origin.includes('vercel.app')) ||
-        (origin && origin.includes('localhost'))) {
+        (origin && origin.includes('localhost')) ||
+        (origin && origin.includes('vercel.app'))) {
       callback(null, true);
     } else {
       logger.warn(`CORS blocked origin: ${origin}`);
