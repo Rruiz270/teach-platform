@@ -30,19 +30,38 @@ export default function EmbeddedActivityAssistant({
   const handleSendMessage = async () => {
     if (!message.trim()) return
 
-    setConversation([...conversation, { role: 'user', content: message }])
+    const userMessage = message.trim()
+    setConversation([...conversation, { role: 'user', content: userMessage }])
     setMessage('')
     setIsTyping(true)
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      // Import aiService dynamically to avoid SSR issues
+      const { aiService } = await import('@/services/aiService')
+      
+      const response = await aiService.chat({
+        message: userMessage,
+        context: {
+          lessonTitle: activityTitle,
+          moduleLevel: 'ACTIVITY_ASSISTANCE',
+          previousMessages: conversation.slice(-6) // Last 6 messages for context
+        }
+      })
+
       setConversation(prev => [...prev, {
         role: 'assistant',
-        content: 'Entendo sua dúvida. Vamos trabalhar nisso juntos...'
+        content: response.data.response
       }])
+      setProjectProgress(prev => Math.min(prev + 10, 100))
+    } catch (error) {
+      console.error('AI Chat Error:', error)
+      setConversation(prev => [...prev, {
+        role: 'assistant',
+        content: 'Desculpe, estou com dificuldades técnicas no momento. Tente novamente em alguns instantes ou continue com a atividade - estou aqui para ajudar quando precisar!'
+      }])
+    } finally {
       setIsTyping(false)
-      setProjectProgress(prev => Math.min(prev + 15, 100))
-    }, 1500)
+    }
   }
 
   const quickActions = [
