@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { WorkspaceController } from '../controllers/workspace.controller';
 import { AIOrchestrator } from '../services/ai-orchestrator.service';
-import { authMiddleware } from '../middleware/auth';
+import { authenticate } from '../middleware/auth';
 import { z } from 'zod';
 
 const router = Router();
 const workspaceController = new WorkspaceController();
 
 // Apply auth middleware to all routes
-router.use(authMiddleware);
+router.use(authenticate);
 
 // Validation middleware
 const validateRequest = (schema: z.ZodType<any>) => {
