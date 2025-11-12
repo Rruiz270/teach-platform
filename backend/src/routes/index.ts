@@ -9,7 +9,7 @@ import forumRoutes from './forum.routes';
 import aiRoutes from './ai.routes';
 import aiAssistantRoutes from './ai-assistant.routes';
 import eventRoutes from './events.routes';
-import workspaceRoutes from './workspace.routes';
+// import workspaceRoutes from './workspace.routes'; // Temporarily disabled due to Bull queue issue
 
 export const setupRoutes = (app: Application) => {
   const apiRouter = Router();
@@ -28,7 +28,7 @@ export const setupRoutes = (app: Application) => {
   apiRouter.use('/ai', aiRoutes);
   apiRouter.use('/ai-assistant', aiAssistantRoutes);
   apiRouter.use('/events', eventRoutes);
-  apiRouter.use('/workspace', workspaceRoutes);
+  // apiRouter.use('/workspace', workspaceRoutes); // Temporarily disabled due to Bull queue issue
 
   // Apply API router
   app.use(API_PREFIX, apiRouter);
