@@ -73,10 +73,10 @@ router.post(
     const { message, context } = req.body;
     const userId = req.user!.id;
 
-    // Add user level from profile
+    // Add user level from profile (simplified for now)
     const enrichedContext = {
       ...context,
-      userLevel: req.user!.profile?.teachingLevel || 'ELEMENTARY'
+      userLevel: 'ELEMENTARY' // Default for now, can be enhanced later
     };
 
     const response = await claudeService.generateTeachingResponse(message, enrichedContext);
