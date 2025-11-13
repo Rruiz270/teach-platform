@@ -15,9 +15,13 @@ export const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = Cookies.get('token')
+    // Try both token names for compatibility
+    const token = Cookies.get('accessToken') || Cookies.get('token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
+      console.log('API: Adding auth token to request', { hasToken: !!token, url: config.url })
+    } else {
+      console.log('API: No auth token found', { url: config.url })
     }
     return config
   },
@@ -40,9 +44,11 @@ api.interceptors.response.use(
       // 2. It's a login attempt (let login form handle it)
       // 3. We're already on the login page
       if (!isAIEndpoint && !isLoginEndpoint && currentPath !== '/login') {
-        // Clear token and redirect to login
+        // Clear all possible token variations and redirect to login
         Cookies.remove('token')
+        Cookies.remove('accessToken')
         Cookies.remove('refreshToken')
+        localStorage.removeItem('user')
         window.location.href = '/login'
       }
       // For AI endpoints and login attempts, just reject the promise
@@ -283,7 +289,7 @@ export const aiAPI = {
         console.log('Trying with token in request body...')
         
         // Get the auth token from cookies
-        const token = Cookies.get('token')
+        const token = Cookies.get('accessToken') || Cookies.get('token')
         
         // Try sending token in the request body
         const response: AxiosResponse<{ response: string; usage: any }> = await api.post('/ai/chat', {
