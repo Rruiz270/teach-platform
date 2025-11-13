@@ -57,6 +57,7 @@ export function AuthGuard({
 
     // Handle authentication requirements
     if (requireAuth && !isAuthenticated) {
+      console.log('AuthGuard: Not authenticated, redirecting to', fallbackPath)
       setShouldRender(false)
       router.replace(fallbackPath)
       return
@@ -72,6 +73,7 @@ export function AuthGuard({
     }
 
     // If we get here, user should see the content
+    console.log('AuthGuard: Auth check passed, rendering content for', pathname)
     setShouldRender(true)
   }, [isLoading, isAuthenticated, user, pathname, requireAuth, allowedRoles, fallbackPath, router])
 

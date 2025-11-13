@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -15,6 +16,7 @@ import GamificationSystem from '@/components/GamificationSystem'
 
 function DashboardContent() {
   const { user, logout } = useAuth()
+  const router = useRouter()
   
   // New feature states
   const [showAIAssistant, setShowAIAssistant] = useState(false)
@@ -205,7 +207,10 @@ function DashboardContent() {
               <h2 className="text-xl font-semibold text-gray-900">⚡ Meu Workspace</h2>
               <Badge variant="secondary" className="bg-purple-100 text-purple-800">PRODUÇÃO</Badge>
             </div>
-            <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white border-0 hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => router.push('/workspace')}>
+            <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white border-0 hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => {
+              console.log('Navigating to workspace...')
+              router.push('/workspace')
+            }}>
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
                   <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
