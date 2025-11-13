@@ -158,15 +158,19 @@ class AuthService {
   }
 
   logout(): void {
+    this.clearTokens()
+    
+    // Redirect to login page
+    window.location.href = '/login'
+  }
+
+  clearTokens(): void {
     // Remove tokens from cookies
     Cookies.remove('accessToken')
     Cookies.remove('refreshToken')
     
     // Remove user data from localStorage
     localStorage.removeItem('user')
-    
-    // Redirect to login page
-    window.location.href = '/login'
   }
 
   getCurrentUser(): User | null {

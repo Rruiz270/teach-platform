@@ -24,11 +24,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const currentUser = authService.getCurrentUser()
     const isAuth = authService.isAuthenticated()
     
+    console.log('Auth check on load:', { currentUser: !!currentUser, isAuth, hasToken: !!authService.getAccessToken() })
+    
     if (currentUser && isAuth) {
       setUser(currentUser)
     } else {
       // Clear any stale data if authentication fails
       setUser(null)
+      // Also clear any invalid tokens without redirect
+      if (!isAuth) {
+        authService.clearTokens()
+      }
     }
     
     setIsLoading(false)

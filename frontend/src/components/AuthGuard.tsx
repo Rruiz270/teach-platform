@@ -30,13 +30,18 @@ export function AuthGuard({
   const router = useRouter()
   const pathname = usePathname()
   const [shouldRender, setShouldRender] = useState(false)
+  const [hasCheckedAuth, setHasCheckedAuth] = useState(false)
 
   useEffect(() => {
     // Don't do anything while loading
     if (isLoading) {
       setShouldRender(false)
+      setHasCheckedAuth(false)
       return
     }
+
+    // Mark that we've completed the auth check
+    setHasCheckedAuth(true)
 
     // Check if this is a public route
     const isPublicRoute = publicRoutes.some(route => {
@@ -70,8 +75,8 @@ export function AuthGuard({
     setShouldRender(true)
   }, [isLoading, isAuthenticated, user, pathname, requireAuth, allowedRoles, fallbackPath, router])
 
-  // Show loading spinner while determining auth state
-  if (isLoading || (requireAuth && !shouldRender)) {
+  // Show loading spinner while determining auth state OR if auth check hasn't completed
+  if (isLoading || !hasCheckedAuth || (requireAuth && !shouldRender)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
         <div className="text-center">
@@ -82,6 +87,6 @@ export function AuthGuard({
     )
   }
 
-  // Only render children if we should
-  return shouldRender ? <>{children}</> : null
+  // Only render children if we should AND auth check is complete
+  return shouldRender && hasCheckedAuth ? <>{children}</> : null
 }
