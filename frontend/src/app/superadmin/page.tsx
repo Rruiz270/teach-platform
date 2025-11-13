@@ -36,6 +36,7 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { APIStatusDashboard } from '@/components/APIStatusDashboard'
 
 export default function SuperAdminDashboard() {
   const { user, isAuthenticated, logout, isLoading } = useAuth()
@@ -477,6 +478,11 @@ export default function SuperAdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* API Status Dashboard */}
+        <div className="mt-8">
+          <APIStatusDashboard />
         </div>
 
         {/* Quick Actions */}

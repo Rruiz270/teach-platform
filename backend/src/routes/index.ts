@@ -9,6 +9,7 @@ import forumRoutes from './forum.routes';
 import aiRoutes from './ai.routes';
 import aiAssistantRoutes from './ai-assistant.routes';
 import eventRoutes from './events.routes';
+import apiHealthRoutes from './api-health.routes';
 // import workspaceRoutes from './workspace.routes'; // Temporarily disabled due to Bull queue issue
 
 export const setupRoutes = (app: Application) => {
@@ -28,6 +29,7 @@ export const setupRoutes = (app: Application) => {
   apiRouter.use('/ai', aiRoutes);
   apiRouter.use('/ai-assistant', aiAssistantRoutes);
   apiRouter.use('/events', eventRoutes);
+  apiRouter.use('/api-health', apiHealthRoutes);
   // apiRouter.use('/workspace', workspaceRoutes); // Temporarily disabled due to Bull queue issue
 
   // Apply API router

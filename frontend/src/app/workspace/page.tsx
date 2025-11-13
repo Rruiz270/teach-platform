@@ -30,6 +30,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api, aiAPI } from '@/lib/api'
+import { APIStatusIndicator } from '@/components/APIStatusIndicator'
 import Cookies from 'js-cookie'
 
 interface AIUsageStats {
@@ -813,17 +814,29 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
           </Card>
         )}
 
-        {/* Provider Attribution */}
+        {/* Provider Attribution with Status Indicators */}
         <div className="mt-8 text-center text-sm text-gray-500">
-          <p className="mb-2">Powered by leading AI providers:</p>
-          <div className="flex items-center justify-center gap-4">
-            <span>Claude (Anthropic)</span>
-            <span>•</span>
-            <span>GPT-4 & DALL-E (OpenAI)</span>
-            <span>•</span>
-            <span>Synthesia</span>
-            <span>•</span>
-            <span>ElevenLabs</span>
+          <p className="mb-4">Powered by leading AI providers:</p>
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <div className="flex items-center gap-2">
+              <APIStatusIndicator provider="Anthropic" />
+              <span>Claude (Anthropic)</span>
+            </div>
+            <span className="text-gray-300">•</span>
+            <div className="flex items-center gap-2">
+              <APIStatusIndicator provider="OpenAI" />
+              <span>GPT-4 & DALL-E (OpenAI)</span>
+            </div>
+            <span className="text-gray-300">•</span>
+            <div className="flex items-center gap-2">
+              <APIStatusIndicator provider="Synthesia" />
+              <span>Synthesia</span>
+            </div>
+            <span className="text-gray-300">•</span>
+            <div className="flex items-center gap-2">
+              <APIStatusIndicator provider="ElevenLabs" />
+              <span>ElevenLabs</span>
+            </div>
           </div>
         </div>
       </div>
