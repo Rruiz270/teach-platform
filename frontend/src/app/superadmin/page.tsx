@@ -64,7 +64,8 @@ export default function SuperAdminDashboard() {
     )
   }
 
-  if (!user || user.role !== 'SUPER_ADMIN') {
+  // Don't render anything if not authenticated or not super admin
+  if (!isAuthenticated || !user || user.role !== 'SUPER_ADMIN') {
     return null
   }
 

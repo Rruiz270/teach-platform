@@ -26,6 +26,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     if (currentUser && isAuth) {
       setUser(currentUser)
+    } else {
+      // Clear any stale data if authentication fails
+      setUser(null)
     }
     
     setIsLoading(false)

@@ -41,7 +41,8 @@ export default function DashboardPage() {
     )
   }
 
-  if (!user) {
+  // Don't render anything if not authenticated
+  if (!isAuthenticated || !user) {
     return null
   }
 
