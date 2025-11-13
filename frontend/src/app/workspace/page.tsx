@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -29,6 +28,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { AuthGuard } from '@/components/AuthGuard'
 import { api, aiAPI } from '@/lib/api'
 import { APIStatusIndicator } from '@/components/APIStatusIndicator'
 import Cookies from 'js-cookie'
@@ -43,9 +43,8 @@ interface AIUsageStats {
   plan: string
 }
 
-export default function WorkspacePage() {
-  const { user, isAuthenticated, isLoading } = useAuth()
-  const router = useRouter()
+function WorkspaceContent() {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('lessons')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationResult, setGenerationResult] = useState<any>(null)
@@ -79,28 +78,6 @@ export default function WorkspacePage() {
     difficulty: 'medium',
     description: ''
   })
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login')
-    }
-  }, [isAuthenticated, isLoading, router])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando Workspace IA...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Don't render anything if not authenticated
-  if (!isAuthenticated || !user) {
-    return null
-  }
 
   // Test API function (debugging token issue)
   const testAPI = async () => {
@@ -842,5 +819,13 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
         </div>
       </div>
     </div>
+  )
+}
+
+export default function WorkspacePage() {
+  return (
+    <AuthGuard requireAuth={true}>
+      <WorkspaceContent />
+    </AuthGuard>
   )
 }

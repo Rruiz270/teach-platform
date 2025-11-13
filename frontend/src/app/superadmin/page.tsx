@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -36,38 +34,11 @@ import {
   ExternalLink
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { AuthGuard } from '@/components/AuthGuard'
 import { APIStatusDashboard } from '@/components/APIStatusDashboard'
 
-export default function SuperAdminDashboard() {
-  const { user, isAuthenticated, logout, isLoading } = useAuth()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login')
-    }
-    
-    // Check if user has SUPER_ADMIN role
-    if (!isLoading && isAuthenticated && user?.role !== 'SUPER_ADMIN') {
-      router.push('/dashboard')
-    }
-  }, [isAuthenticated, isLoading, user, router])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Don't render anything if not authenticated or not super admin
-  if (!isAuthenticated || !user || user.role !== 'SUPER_ADMIN') {
-    return null
-  }
+function SuperAdminContent() {
+  const { user, logout } = useAuth()
 
   // System stats - mock data
   const systemStats = {
@@ -512,5 +483,13 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function SuperAdminDashboard() {
+  return (
+    <AuthGuard requireAuth={true} allowedRoles={['SUPER_ADMIN']} fallbackPath="/dashboard">
+      <SuperAdminContent />
+    </AuthGuard>
   )
 }

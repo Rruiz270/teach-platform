@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,13 +8,13 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { BookOpen, Users, Trophy, Clock, Star, ArrowRight, Bot, Target, Gamepad2, Calendar, Sparkles, Wand2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { AuthGuard } from '@/components/AuthGuard'
 import AITeachingAssistant from '@/components/AITeachingAssistant'
 import PersonalizedLearningPath from '@/components/PersonalizedLearningPath'
 import GamificationSystem from '@/components/GamificationSystem'
 
-export default function DashboardPage() {
-  const { user, isAuthenticated, logout, isLoading } = useAuth()
-  const router = useRouter()
+function DashboardContent() {
+  const { user, logout } = useAuth()
   
   // New feature states
   const [showAIAssistant, setShowAIAssistant] = useState(false)
@@ -23,28 +22,6 @@ export default function DashboardPage() {
   const [showLearningPath, setShowLearningPath] = useState(false)
   const [showGamification, setShowGamification] = useState(false)
   const [currentLesson, setCurrentLesson] = useState(null)
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login')
-    }
-  }, [isAuthenticated, isLoading, router])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Don't render anything if not authenticated
-  if (!isAuthenticated || !user) {
-    return null
-  }
 
   // Mock data for demo - in production this would come from API
   const userStats = {
@@ -474,5 +451,13 @@ export default function DashboardPage() {
         />
       )}
     </div>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <AuthGuard requireAuth={true}>
+      <DashboardContent />
+    </AuthGuard>
   )
 }
