@@ -40,8 +40,9 @@ const corsOptions = {
         allowedOrigins.includes(origin) || 
         (origin && origin.includes('teach-platform') && origin.includes('vercel.app')) ||
         (origin && origin.includes('raphael-ruizs-projects') && origin.includes('vercel.app')) ||
+        (origin && origin.match(/.*\.vercel\.app$/)) || // Allow all vercel.app domains
         (origin && origin.includes('localhost')) ||
-        (origin && origin.includes('vercel.app'))) {
+        (origin && origin.includes('127.0.0.1'))) {
       callback(null, true);
     } else {
       logger.warn(`CORS blocked origin: ${origin}`);
