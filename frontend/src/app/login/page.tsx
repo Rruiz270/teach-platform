@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/contexts/AuthContext'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, RefreshCw } from 'lucide-react'
+import authService from '@/services/auth.service'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -18,6 +19,12 @@ export default function LoginPage() {
   
   const { login } = useAuth()
   const router = useRouter()
+
+  const clearAuthData = () => {
+    authService.clearTokens()
+    setError('')
+    alert('✅ Dados de autenticação limpos. Tente fazer login novamente.')
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -115,6 +122,20 @@ export default function LoginPage() {
               Cadastre-se aqui
             </Link>
           </div>
+          
+          {error && (
+            <div className="mt-4 text-center">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={clearAuthData}
+                className="text-xs"
+              >
+                <RefreshCw className="w-3 h-3 mr-1" />
+                Limpar Dados de Autenticação
+              </Button>
+            </div>
+          )}
           
           <div className="mt-6 text-center">
             <Link href="/" className="text-gray-600 hover:underline text-sm">

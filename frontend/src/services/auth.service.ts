@@ -47,6 +47,9 @@ class AuthService {
   })
 
   constructor() {
+    // Clear any stale tokens from previous platform versions
+    this.migrateTokens()
+    
     // Add request interceptor to include auth token
     this.axiosInstance.interceptors.request.use(
       (config) => {
@@ -165,12 +168,17 @@ class AuthService {
   }
 
   clearTokens(): void {
-    // Remove tokens from cookies
+    // Remove tokens from cookies (all possible variations)
     Cookies.remove('accessToken')
     Cookies.remove('refreshToken')
+    Cookies.remove('token') // Legacy token name
     
     // Remove user data from localStorage
     localStorage.removeItem('user')
+    
+    // Clear any other auth-related data that might be cached
+    localStorage.removeItem('auth')
+    sessionStorage.clear()
   }
 
   getCurrentUser(): User | null {
@@ -240,6 +248,18 @@ class AuthService {
     } catch (error: any) {
       console.error('Reset password error:', error.response?.data || error.message)
       throw new Error(error.response?.data?.message || 'Erro ao redefinir senha')
+    }
+  }
+
+  // Migration method to clear stale tokens after platform updates
+  private migrateTokens(): void {
+    const version = localStorage.getItem('authVersion')
+    const currentVersion = '2.0' // Update this when you make auth changes
+    
+    if (version !== currentVersion) {
+      console.log('Auth migration: Clearing stale tokens from previous version')
+      this.clearTokens()
+      localStorage.setItem('authVersion', currentVersion)
     }
   }
 }
