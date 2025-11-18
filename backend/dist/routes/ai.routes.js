@@ -15,5 +15,14 @@ router.post('/quiz', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_con
 router.post('/explain', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.explainConcept);
 router.post('/activity', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateActivity);
 router.post('/feedback', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateFeedback);
+router.post('/image/generate', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateImage);
+router.post('/video/create', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.createVideo);
+router.post('/voice/generate', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateVoice);
+router.post('/workflow/create', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.createWorkflow);
+router.post('/content/generate', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateEducationalContent);
+router.post('/teach/course', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateTeachCourse);
+router.post('/teach/bncc', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateBNCCLesson);
+router.post('/teach/assessment', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.generateAIAssessment);
+router.post('/batch', auth_1.authenticate, rateLimiter_1.aiApiRateLimiter, ai_controller_1.aiController.processBatch);
 exports.default = router;
 //# sourceMappingURL=ai.routes.js.map

@@ -15,7 +15,9 @@ const forum_routes_1 = __importDefault(require("./forum.routes"));
 const ai_routes_1 = __importDefault(require("./ai.routes"));
 const ai_assistant_routes_1 = __importDefault(require("./ai-assistant.routes"));
 const events_routes_1 = __importDefault(require("./events.routes"));
-const workspace_routes_1 = __importDefault(require("./workspace.routes"));
+const api_health_routes_1 = __importDefault(require("./api-health.routes"));
+const content_routes_1 = __importDefault(require("./content.routes"));
+const course_content_routes_1 = __importDefault(require("./course-content.routes"));
 const setupRoutes = (app) => {
     const apiRouter = (0, express_1.Router)();
     const API_PREFIX = '/api/v1';
@@ -29,7 +31,9 @@ const setupRoutes = (app) => {
     apiRouter.use('/ai', ai_routes_1.default);
     apiRouter.use('/ai-assistant', ai_assistant_routes_1.default);
     apiRouter.use('/events', events_routes_1.default);
-    apiRouter.use('/workspace', workspace_routes_1.default);
+    apiRouter.use('/api-health', api_health_routes_1.default);
+    apiRouter.use('/content', content_routes_1.default);
+    apiRouter.use('/course-content', course_content_routes_1.default);
     app.use(API_PREFIX, apiRouter);
 };
 exports.setupRoutes = setupRoutes;

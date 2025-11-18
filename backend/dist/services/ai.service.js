@@ -33,6 +33,54 @@ const AI_TOOLS = {
         maxTokens: 2000,
         temperature: 0.7,
     },
+    dalle: {
+        name: 'DALL-E',
+        apiKey: process.env.OPENAI_API_KEY || '',
+        baseUrl: 'https://api.openai.com/v1',
+        model: 'dall-e-3',
+        maxTokens: 0,
+        temperature: 0,
+    },
+    synthesia: {
+        name: 'Synthesia',
+        apiKey: process.env.SYNTHESIA_API_KEY || '',
+        baseUrl: 'https://api.synthesia.io/v2',
+        model: 'default',
+        maxTokens: 0,
+        temperature: 0,
+    },
+    elevenlabs: {
+        name: 'ElevenLabs',
+        apiKey: process.env.ELEVENLABS_API_KEY || '',
+        baseUrl: 'https://api.elevenlabs.io/v1',
+        model: 'eleven_multilingual_v2',
+        maxTokens: 0,
+        temperature: 0,
+    },
+    lindy: {
+        name: 'Lindy',
+        apiKey: process.env.LINDY_API_KEY || '',
+        baseUrl: 'https://api.lindy.ai/v1',
+        model: 'default',
+        maxTokens: 0,
+        temperature: 0,
+    },
+    did: {
+        name: 'D-ID',
+        apiKey: process.env.D_ID_API_KEY || '',
+        baseUrl: 'https://api.d-id.com',
+        model: 'default',
+        maxTokens: 0,
+        temperature: 0,
+    },
+    stableDiffusion: {
+        name: 'Stable Diffusion',
+        apiKey: process.env.STABLE_DIFFUSION_API_KEY || '',
+        baseUrl: 'https://api.stability.ai/v1',
+        model: 'stable-diffusion-xl-1024-v1-0',
+        maxTokens: 0,
+        temperature: 0,
+    },
 };
 exports.aiService = {
     async chatWithOpenAI(prompt, context) {
@@ -275,6 +323,252 @@ exports.aiService = {
                 category: 'Avaliação',
             },
         };
+    },
+    async generateImageWithDallE(prompt, size = '1024x1024', quality = 'standard') {
+        const config = AI_TOOLS.dalle;
+        if (!config.apiKey) {
+            throw new errorHandler_1.AppError('OpenAI API key not configured for DALL-E', 500);
+        }
+        try {
+            const response = await axios_1.default.post(`${config.baseUrl}/images/generations`, {
+                model: config.model,
+                prompt,
+                n: 1,
+                size,
+                quality,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${config.apiKey}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return {
+                url: response.data.data[0].url,
+                revisedPrompt: response.data.data[0].revised_prompt,
+                model: config.model,
+            };
+        }
+        catch (error) {
+            logger_1.logger.error('DALL-E API error:', error.response?.data || error.message);
+            throw new errorHandler_1.AppError('Failed to generate image with DALL-E', 500);
+        }
+    },
+    async generateImageWithStableDiffusion(prompt, width = 1024, height = 1024) {
+        const config = AI_TOOLS.stableDiffusion;
+        if (!config.apiKey) {
+            throw new errorHandler_1.AppError('Stable Diffusion API key not configured', 500);
+        }
+        try {
+            const response = await axios_1.default.post(`${config.baseUrl}/generation/${config.model}/text-to-image`, {
+                text_prompts: [{ text: prompt, weight: 1 }],
+                cfg_scale: 7,
+                height,
+                width,
+                samples: 1,
+                steps: 30,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${config.apiKey}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+            });
+            if (response.data.artifacts && response.data.artifacts.length > 0) {
+                return {
+                    base64: response.data.artifacts[0].base64,
+                    finishReason: response.data.artifacts[0].finishReason,
+                    seed: response.data.artifacts[0].seed,
+                    model: config.model,
+                };
+            }
+            throw new errorHandler_1.AppError('No image generated', 500);
+        }
+        catch (error) {
+            logger_1.logger.error('Stable Diffusion API error:', error.response?.data || error.message);
+            throw new errorHandler_1.AppError('Failed to generate image with Stable Diffusion', 500);
+        }
+    },
+    async createVideoWithSynthesia(script, avatarId = 'anna_costume1_cameraA') {
+        const config = AI_TOOLS.synthesia;
+        if (!config.apiKey) {
+            throw new errorHandler_1.AppError('Synthesia API key not configured', 500);
+        }
+        try {
+            const response = await axios_1.default.post(`${config.baseUrl}/videos`, {
+                test: false,
+                title: 'Educational Video',
+                description: 'AI-generated educational content',
+                visibility: 'private',
+                input: [
+                    {
+                        avatarId,
+                        scriptText: script,
+                        language: 'pt-BR',
+                    },
+                ],
+            }, {
+                headers: {
+                    'Authorization': config.apiKey,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return {
+                videoId: response.data.id,
+                status: response.data.status,
+                createdAt: response.data.createdAt,
+            };
+        }
+        catch (error) {
+            logger_1.logger.error('Synthesia API error:', error.response?.data || error.message);
+            throw new errorHandler_1.AppError('Failed to create video with Synthesia', 500);
+        }
+    },
+    async createTalkingAvatarWithDID(imageUrl, audioUrl) {
+        const config = AI_TOOLS.did;
+        if (!config.apiKey) {
+            throw new errorHandler_1.AppError('D-ID API key not configured', 500);
+        }
+        try {
+            const response = await axios_1.default.post(`${config.baseUrl}/talks`, {
+                source_url: imageUrl,
+                script: {
+                    type: 'audio',
+                    audio_url: audioUrl,
+                },
+            }, {
+                headers: {
+                    'Authorization': `Basic ${config.apiKey}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return {
+                talkId: response.data.id,
+                status: response.data.status,
+                resultUrl: response.data.result_url,
+            };
+        }
+        catch (error) {
+            logger_1.logger.error('D-ID API error:', error.response?.data || error.message);
+            throw new errorHandler_1.AppError('Failed to create talking avatar with D-ID', 500);
+        }
+    },
+    async generateVoiceWithElevenLabs(text, voiceId = 'pNInz6obpgDQGcFmaJgB') {
+        const config = AI_TOOLS.elevenlabs;
+        if (!config.apiKey) {
+            throw new errorHandler_1.AppError('ElevenLabs API key not configured', 500);
+        }
+        try {
+            const response = await axios_1.default.post(`${config.baseUrl}/text-to-speech/${voiceId}`, {
+                text,
+                model_id: config.model,
+                voice_settings: {
+                    stability: 0.5,
+                    similarity_boost: 0.75,
+                },
+            }, {
+                headers: {
+                    'xi-api-key': config.apiKey,
+                    'Content-Type': 'application/json',
+                    'Accept': 'audio/mpeg',
+                },
+                responseType: 'arraybuffer',
+            });
+            const audioBase64 = Buffer.from(response.data).toString('base64');
+            return {
+                audio: audioBase64,
+                mimeType: 'audio/mpeg',
+                voiceId,
+                model: config.model,
+            };
+        }
+        catch (error) {
+            logger_1.logger.error('ElevenLabs API error:', error.response?.data || error.message);
+            throw new errorHandler_1.AppError('Failed to generate voice with ElevenLabs', 500);
+        }
+    },
+    async createWorkflowWithLindy(workflow) {
+        const config = AI_TOOLS.lindy;
+        if (!config.apiKey) {
+            throw new errorHandler_1.AppError('Lindy API key not configured', 500);
+        }
+        try {
+            const response = await axios_1.default.post(`${config.baseUrl}/workflows`, workflow, {
+                headers: {
+                    'Authorization': `Bearer ${config.apiKey}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return {
+                workflowId: response.data.id,
+                status: response.data.status,
+                executionUrl: response.data.executionUrl,
+            };
+        }
+        catch (error) {
+            logger_1.logger.error('Lindy API error:', error.response?.data || error.message);
+            throw new errorHandler_1.AppError('Failed to create workflow with Lindy', 500);
+        }
+    },
+    async processSpecializedRequest(userId, tool, params) {
+        let response;
+        switch (tool.toLowerCase()) {
+            case 'dalle':
+                response = await this.generateImageWithDallE(params.prompt, params.size, params.quality);
+                break;
+            case 'stable-diffusion':
+            case 'stablediffusion':
+                response = await this.generateImageWithStableDiffusion(params.prompt, params.width, params.height);
+                break;
+            case 'synthesia':
+                response = await this.createVideoWithSynthesia(params.script, params.avatarId);
+                break;
+            case 'did':
+            case 'd-id':
+                response = await this.createTalkingAvatarWithDID(params.imageUrl, params.audioUrl);
+                break;
+            case 'elevenlabs':
+                response = await this.generateVoiceWithElevenLabs(params.text, params.voiceId);
+                break;
+            case 'lindy':
+                response = await this.createWorkflowWithLindy(params.workflow);
+                break;
+            default:
+                throw new errorHandler_1.AppError(`Unsupported specialized tool: ${tool}`, 400);
+        }
+        await this.logSpecializedUsage(userId, tool, params, response);
+        return response;
+    },
+    async logSpecializedUsage(userId, tool, params, response) {
+        try {
+            await database_1.prisma.aIUsage.create({
+                data: {
+                    userId,
+                    tool: tool.toUpperCase(),
+                    endpoint: 'specialized',
+                    promptTokens: 0,
+                    completionTokens: 0,
+                    totalCost: this.calculateSpecializedCost(tool, params),
+                    metadata: {
+                        params,
+                        response: response,
+                    },
+                },
+            });
+        }
+        catch (error) {
+            logger_1.logger.error('Failed to log specialized AI usage:', error);
+        }
+    },
+    calculateSpecializedCost(tool, params) {
+        const costs = {
+            dalle: 0.02,
+            'stable-diffusion': 0.002,
+            synthesia: 5.00,
+            did: 0.10,
+            elevenlabs: 0.30,
+            lindy: 0.05,
+        };
+        return costs[tool.toLowerCase()] || 0;
     },
 };
 function calculateOpenAICost(usage) {

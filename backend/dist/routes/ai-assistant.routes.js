@@ -62,7 +62,7 @@ router.post('/chat', auth_1.authenticate, (0, validation_1.validate)(chatSchema)
     const userId = req.user.id;
     const enrichedContext = {
         ...context,
-        userLevel: req.user.profile?.teachingLevel || 'ELEMENTARY'
+        userLevel: 'ELEMENTARY'
     };
     const response = await claude_service_1.claudeService.generateTeachingResponse(message, enrichedContext);
     res.json({

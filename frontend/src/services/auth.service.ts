@@ -173,15 +173,22 @@ class AuthService {
     Cookies.remove('refreshToken')
     Cookies.remove('token') // Legacy token name
     
-    // Remove user data from localStorage
-    localStorage.removeItem('user')
-    
-    // Clear any other auth-related data that might be cached
-    localStorage.removeItem('auth')
-    sessionStorage.clear()
+    // Only access localStorage/sessionStorage on client-side
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('user')
+        localStorage.removeItem('auth')
+        sessionStorage.clear()
+      } catch (error) {
+        console.log('Error clearing storage:', error)
+      }
+    }
   }
 
   getCurrentUser(): User | null {
+    // Only access localStorage on client-side
+    if (typeof window === 'undefined') return null
+    
     try {
       const userString = localStorage.getItem('user')
       return userString ? JSON.parse(userString) : null
@@ -253,13 +260,21 @@ class AuthService {
 
   // Migration method to clear stale tokens after platform updates
   private migrateTokens(): void {
-    const version = localStorage.getItem('authVersion')
-    const currentVersion = '2.0' // Update this when you make auth changes
+    // Only run on client-side (not during SSR)
+    if (typeof window === 'undefined') return
     
-    if (version !== currentVersion) {
-      console.log('Auth migration: Clearing stale tokens from previous version')
-      this.clearTokens()
-      localStorage.setItem('authVersion', currentVersion)
+    try {
+      const version = localStorage.getItem('authVersion')
+      const currentVersion = '2.0' // Update this when you make auth changes
+      
+      if (version !== currentVersion) {
+        console.log('Auth migration: Clearing stale tokens from previous version')
+        this.clearTokens()
+        localStorage.setItem('authVersion', currentVersion)
+      }
+    } catch (error) {
+      // Handle cases where localStorage is not available
+      console.log('Auth migration: localStorage not available, skipping migration')
     }
   }
 }

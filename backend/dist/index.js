@@ -32,7 +32,9 @@ const corsOptions = {
         if (!origin ||
             allowedOrigins.includes(origin) ||
             (origin && origin.includes('teach-platform') && origin.includes('vercel.app')) ||
-            (origin && origin.includes('localhost'))) {
+            (origin && origin.includes('raphael-ruizs-projects') && origin.includes('vercel.app')) ||
+            (origin && origin.includes('localhost')) ||
+            (origin && origin.includes('vercel.app'))) {
             callback(null, true);
         }
         else {

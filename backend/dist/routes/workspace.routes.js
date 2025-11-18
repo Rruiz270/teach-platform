@@ -7,7 +7,7 @@ const auth_1 = require("../middleware/auth");
 const zod_1 = require("zod");
 const router = (0, express_1.Router)();
 const workspaceController = new workspace_controller_1.WorkspaceController();
-router.use(auth_1.authMiddleware);
+router.use(auth_1.authenticate);
 const validateRequest = (schema) => {
     return async (req, res, next) => {
         try {

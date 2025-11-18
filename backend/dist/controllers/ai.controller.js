@@ -4,6 +4,8 @@ exports.aiController = void 0;
 const errorHandler_1 = require("../middleware/errorHandler");
 const errorHandler_2 = require("../middleware/errorHandler");
 const ai_service_1 = require("../services/ai.service");
+const openai_service_1 = require("../services/openai.service");
+const claude_service_1 = require("../services/claude.service");
 exports.aiController = {
     chat: (0, errorHandler_1.asyncHandler)(async (req, res) => {
         const { tool, prompt, context } = req.body;
@@ -11,11 +13,66 @@ exports.aiController = {
         if (!tool || !prompt) {
             throw new errorHandler_2.AppError('Tool and prompt are required', 400);
         }
-        const supportedTools = ['chatgpt', 'claude', 'gemini'];
+        const supportedTools = ['chatgpt', 'openai', 'claude', 'gemini'];
         if (!supportedTools.includes(tool.toLowerCase())) {
             throw new errorHandler_2.AppError(`Unsupported tool. Supported tools: ${supportedTools.join(', ')}`, 400);
         }
-        const response = await ai_service_1.aiService.processAIRequest(userId, tool, prompt, context);
+        let response;
+        if (tool.toLowerCase() === 'claude') {
+            const aiResponse = await claude_service_1.claudeService.generateTeachingResponse(prompt, {
+                lessonTitle: context?.lessonTitle,
+                moduleLevel: context?.moduleLevel,
+                userLevel: context?.userLevel,
+                previousMessages: context?.previousMessages
+            });
+            response = {
+                content: aiResponse.content,
+                model: 'claude-3-haiku-20240307',
+                usage: aiResponse.usage,
+                cost: 0
+            };
+        }
+        else if (tool.toLowerCase() === 'openai' || tool.toLowerCase() === 'chatgpt') {
+            if (context?.contentType === 'course') {
+                const aiResponse = await openai_service_1.openaiService.generateCourseContent({
+                    nivel: context.nivel || 'starter',
+                    ferramenta_foco: context.ferramenta_foco || 'ChatGPT',
+                    tipo_conteudo: context.tipo_conteudo || 'aula_interativa',
+                    objetivo: prompt,
+                    duracao: context.duracao || 45,
+                    gamificacao: context.gamificacao
+                });
+                response = {
+                    content: aiResponse.content,
+                    model: 'gpt-4o-mini',
+                    usage: aiResponse.usage,
+                    cost: 0
+                };
+            }
+            else if (context?.contentType === 'bncc') {
+                const aiResponse = await openai_service_1.openaiService.generateBNCCLesson({
+                    disciplina: context.disciplina,
+                    ano_serie: context.ano_serie,
+                    topico: prompt,
+                    duracao: context.duracao || 50,
+                    objetivos: context.objetivos,
+                    codigo_bncc: context.codigo_bncc,
+                    recursos: context.recursos
+                });
+                response = {
+                    content: aiResponse.content,
+                    model: 'gpt-4o',
+                    usage: aiResponse.usage,
+                    cost: 0
+                };
+            }
+            else {
+                response = await ai_service_1.aiService.processAIRequest(userId, tool, prompt, context);
+            }
+        }
+        else {
+            response = await ai_service_1.aiService.processAIRequest(userId, tool, prompt, context);
+        }
         res.json({
             success: true,
             data: {
@@ -228,6 +285,257 @@ exports.aiController = {
                 performance,
                 usage: response.usage,
                 cost: response.cost,
+            },
+        });
+    }),
+    generateImage: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { prompt, tool = 'dalle', size, quality, width, height } = req.body;
+        const userId = req.user.id;
+        if (!prompt) {
+            throw new errorHandler_2.AppError('Prompt is required', 400);
+        }
+        const params = { prompt };
+        if (tool === 'dalle') {
+            params.size = size || '1024x1024';
+            params.quality = quality || 'standard';
+        }
+        else if (tool === 'stable-diffusion') {
+            params.width = width || 1024;
+            params.height = height || 1024;
+        }
+        const response = await ai_service_1.aiService.processSpecializedRequest(userId, tool, params);
+        res.json({
+            success: true,
+            data: {
+                tool,
+                ...response,
+            },
+        });
+    }),
+    createVideo: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { tool = 'synthesia', script, avatarId, imageUrl, audioUrl } = req.body;
+        const userId = req.user.id;
+        const params = {};
+        if (tool === 'synthesia') {
+            if (!script) {
+                throw new errorHandler_2.AppError('Script is required for Synthesia', 400);
+            }
+            params.script = script;
+            params.avatarId = avatarId;
+        }
+        else if (tool === 'did' || tool === 'd-id') {
+            if (!imageUrl || !audioUrl) {
+                throw new errorHandler_2.AppError('Image URL and audio URL are required for D-ID', 400);
+            }
+            params.imageUrl = imageUrl;
+            params.audioUrl = audioUrl;
+        }
+        const response = await ai_service_1.aiService.processSpecializedRequest(userId, tool, params);
+        res.json({
+            success: true,
+            data: {
+                tool,
+                ...response,
+            },
+        });
+    }),
+    generateVoice: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { text, voiceId, tool = 'elevenlabs' } = req.body;
+        const userId = req.user.id;
+        if (!text) {
+            throw new errorHandler_2.AppError('Text is required', 400);
+        }
+        const params = {
+            text,
+            voiceId,
+        };
+        const response = await ai_service_1.aiService.processSpecializedRequest(userId, tool, params);
+        res.json({
+            success: true,
+            data: {
+                tool,
+                ...response,
+            },
+        });
+    }),
+    createWorkflow: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { workflow, tool = 'lindy' } = req.body;
+        const userId = req.user.id;
+        if (!workflow) {
+            throw new errorHandler_2.AppError('Workflow configuration is required', 400);
+        }
+        const params = {
+            workflow,
+        };
+        const response = await ai_service_1.aiService.processSpecializedRequest(userId, tool, params);
+        res.json({
+            success: true,
+            data: {
+                tool,
+                ...response,
+            },
+        });
+    }),
+    generateEducationalContent: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { contentType, params } = req.body;
+        const userId = req.user.id;
+        if (!contentType || !params) {
+            throw new errorHandler_2.AppError('Content type and parameters are required', 400);
+        }
+        let prompt = '';
+        let context = 'Você é um especialista em educação brasileira criando conteúdo educacional de alta qualidade.';
+        switch (contentType) {
+            case 'worksheet':
+                prompt = `Crie uma folha de exercícios sobre ${params.topic} para alunos de ${params.grade}. 
+        Inclua ${params.exerciseCount || 10} exercícios variados com diferentes níveis de dificuldade.
+        Formate de forma clara e pronta para impressão.`;
+                break;
+            case 'presentation':
+                prompt = `Crie um roteiro de apresentação sobre ${params.topic} para ${params.audience}.
+        Duração: ${params.duration || 30} minutos.
+        Inclua: introdução, pontos principais, exemplos, atividades interativas e conclusão.
+        Sugira recursos visuais para cada slide.`;
+                break;
+            case 'studyGuide':
+                prompt = `Crie um guia de estudos completo sobre ${params.subject} focado em ${params.topic}.
+        Nível: ${params.grade}.
+        Inclua: resumo do conteúdo, conceitos-chave, exemplos resolvidos, dicas de estudo e questões de revisão.`;
+                break;
+            case 'projectIdeas':
+                prompt = `Sugira 5 ideias de projetos educacionais sobre ${params.topic} para alunos de ${params.grade}.
+        Cada projeto deve incluir: objetivo, materiais necessários, passos, avaliação e variações.
+        Projetos devem ser práticos e engajadores.`;
+                break;
+            default:
+                throw new errorHandler_2.AppError('Invalid content type', 400);
+        }
+        const response = await ai_service_1.aiService.processAIRequest(userId, 'claude', prompt, context);
+        res.json({
+            success: true,
+            data: {
+                contentType,
+                content: response.content,
+                params,
+                usage: response.usage,
+                cost: response.cost,
+            },
+        });
+    }),
+    generateTeachCourse: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { nivel, ferramenta_foco, tipo_conteudo, objetivo, duracao, gamificacao } = req.body;
+        const userId = req.user.id;
+        if (!nivel || !ferramenta_foco || !objetivo) {
+            throw new errorHandler_2.AppError('Nivel, ferramenta_foco, and objetivo are required', 400);
+        }
+        const response = await openai_service_1.openaiService.generateCourseContent({
+            nivel,
+            ferramenta_foco,
+            tipo_conteudo: tipo_conteudo || 'aula_interativa',
+            objetivo,
+            duracao: duracao || 45,
+            gamificacao
+        });
+        res.json({
+            success: true,
+            data: {
+                content: response.content,
+                usage: response.usage,
+                provider: 'OpenAI',
+                model: 'gpt-4o-mini',
+                timestamp: new Date()
+            }
+        });
+    }),
+    generateBNCCLesson: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { disciplina, ano_serie, topico, duracao, objetivos, codigo_bncc, recursos } = req.body;
+        const userId = req.user.id;
+        if (!disciplina || !ano_serie || !topico) {
+            throw new errorHandler_2.AppError('Disciplina, ano_serie, and topico are required', 400);
+        }
+        const response = await openai_service_1.openaiService.generateBNCCLesson({
+            disciplina,
+            ano_serie,
+            topico,
+            duracao: duracao || 50,
+            objetivos,
+            codigo_bncc,
+            recursos
+        });
+        res.json({
+            success: true,
+            data: {
+                content: response.content,
+                usage: response.usage,
+                provider: 'OpenAI',
+                model: 'gpt-4o',
+                timestamp: new Date()
+            }
+        });
+    }),
+    generateAIAssessment: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { topic, level, questionCount, provider } = req.body;
+        const userId = req.user.id;
+        if (!topic || !level) {
+            throw new errorHandler_2.AppError('Topic and level are required', 400);
+        }
+        let response;
+        if (provider === 'openai') {
+            response = await openai_service_1.openaiService.generateAssessment(topic, level, questionCount || 5);
+            res.json({
+                success: true,
+                data: {
+                    ...response,
+                    provider: 'OpenAI',
+                    model: 'gpt-4o-mini'
+                }
+            });
+        }
+        else {
+            const assessment = await claude_service_1.claudeService.generateAssessment(topic, level, questionCount || 5);
+            res.json({
+                success: true,
+                data: {
+                    ...assessment,
+                    provider: 'Claude',
+                    model: 'claude-3-haiku-20240307'
+                }
+            });
+        }
+    }),
+    processBatch: (0, errorHandler_1.asyncHandler)(async (req, res) => {
+        const { requests } = req.body;
+        const userId = req.user.id;
+        if (!requests || !Array.isArray(requests) || requests.length === 0) {
+            throw new errorHandler_2.AppError('Requests array is required', 400);
+        }
+        if (requests.length > 10) {
+            throw new errorHandler_2.AppError('Maximum 10 requests per batch', 400);
+        }
+        const results = await Promise.allSettled(requests.map(async (request) => {
+            try {
+                if (request.type === 'chat') {
+                    return await ai_service_1.aiService.processAIRequest(userId, request.tool || 'chatgpt', request.prompt, request.context);
+                }
+                else if (request.type === 'specialized') {
+                    return await ai_service_1.aiService.processSpecializedRequest(userId, request.tool, request.params);
+                }
+                else {
+                    throw new Error('Invalid request type');
+                }
+            }
+            catch (error) {
+                return { error: error.message };
+            }
+        }));
+        res.json({
+            success: true,
+            data: {
+                results: results.map((result, index) => ({
+                    index,
+                    status: result.status,
+                    data: result.status === 'fulfilled' ? result.value : null,
+                    error: result.status === 'rejected' ? result.reason : null,
+                })),
             },
         });
     }),
