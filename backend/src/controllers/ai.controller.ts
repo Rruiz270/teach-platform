@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
 import { AppError } from '../middleware/errorHandler';
 import { aiService } from '../services/ai.service';
-import { logger } from '../utils/logger';
+import { openaiService } from '../services/openai.service';
+import { claudeService } from '../services/claude.service';
 
 export const aiController = {
   chat: asyncHandler(async (req: Request, res: Response) => {
@@ -14,13 +15,72 @@ export const aiController = {
     }
 
     // Validate tool
-    const supportedTools = ['chatgpt', 'claude', 'gemini'];
+    const supportedTools = ['chatgpt', 'openai', 'claude', 'gemini'];
     if (!supportedTools.includes(tool.toLowerCase())) {
       throw new AppError(`Unsupported tool. Supported tools: ${supportedTools.join(', ')}`, 400);
     }
 
-    // Process AI request
-    const response = await aiService.processAIRequest(userId, tool, prompt, context);
+    // Process AI request with direct service integration
+    let response;
+    
+    if (tool.toLowerCase() === 'claude') {
+      // Use Claude service for teaching assistant functionality
+      const aiResponse = await claudeService.generateTeachingResponse(prompt, {
+        lessonTitle: context?.lessonTitle,
+        moduleLevel: context?.moduleLevel,
+        userLevel: context?.userLevel,
+        previousMessages: context?.previousMessages
+      });
+      
+      response = {
+        content: aiResponse.content,
+        model: 'claude-3-haiku-20240307',
+        usage: aiResponse.usage,
+        cost: 0 // Calculate based on usage if needed
+      };
+    } else if (tool.toLowerCase() === 'openai' || tool.toLowerCase() === 'chatgpt') {
+      // Use OpenAI service for course content generation
+      if (context?.contentType === 'course') {
+        const aiResponse = await openaiService.generateCourseContent({
+          nivel: context.nivel || 'starter',
+          ferramenta_foco: context.ferramenta_foco || 'ChatGPT',
+          tipo_conteudo: context.tipo_conteudo || 'aula_interativa',
+          objetivo: prompt,
+          duracao: context.duracao || 45,
+          gamificacao: context.gamificacao
+        });
+        
+        response = {
+          content: aiResponse.content,
+          model: 'gpt-4o-mini',
+          usage: aiResponse.usage,
+          cost: 0
+        };
+      } else if (context?.contentType === 'bncc') {
+        const aiResponse = await openaiService.generateBNCCLesson({
+          disciplina: context.disciplina,
+          ano_serie: context.ano_serie,
+          topico: prompt,
+          duracao: context.duracao || 50,
+          objetivos: context.objetivos,
+          codigo_bncc: context.codigo_bncc,
+          recursos: context.recursos
+        });
+        
+        response = {
+          content: aiResponse.content,
+          model: 'gpt-4o',
+          usage: aiResponse.usage,
+          cost: 0
+        };
+      } else {
+        // Fallback to existing AI service
+        response = await aiService.processAIRequest(userId, tool, prompt, context);
+      }
+    } else {
+      // Use existing AI service for other tools
+      response = await aiService.processAIRequest(userId, tool, prompt, context);
+    }
 
     res.json({
       success: true,
@@ -442,6 +502,113 @@ export const aiController = {
     });
   }),
 
+  // TEACH Course Content Generation (OpenAI)
+  generateTeachCourse: asyncHandler(async (req: Request, res: Response) => {
+    const { nivel, ferramenta_foco, tipo_conteudo, objetivo, duracao, gamificacao } = req.body;
+    const userId = req.user!.id;
+
+    if (!nivel || !ferramenta_foco || !objetivo) {
+      throw new AppError('Nivel, ferramenta_foco, and objetivo are required', 400);
+    }
+
+    // Log user activity for analytics
+    console.log(`User ${userId} generating TEACH course content for ${ferramenta_foco}`);
+
+    const response = await openaiService.generateCourseContent({
+      nivel,
+      ferramenta_foco,
+      tipo_conteudo: tipo_conteudo || 'aula_interativa',
+      objetivo,
+      duracao: duracao || 45,
+      gamificacao
+    });
+
+    res.json({
+      success: true,
+      data: {
+        content: response.content,
+        usage: response.usage,
+        provider: 'OpenAI',
+        model: 'gpt-4o-mini',
+        timestamp: new Date()
+      }
+    });
+  }),
+
+  // BNCC Lesson Generation (OpenAI)
+  generateBNCCLesson: asyncHandler(async (req: Request, res: Response) => {
+    const { disciplina, ano_serie, topico, duracao, objetivos, codigo_bncc, recursos } = req.body;
+    const userId = req.user!.id;
+
+    if (!disciplina || !ano_serie || !topico) {
+      throw new AppError('Disciplina, ano_serie, and topico are required', 400);
+    }
+
+    // Log user activity for analytics
+    console.log(`User ${userId} generating BNCC lesson for ${disciplina} - ${topico}`);
+
+    const response = await openaiService.generateBNCCLesson({
+      disciplina,
+      ano_serie,
+      topico,
+      duracao: duracao || 50,
+      objetivos,
+      codigo_bncc,
+      recursos
+    });
+
+    res.json({
+      success: true,
+      data: {
+        content: response.content,
+        usage: response.usage,
+        provider: 'OpenAI',
+        model: 'gpt-4o',
+        timestamp: new Date()
+      }
+    });
+  }),
+
+  // AI Assessment Generation (using both providers)
+  generateAIAssessment: asyncHandler(async (req: Request, res: Response) => {
+    const { topic, level, questionCount, provider } = req.body;
+    const userId = req.user!.id;
+
+    if (!topic || !level) {
+      throw new AppError('Topic and level are required', 400);
+    }
+
+    // Log user activity for analytics
+    console.log(`User ${userId} generating ${provider} assessment for ${topic}`);
+
+    let response;
+    
+    if (provider === 'openai') {
+      response = await openaiService.generateAssessment(topic, level, questionCount || 5);
+      
+      res.json({
+        success: true,
+        data: {
+          ...response,
+          provider: 'OpenAI',
+          model: 'gpt-4o-mini'
+        }
+      });
+    } else {
+      // Use Claude for assessment generation
+      const assessment = await claudeService.generateAssessment(topic, level, questionCount || 5);
+      
+      res.json({
+        success: true,
+        data: {
+          ...assessment,
+          provider: 'Claude',
+          model: 'claude-3-haiku-20240307'
+        }
+      });
+    }
+  }),
+
   // Batch processing for multiple AI requests
   processBatch: asyncHandler(async (req: Request, res: Response) => {
     const { requests } = req.body;
@@ -474,7 +641,7 @@ export const aiController = {
           } else {
             throw new Error('Invalid request type');
           }
-        } catch (error) {
+        } catch (error: any) {
           return { error: error.message };
         }
       })

@@ -64,7 +64,9 @@ function WorkspaceContent() {
     topic: '',
     grade: '',
     duration: 45,
-    objectives: ''
+    objectives: '',
+    provider: 'claude', // Add provider selection
+    contentType: 'lesson' // lesson, course, bncc
   })
 
   const [imageForm, setImageForm] = useState({
@@ -76,7 +78,8 @@ function WorkspaceContent() {
     topic: '',
     questionCount: 5,
     difficulty: 'medium',
-    description: ''
+    description: '',
+    provider: 'claude'
   })
 
   // Test API function (debugging token issue)
@@ -85,7 +88,7 @@ function WorkspaceContent() {
       console.log('Testing AI API...v2')
       console.log('API Base URL:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1')
       
-      const token = Cookies.get('token')
+      const token = Cookies.get('accessToken') || Cookies.get('token')
       console.log('User token exists:', !!token)
       console.log('User authenticated:', isAuthenticated)
       
@@ -131,8 +134,61 @@ function WorkspaceContent() {
     setResultTab('slides')
     
     try {
-      // Create a structured prompt for lesson generation
-      const prompt = `Você é um especialista em educação brasileira. Crie uma aula completa em português seguindo o currículo brasileiro.
+      let response;
+      
+      // Use different providers based on content type and selection
+      if (lessonForm.contentType === 'course' && lessonForm.provider === 'openai') {
+        // TEACH Course Content Generation using OpenAI
+        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'}/ai/teach/course`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Cookies.get('accessToken') || Cookies.get('token')}`
+          },
+          body: JSON.stringify({
+            nivel: 'starter', // Can be made dynamic
+            ferramenta_foco: 'ChatGPT',
+            tipo_conteudo: 'aula_interativa',
+            objetivo: lessonForm.objectives || lessonForm.topic,
+            duracao: lessonForm.duration,
+            gamificacao: 'basico'
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        response = { response: data.data.content };
+        
+      } else if (lessonForm.contentType === 'bncc' && lessonForm.provider === 'openai') {
+        // BNCC Lesson Generation using OpenAI
+        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'}/ai/teach/bncc`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Cookies.get('accessToken') || Cookies.get('token')}`
+          },
+          body: JSON.stringify({
+            disciplina: 'Geral',
+            ano_serie: lessonForm.grade,
+            topico: lessonForm.topic,
+            duracao: lessonForm.duration,
+            objetivos: lessonForm.objectives
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        response = { response: data.data.content };
+        
+      } else {
+        // Default Claude lesson generation (existing functionality)
+        const prompt = `Você é um especialista em educação brasileira. Crie uma aula completa em português seguindo o currículo brasileiro.
 
 DADOS DA AULA:
 - Tópico: ${lessonForm.topic}
@@ -152,8 +208,9 @@ RESPONDA EM FORMATO JSON com esta estrutura exata:
 
 Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga as diretrizes pedagógicas brasileiras.`
 
-      // Use the existing AI API (same as working AI Assistant)
-      const response = await aiAPI.chat('claude', prompt)
+        // Use the existing AI API (same as working AI Assistant)
+        response = await aiAPI.chat('claude', prompt)
+      }
       
       console.log('Claude Response:', response) // Debug log
       
@@ -336,17 +393,45 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
     setGenerationResult(null)
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 2500))
+      // Use the new AI assessment endpoint with provider selection
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1'}/ai/teach/assessment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Cookies.get('token')}`
+        },
+        body: JSON.stringify({
+          topic: assessmentForm.topic,
+          level: 'medio',
+          questionCount: assessmentForm.questionCount,
+          provider: assessmentForm.provider
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
       
       setGenerationResult({
         type: 'assessment',
         content: {
-          questions: Array(assessmentForm.questionCount).fill(null).map((_, i) => `Questão ${i + 1} sobre ${assessmentForm.topic}`),
-          provider: 'Claude (Anthropic)'
+          questions: data.data.questions || Array(assessmentForm.questionCount).fill(null).map((_, i) => `Questão ${i + 1} sobre ${assessmentForm.topic}`),
+          provider: `${data.data.provider} (${data.data.model})`
         }
       })
     } catch (error) {
       console.error('Erro ao gerar avaliação:', error)
+      
+      // Fallback to mock data
+      setGenerationResult({
+        type: 'assessment',
+        content: {
+          questions: Array(assessmentForm.questionCount).fill(null).map((_, i) => `Questão ${i + 1} sobre ${assessmentForm.topic}`),
+          provider: `${assessmentForm.provider === 'openai' ? 'OpenAI' : 'Claude'} (Fallback)`
+        }
+      })
     } finally {
       setIsGenerating(false)
     }
@@ -463,7 +548,7 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
                   Criador de Aulas com IA
                 </CardTitle>
                 <CardDescription>
-                  Gere aulas completas com roteiro, atividades e materiais usando Claude (Anthropic)
+                  Gere aulas completas, cursos TEACH e conteúdo BNCC usando Claude (Anthropic) e OpenAI (GPT-4)
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -503,6 +588,35 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
                   </div>
                 </div>
 
+                {/* AI Provider and Content Type Selection */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="provider">🤖 Provedor de IA</Label>
+                    <select
+                      id="provider"
+                      className="w-full p-2 border rounded-md"
+                      value={lessonForm.provider}
+                      onChange={(e) => setLessonForm({...lessonForm, provider: e.target.value})}
+                    >
+                      <option value="claude">Claude (Anthropic)</option>
+                      <option value="openai">OpenAI (GPT-4)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor="contentType">📚 Tipo de Conteúdo</Label>
+                    <select
+                      id="contentType"
+                      className="w-full p-2 border rounded-md"
+                      value={lessonForm.contentType}
+                      onChange={(e) => setLessonForm({...lessonForm, contentType: e.target.value})}
+                    >
+                      <option value="lesson">Aula Geral (Claude)</option>
+                      <option value="course">Curso TEACH (OpenAI)</option>
+                      <option value="bncc">Aula BNCC (OpenAI)</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div className="space-y-3">
                   <Button 
                     onClick={testAPI}
@@ -534,7 +648,8 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
                 </div>
                 
                 <p className="text-xs text-center text-gray-500">
-                  Gerado com Claude (Anthropic) • Fallback: GPT-4 (OpenAI)
+                  {lessonForm.provider === 'openai' ? 'OpenAI (GPT-4)' : 'Claude (Anthropic)'} • 
+                  {lessonForm.contentType === 'course' ? ' Curso TEACH' : lessonForm.contentType === 'bncc' ? ' BNCC Brasil' : ' Aula Geral'}
                 </p>
               </CardContent>
             </Card>
@@ -622,7 +737,7 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
                 </div>
 
                 {/* Quick Options */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="assessmentTopic">📚 Tópico Principal</Label>
                     <Input
@@ -642,6 +757,18 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
                       value={assessmentForm.questionCount}
                       onChange={(e) => setAssessmentForm({...assessmentForm, questionCount: parseInt(e.target.value)})}
                     />
+                  </div>
+                  <div>
+                    <Label htmlFor="assessmentProvider">🤖 Provedor de IA</Label>
+                    <select
+                      id="assessmentProvider"
+                      className="w-full p-2 border rounded-md"
+                      value={assessmentForm.provider}
+                      onChange={(e) => setAssessmentForm({...assessmentForm, provider: e.target.value})}
+                    >
+                      <option value="claude">Claude (Anthropic)</option>
+                      <option value="openai">OpenAI (GPT-4)</option>
+                    </select>
                   </div>
                 </div>
 
@@ -665,7 +792,7 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
                 </Button>
                 
                 <p className="text-xs text-center text-gray-500">
-                  Gerado com Claude (Anthropic) • Pedagogy-optimized prompts
+                  {assessmentForm.provider === 'openai' ? 'OpenAI (GPT-4)' : 'Claude (Anthropic)'} • Pedagogy-optimized prompts
                 </p>
               </CardContent>
             </Card>

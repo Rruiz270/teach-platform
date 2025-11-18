@@ -90,6 +90,25 @@ router.post('/content/generate',
   aiController.generateEducationalContent
 );
 
+// TEACH Platform Specific Endpoints
+router.post('/teach/course', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.generateTeachCourse
+);
+
+router.post('/teach/bncc', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.generateBNCCLesson
+);
+
+router.post('/teach/assessment', 
+  authenticate, 
+  aiApiRateLimiter,
+  aiController.generateAIAssessment
+);
+
 // Batch Processing
 router.post('/batch', 
   authenticate, 
