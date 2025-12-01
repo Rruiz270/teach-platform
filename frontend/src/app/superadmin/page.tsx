@@ -35,7 +35,6 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { AuthGuard } from '@/components/AuthGuard'
-import { LegalFooter } from '@/components/LegalFooter'
 import { APIStatusDashboard } from '@/components/APIStatusDashboard'
 
 function SuperAdminContent() {
@@ -483,9 +482,6 @@ function SuperAdminContent() {
           </Card>
         </div>
       </div>
-
-      {/* Legal Footer */}
-      <LegalFooter />
     </div>
   )
 }

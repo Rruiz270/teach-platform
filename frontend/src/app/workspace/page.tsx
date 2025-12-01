@@ -29,7 +29,6 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { AuthGuard } from '@/components/AuthGuard'
-import { LegalFooter } from '@/components/LegalFooter'
 import { api, aiAPI } from '@/lib/api'
 import { APIStatusIndicator } from '@/components/APIStatusIndicator'
 import Cookies from 'js-cookie'
@@ -946,9 +945,6 @@ Certifique-se de que o conteúdo seja apropriado para a idade dos alunos e siga 
           </div>
         </div>
       </div>
-
-      {/* Legal Footer */}
-      <LegalFooter />
     </div>
   )
 }
