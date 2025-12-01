@@ -1,0 +1,490 @@
+// Proposed Course Creation Database Schema
+// Based on data science best practices for educational content
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== CORE COURSE STRUCTURE =====
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  subject     String   // Math, English, Science, etc.
+  level       String   // Beginner, Intermediate, Advanced
+  language    String   @default("pt-BR")
+  
+  // Course metadata
+  duration    Int?     // Total duration in minutes
+  difficulty  Int      @default(1) @map("difficulty_level") // 1-10 scale
+  
+  // Course structure
+  modules     Module[]
+  lessons     Lesson[]
+  
+  // Analytics & Tracking
+  enrollments CourseEnrollment[]
+  analytics   CourseAnalytics[]
+  
+  // Administrative
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isPublished Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  
+  @@map("courses")
+}
+
+model Module {
+  id          String @id @default(cuid())
+  courseId    String
+  course      Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?
+  order       Int    // Sequence within course
+  
+  // Module content
+  lessons     Lesson[]
+  
+  // Prerequisites
+  prerequisites String[] // Array of prerequisite module IDs
+  
+  // Learning objectives
+  learningObjectives LearningObjective[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("modules")
+  @@unique([courseId, order])
+}
+
+model Lesson {
+  id          String @id @default(cuid())
+  courseId    String
+  moduleId    String?
+  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  module      Module? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?
+  content     String  // Rich text content
+  order       Int     // Sequence within module/course
+  
+  // Lesson types and delivery
+  lessonType  LessonType @default(CONTENT)
+  deliveryMode DeliveryMode @default(SELF_PACED)
+  
+  // Time management
+  estimatedDuration Int? // In minutes
+  
+  // Content components
+  activities  Activity[]
+  assessments Assessment[]
+  resources   Resource[]
+  
+  // Learning data
+  learningObjectives LearningObjective[]
+  tags        Tag[]
+  
+  // Progress tracking
+  completions LessonCompletion[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isPublished Boolean @default(false)
+  
+  @@map("lessons")
+  @@unique([courseId, order])
+  @@unique([moduleId, order])
+}
+
+// ===== CONTENT COMPONENTS =====
+
+model Activity {
+  id          String @id @default(cuid())
+  lessonId    String
+  lesson      Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?
+  instructions String
+  activityType ActivityType
+  
+  // Activity configuration
+  config      Json   // Flexible config for different activity types
+  order       Int    // Sequence within lesson
+  
+  // Grading
+  maxPoints   Int?
+  isGraded    Boolean @default(false)
+  
+  // Responses and submissions
+  submissions ActivitySubmission[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("activities")
+  @@unique([lessonId, order])
+}
+
+model Assessment {
+  id          String @id @default(cuid())
+  lessonId    String?
+  moduleId    String?
+  courseId    String?
+  
+  lesson      Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?
+  assessmentType AssessmentType
+  
+  // Questions and structure
+  questions   Question[]
+  
+  // Grading configuration
+  maxScore    Int
+  passingScore Int
+  attempts    Int @default(3)
+  timeLimit   Int? // In minutes
+  
+  // Submissions
+  submissions AssessmentSubmission[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isPublished Boolean @default(false)
+  
+  @@map("assessments")
+}
+
+model Question {
+  id            String @id @default(cuid())
+  assessmentId  String
+  assessment    Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  
+  questionText  String
+  questionType  QuestionType
+  order         Int
+  points        Int @default(1)
+  
+  // Question options (for multiple choice, etc.)
+  options       QuestionOption[]
+  
+  // Correct answers and explanations
+  correctAnswers String[] // JSON array of correct answers
+  explanation   String?
+  
+  // Analytics
+  responses     QuestionResponse[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("questions")
+  @@unique([assessmentId, order])
+}
+
+model QuestionOption {
+  id         String @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  optionText String
+  isCorrect  Boolean @default(false)
+  order      Int
+  
+  @@map("question_options")
+  @@unique([questionId, order])
+}
+
+// ===== LEARNING MANAGEMENT =====
+
+model LearningObjective {
+  id          String @id @default(cuid())
+  
+  // Can be associated with course, module, or lesson
+  courseId    String?
+  moduleId    String?
+  lessonId    String?
+  
+  course      Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  module      Module? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lesson      Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  objective   String
+  description String?
+  bloomsLevel BloomsLevel? // Knowledge, Comprehension, Application, etc.
+  
+  // Mastery tracking
+  masteryMeasurements MasteryMeasurement[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("learning_objectives")
+}
+
+model Resource {
+  id       String @id @default(cuid())
+  lessonId String?
+  lesson   Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?
+  resourceType ResourceType
+  url         String?
+  filePath    String?
+  content     String? // For text resources
+  
+  // Metadata
+  fileSize    Int?
+  mimeType    String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("resources")
+}
+
+// ===== USER PROGRESS & ANALYTICS =====
+
+model CourseEnrollment {
+  id           String @id @default(cuid())
+  userId       String
+  courseId     String
+  course       Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  enrolledAt   DateTime @default(now())
+  completedAt  DateTime?
+  progress     Float @default(0) // 0-100 percentage
+  
+  // Individual lesson/module progress
+  lessonCompletions LessonCompletion[]
+  
+  // Performance metrics
+  totalTimeSpent Int @default(0) // In minutes
+  averageScore   Float?
+  
+  @@map("course_enrollments")
+  @@unique([userId, courseId])
+}
+
+model LessonCompletion {
+  id           String @id @default(cuid())
+  userId       String
+  lessonId     String
+  enrollmentId String
+  
+  lesson       Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  enrollment   CourseEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  
+  startedAt    DateTime @default(now())
+  completedAt  DateTime?
+  timeSpent    Int @default(0) // In minutes
+  
+  @@map("lesson_completions")
+  @@unique([userId, lessonId])
+}
+
+model ActivitySubmission {
+  id          String @id @default(cuid())
+  userId      String
+  activityId  String
+  activity    Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  
+  response    Json    // Flexible response data
+  score       Int?
+  feedback    String?
+  
+  submittedAt DateTime @default(now())
+  gradedAt    DateTime?
+  gradedBy    String?
+  
+  @@map("activity_submissions")
+}
+
+model AssessmentSubmission {
+  id           String @id @default(cuid())
+  userId       String
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  
+  startedAt    DateTime @default(now())
+  submittedAt  DateTime?
+  score        Int?
+  maxScore     Int
+  passed       Boolean @default(false)
+  attemptNumber Int @default(1)
+  
+  // Individual question responses
+  responses    QuestionResponse[]
+  
+  @@map("assessment_submissions")
+}
+
+model QuestionResponse {
+  id           String @id @default(cuid())
+  userId       String
+  questionId   String
+  submissionId String
+  
+  question     Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  submission   AssessmentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  
+  response     Json    // Student's answer
+  isCorrect    Boolean @default(false)
+  points       Int @default(0)
+  
+  @@map("question_responses")
+}
+
+// ===== MASTERY & COMPETENCY TRACKING =====
+
+model MasteryMeasurement {
+  id          String @id @default(cuid())
+  userId      String
+  objectiveId String
+  objective   LearningObjective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+  
+  masteryLevel Float  // 0-1 scale
+  measuredAt   DateTime @default(now())
+  evidence     String? // Description of evidence for mastery
+  
+  @@map("mastery_measurements")
+}
+
+// ===== CONTENT ORGANIZATION =====
+
+model Tag {
+  id      String @id @default(cuid())
+  name    String @unique
+  color   String?
+  
+  lessons Lesson[]
+  
+  @@map("tags")
+}
+
+// ===== ANALYTICS & REPORTING =====
+
+model CourseAnalytics {
+  id                 String @id @default(cuid())
+  courseId           String
+  course             Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  date               DateTime @default(now())
+  totalEnrollments   Int @default(0)
+  activeUsers        Int @default(0)
+  completionRate     Float @default(0)
+  averageProgress    Float @default(0)
+  averageTimeSpent   Float @default(0)
+  satisfactionScore  Float?
+  
+  @@map("course_analytics")
+  @@unique([courseId, date])
+}
+
+// ===== ENUMS =====
+
+enum LessonType {
+  CONTENT         // Regular content lesson
+  VIDEO           // Video-based lesson
+  INTERACTIVE     // Interactive lesson
+  ASSIGNMENT      // Assignment/homework
+  ASSESSMENT      // Quiz/test
+  PROJECT         // Project-based lesson
+  DISCUSSION      // Discussion/forum
+  WORKSHOP        // Live workshop
+  
+  @@map("lesson_type")
+}
+
+enum DeliveryMode {
+  SELF_PACED      // Student can progress at own pace
+  SCHEDULED       // Follows specific schedule
+  INSTRUCTOR_LED  // Requires instructor guidance
+  BLENDED         // Mix of self-paced and scheduled
+  
+  @@map("delivery_mode")
+}
+
+enum ActivityType {
+  READING         // Reading assignment
+  WRITING         // Written response
+  QUIZ            // Quick quiz
+  DISCUSSION      // Discussion post
+  VIDEO_WATCH     // Video viewing
+  INTERACTIVE     // Interactive exercise
+  CODING          // Code exercise
+  DRAWING         // Drawing/sketching
+  AUDIO           // Audio recording
+  FILE_UPLOAD     // File submission
+  PEER_REVIEW     // Peer assessment
+  
+  @@map("activity_type")
+}
+
+enum AssessmentType {
+  QUIZ            // Multiple choice quiz
+  TEST            // Comprehensive test
+  ASSIGNMENT      // Written assignment
+  PROJECT         // Project submission
+  PRESENTATION    // Presentation
+  PORTFOLIO       // Portfolio review
+  PEER_ASSESSMENT // Peer evaluation
+  
+  @@map("assessment_type")
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE    // Single correct answer
+  MULTIPLE_SELECT    // Multiple correct answers
+  TRUE_FALSE         // True/false question
+  SHORT_ANSWER       // Brief text response
+  ESSAY              // Long-form response
+  NUMERIC            // Numerical answer
+  MATCHING           // Match items
+  ORDERING           // Put items in order
+  FILL_BLANK         // Fill in the blanks
+  
+  @@map("question_type")
+}
+
+enum BloomsLevel {
+  KNOWLEDGE          // Remember facts
+  COMPREHENSION      // Understand concepts
+  APPLICATION        // Apply knowledge
+  ANALYSIS           // Break down information
+  SYNTHESIS          // Create new ideas
+  EVALUATION         // Judge value
+  
+  @@map("blooms_level")
+}
+
+enum ResourceType {
+  PDF               // PDF document
+  VIDEO             // Video file
+  AUDIO             // Audio file
+  LINK              // External link
+  TEXT              // Text content
+  IMAGE             // Image file
+  DOCUMENT          // Other document
+  INTERACTIVE       // Interactive content
+  SIMULATION        // Simulation/game
+  
+  @@map("resource_type")
+}
+
+// ===== INDEXES =====
+// Performance optimization indexes would be added here

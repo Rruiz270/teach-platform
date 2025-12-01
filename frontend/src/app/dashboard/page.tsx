@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { BookOpen, Users, Trophy, Clock, Star, ArrowRight, Bot, Target, Gamepad2, Calendar, Sparkles, Wand2 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { AuthGuard } from '@/components/AuthGuard'
+import { LegalFooter } from '@/components/LegalFooter'
 import AITeachingAssistant from '@/components/AITeachingAssistant'
 import PersonalizedLearningPath from '@/components/PersonalizedLearningPath'
 import GamificationSystem from '@/components/GamificationSystem'
@@ -455,6 +456,9 @@ function DashboardContent() {
           onToggleMinimize={() => setIsAIAssistantMinimized(!isAIAssistantMinimized)}
         />
       )}
+
+      {/* Legal Footer */}
+      <LegalFooter />
     </div>
   )
 }
