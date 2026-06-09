@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import authService, { User, LoginCredentials, RegisterData } from '@/services/auth.service'
+import { DEV_NO_AUTH, DevRole, getDevRole, setDevRole, makeDevUser } from '@/lib/dev-auth'
 
 interface AuthContextType {
   user: User | null
@@ -11,6 +12,8 @@ interface AuthContextType {
   register: (userData: RegisterData) => Promise<void>
   logout: () => void
   refreshUser: () => void
+  /** Troca o papel ativo no modo sem-autenticação (no-op se DEV_NO_AUTH=false) */
+  switchRole: (role: DevRole) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -20,6 +23,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // ── Modo sem-autenticação: cria um usuário mock com papel selecionável ──
+    if (DEV_NO_AUTH) {
+      const devUser = makeDevUser(getDevRole())
+      setUser(devUser)
+      // Mantém o localStorage 'user' coerente (a tela de login lê dele)
+      try {
+        localStorage.setItem('user', JSON.stringify(devUser))
+      } catch {
+        /* localStorage indisponível */
+      }
+      setIsLoading(false)
+      return
+    }
+
     // Check if user is already logged in on app start
     const currentUser = authService.getCurrentUser()
     const isAuth = authService.isAuthenticated()
@@ -67,23 +84,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = () => {
+    if (DEV_NO_AUTH) {
+      // Sem backend para deslogar — apenas volta para a home pública
+      window.location.href = '/'
+      return
+    }
     authService.logout()
     setUser(null)
   }
 
   const refreshUser = () => {
+    if (DEV_NO_AUTH) {
+      setUser(makeDevUser(getDevRole()))
+      return
+    }
     const currentUser = authService.getCurrentUser()
     setUser(currentUser)
+  }
+
+  const switchRole = (role: DevRole) => {
+    if (!DEV_NO_AUTH) return
+    setDevRole(role)
+    const devUser = makeDevUser(role)
+    setUser(devUser)
+    try {
+      localStorage.setItem('user', JSON.stringify(devUser))
+    } catch {
+      /* localStorage indisponível */
+    }
   }
 
   const value: AuthContextType = {
     user,
     isLoading,
-    isAuthenticated: !!user && authService.isAuthenticated(),
+    isAuthenticated: DEV_NO_AUTH ? true : !!user && authService.isAuthenticated(),
     login,
     register,
     logout,
-    refreshUser
+    refreshUser,
+    switchRole
   }
 
   return (

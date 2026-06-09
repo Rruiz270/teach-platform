@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { DEV_NO_AUTH, getDevRole, getRoleInfo } from '@/lib/dev-auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,6 +20,13 @@ export default function LoginPage() {
   
   const { login } = useAuth()
   const router = useRouter()
+
+  // Auth desligada: não há tela de login — entra direto na home do papel atual
+  useEffect(() => {
+    if (DEV_NO_AUTH) {
+      router.replace(getRoleInfo(getDevRole()).home)
+    }
+  }, [router])
 
   const clearAuthData = () => {
     authService.clearTokens()
